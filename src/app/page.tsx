@@ -106,8 +106,7 @@ export default function LandingPage() {
             </Button>
             <Button
               href="/aandragen"
-              variant="outline"
-              className="border-fk-secondary text-fk-secondary hover:bg-fk-secondary hover:text-fk-white"
+              variant="on-dark-outline"
             >
               Draag kandidaat aan
             </Button>
@@ -186,17 +185,10 @@ export default function LandingPage() {
                 jouw plek op het leaderboard.
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button
-                  href="/dashboard"
-                  variant="outline"
-                  className="border-fk-white text-fk-white hover:bg-fk-white hover:text-fk-primary"
-                >
+                <Button href="/dashboard" variant="on-dark">
                   Bekijk dashboard
                 </Button>
-                <Button
-                  href="/leaderboard"
-                  className="bg-fk-white text-fk-primary hover:bg-fk-light"
-                >
+                <Button href="/leaderboard" variant="inverse">
                   Bekijk leaderboard
                 </Button>
               </div>

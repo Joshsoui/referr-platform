@@ -9,9 +9,9 @@ import logo from "@/assets/finderz-keeperz-logo.png";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/challenges", label: "Challenges" },
   { href: "/aandragen", label: "Kandidaat aandragen" },
   { href: "/leaderboard", label: "Leaderboard" },
-  { href: "/admin", label: "Admin" },
 ];
 
 export function Header() {

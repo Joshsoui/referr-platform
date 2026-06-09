@@ -1,0 +1,70 @@
+import type { ScoutBadge } from "@/types/gamification";
+
+export const SCOUT_BADGES: ScoutBadge[] = [
+  {
+    id: "first-candidate",
+    icon: "🔥",
+    name: "Eerste Kandidaat",
+    description: "Draag je eerste kandidaat aan",
+    earned: true,
+    earnedAt: "2026-05-01",
+  },
+  {
+    id: "first-placement",
+    icon: "🏆",
+    name: "Eerste Plaatsing",
+    description: "Realiseer je eerste succesvolle plaatsing",
+    earned: true,
+    earnedAt: "2026-05-20",
+  },
+  {
+    id: "productie-scout",
+    icon: "🏭",
+    name: "Productie Scout",
+    description: "Draag een kandidaat aan in Productie",
+    earned: false,
+  },
+  {
+    id: "techniek-scout",
+    icon: "⚙️",
+    name: "Techniek Scout",
+    description: "Draag een kandidaat aan in Techniek",
+    earned: false,
+  },
+  {
+    id: "bouw-scout",
+    icon: "🏗",
+    name: "Bouw Scout",
+    description: "Draag een kandidaat aan in Bouw",
+    earned: false,
+  },
+  {
+    id: "golden-boot",
+    icon: "⚽",
+    name: "Golden Boot Scout",
+    description: "Realiseer een plaatsing tijdens het WK",
+    earned: false,
+  },
+  {
+    id: "elite-keeper",
+    icon: "🧤",
+    name: "Elite Keeper",
+    description: "Draag 5 kandidaten aan tijdens het WK",
+    earned: false,
+  },
+  {
+    id: "elite-scout",
+    icon: "💎",
+    name: "Elite Scout",
+    description: "Bereik het Elite Scout level",
+    earned: true,
+    earnedAt: "2026-06-01",
+  },
+  {
+    id: "fk-legend",
+    icon: "👑",
+    name: "FK Legend",
+    description: "Bereik 10.000 XP",
+    earned: false,
+  },
+];

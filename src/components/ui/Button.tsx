@@ -3,7 +3,13 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "outline";
+  variant?:
+    | "primary"
+    | "secondary"
+    | "outline"
+    | "inverse"
+    | "on-dark"
+    | "on-dark-outline";
   href?: string;
   loading?: boolean;
 }
@@ -12,7 +18,13 @@ const variants = {
   primary: "bg-fk-primary text-fk-white hover:bg-fk-navy shadow-sm",
   secondary: "bg-fk-secondary text-fk-white hover:bg-fk-primary shadow-sm",
   outline:
-    "border-2 border-fk-primary text-fk-primary hover:bg-fk-primary hover:text-fk-white",
+    "border-2 border-fk-primary bg-transparent text-fk-primary hover:bg-fk-primary hover:text-fk-white",
+  inverse:
+    "border border-fk-primary/15 bg-fk-white text-fk-primary hover:bg-fk-light shadow-md",
+  "on-dark":
+    "border-2 border-fk-white bg-transparent text-fk-white hover:bg-fk-white hover:text-fk-primary shadow-sm",
+  "on-dark-outline":
+    "border-2 border-fk-secondary bg-transparent text-fk-secondary hover:bg-fk-secondary hover:text-fk-white shadow-sm",
 };
 
 export function Button({

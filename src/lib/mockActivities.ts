@@ -1,0 +1,58 @@
+import type { FeedActivity } from "@/types/gamification";
+
+export const FEED_ACTIVITIES: FeedActivity[] = [
+  {
+    id: "f1",
+    type: "referral",
+    userName: "Joshua Souisay",
+    text: "heeft Kevin de Vries aangedragen",
+    xp: 10,
+    timestamp: "2026-06-09T08:30:00",
+    timeAgo: "2 uur geleden",
+  },
+  {
+    id: "f2",
+    type: "challenge",
+    userName: "Emma Bakker",
+    text: "heeft de Productie Challenge voltooid",
+    xp: 500,
+    timestamp: "2026-06-09T07:00:00",
+    timeAgo: "Vandaag",
+  },
+  {
+    id: "f3",
+    type: "level",
+    userName: "Lennart Lakeman",
+    text: "heeft Elite Scout bereikt",
+    badgeLabel: "Nieuwe badge",
+    timestamp: "2026-06-09T06:15:00",
+    timeAgo: "Vandaag",
+  },
+  {
+    id: "f4",
+    type: "placement",
+    userName: "Peter Jansen",
+    text: "heeft een succesvolle plaatsing gerealiseerd",
+    xp: 500,
+    timestamp: "2026-06-06T14:00:00",
+    timeAgo: "3 dagen geleden",
+  },
+  {
+    id: "f5",
+    type: "referral",
+    userName: "Sophie van der Meer",
+    text: "heeft Lisa Vermeer aangedragen",
+    xp: 10,
+    timestamp: "2026-06-08T16:45:00",
+    timeAgo: "Gisteren",
+  },
+  {
+    id: "f6",
+    type: "streak",
+    userName: "Mike de Groot",
+    text: "is 7 dagen op rij actief geweest",
+    xp: 75,
+    timestamp: "2026-06-08T09:00:00",
+    timeAgo: "Gisteren",
+  },
+];

@@ -16,6 +16,7 @@ import {
   INITIAL_CANDIDATES,
   INITIAL_LEADERBOARD,
 } from "@/lib/mock-data";
+import { CURRENT_SCOUT_REFERRAL, type ReferralProfile } from "@/lib/mockReferrals";
 import {
   STATUS_LABELS,
   STATUS_ORDER,
@@ -44,7 +45,13 @@ interface ScoutContextValue {
   activities: Activity[];
   leaderboard: Scout[];
   stats: typeof DASHBOARD_STATS;
+  referralProfile: ReferralProfile;
   submitCandidate: (data: CandidateFormData) => void;
+  submitReferralCandidate: (
+    data: CandidateFormData,
+    referrerName: string,
+    viaReferralLink?: boolean
+  ) => void;
   updateCandidateStatus: (id: string, status: CandidateStatus) => void;
 }
 
@@ -58,6 +65,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
   const [activities, setActivities] = useState<Activity[]>(INITIAL_ACTIVITIES);
   const [leaderboard, setLeaderboard] = useState<Scout[]>(INITIAL_LEADERBOARD);
   const [stats, setStats] = useState(DASHBOARD_STATS);
+  const [referralProfile, setReferralProfile] = useState(CURRENT_SCOUT_REFERRAL);
   const idCounter = useRef(0);
 
   const nextId = useCallback((prefix: string) => {
@@ -96,8 +104,12 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const submitCandidate = useCallback(
-    (data: CandidateFormData) => {
+  const submitReferralCandidate = useCallback(
+    (
+      data: CandidateFormData,
+      referrerName: string,
+      viaReferralLink = true
+    ) => {
       const xpGain = STATUS_XP.nieuw;
       const candidate: Candidate = {
         id: nextId("c"),
@@ -106,22 +118,47 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         linkedin: data.linkedin || undefined,
         role: data.role,
         description: data.description || undefined,
-        referredBy: CURRENT_USER,
+        referredBy: referrerName,
         status: "nieuw",
         xpAwarded: xpGain,
         createdAt: new Date().toISOString(),
       };
 
       setCandidates((prev) => [candidate, ...prev]);
-      awardXp(xpGain);
-      setStats((prev) => ({
-        ...prev,
-        candidatesReferred: prev.candidatesReferred + 1,
-      }));
-      addActivity(`${data.name} aangedragen`, xpGain);
-      updateLeaderboardXp(xpGain);
+
+      if (referrerName === CURRENT_USER) {
+        awardXp(xpGain);
+        setStats((prev) => ({
+          ...prev,
+          candidatesReferred: prev.candidatesReferred + 1,
+        }));
+        addActivity(
+          viaReferralLink
+            ? `${data.name} aangedragen via referral link`
+            : `${data.name} aangedragen`,
+          xpGain
+        );
+        updateLeaderboardXp(xpGain);
+        if (viaReferralLink) {
+          setReferralProfile((prev) => ({
+            ...prev,
+            stats: {
+              ...prev.stats,
+              candidatesViaLink: prev.stats.candidatesViaLink + 1,
+              xpViaReferralLink: prev.stats.xpViaReferralLink + xpGain,
+            },
+          }));
+        }
+      }
     },
     [addActivity, awardXp, nextId, updateLeaderboardXp]
+  );
+
+  const submitCandidate = useCallback(
+    (data: CandidateFormData) => {
+      submitReferralCandidate(data, CURRENT_USER, false);
+    },
+    [submitReferralCandidate]
   );
 
   const updateCandidateStatus = useCallback(
@@ -182,7 +219,9 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       activities,
       leaderboard,
       stats,
+      referralProfile,
       submitCandidate,
+      submitReferralCandidate,
       updateCandidateStatus,
     }),
     [
@@ -193,7 +232,9 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       activities,
       leaderboard,
       stats,
+      referralProfile,
       submitCandidate,
+      submitReferralCandidate,
       updateCandidateStatus,
     ]
   );

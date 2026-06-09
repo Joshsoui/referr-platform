@@ -111,3 +111,37 @@ export const DASHBOARD_STATS = {
   regionRank: 7,
   region: "Noord-Holland",
 };
+
+export const LEADERBOARD_MONTHLY: Scout[] = [
+  { rank: 1, name: "Emma Bakker", xp: 2180, placements: 2, reward: 500 },
+  { rank: 2, name: "Lennart Lakeman", xp: 1950, placements: 2, reward: 500 },
+  { rank: 3, name: "Peter Jansen", xp: 1720, placements: 1, reward: 250 },
+  { rank: 4, name: "Mike de Groot", xp: 1480, placements: 1, reward: 250 },
+  { rank: 5, name: "Sophie van der Meer", xp: 1320, placements: 1, reward: 250 },
+  { rank: 6, name: "Kevin de Vries", xp: 980, placements: 1, reward: 250 },
+  {
+    rank: 7,
+    name: CURRENT_USER,
+    xp: 860,
+    placements: 1,
+    reward: 250,
+    isCurrentUser: true,
+  },
+];
+
+export const LEADERBOARD_WK_LEAGUE: Scout[] = [
+  { rank: 1, name: "Lennart Lakeman", xp: 1250, placements: 1, reward: 500 },
+  { rank: 2, name: "Emma Bakker", xp: 980, placements: 1, reward: 500 },
+  { rank: 3, name: "Peter Jansen", xp: 720, placements: 0, reward: 0 },
+  { rank: 4, name: "Mike de Groot", xp: 650, placements: 0, reward: 0 },
+  { rank: 5, name: "Sophie van der Meer", xp: 520, placements: 0, reward: 0 },
+  { rank: 6, name: "Kevin de Vries", xp: 410, placements: 0, reward: 0 },
+  {
+    rank: 7,
+    name: CURRENT_USER,
+    xp: 380,
+    placements: 0,
+    reward: 0,
+    isCurrentUser: true,
+  },
+];
