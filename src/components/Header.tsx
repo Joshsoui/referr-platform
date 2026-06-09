@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import logo from "@/assets/finderz-keeperz-logo.png";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
@@ -20,9 +22,12 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-fk-primary/10 bg-fk-white/95 shadow-sm backdrop-blur-md transition-shadow duration-300">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="shrink-0">
-          <span className="text-sm font-extrabold tracking-widest text-fk-primary sm:text-base">
-            FK SCOUT ENGINE
-          </span>
+          <Image
+            src={logo}
+            alt="Finderz Keeperz"
+            priority
+            className="h-9 w-auto sm:h-10"
+          />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
