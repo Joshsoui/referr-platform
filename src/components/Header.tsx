@@ -20,13 +20,13 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-fk-primary/10 bg-fk-white/95 shadow-sm backdrop-blur-md transition-shadow duration-300">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
         <Link href="/" className="shrink-0">
           <Image
             src={logo}
             alt="Finderz Keeperz"
             priority
-            className="h-9 w-auto sm:h-10"
+            className="h-14 w-auto sm:h-16"
           />
         </Link>
 
