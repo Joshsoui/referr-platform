@@ -38,7 +38,23 @@ git push -u origin main
 
 Je krijgt een URL zoals `https://fk-scout-engine.vercel.app`
 
-### Optie B: Eigen server (VPS)
+### Optie B: Render (gratis tier)
+
+1. Push naar GitHub (private repo werkt ook)
+2. Ga naar [render.com](https://render.com) → **New +** → **Web Service**
+3. Koppel je GitHub account en selecteer `fk-scout-engine`
+4. Render vult automatisch in:
+   - **Build Command:** `npm install && npm run build`
+   - **Start Command:** `npm start`
+5. Kies **Free** plan → **Create Web Service**
+
+Je krijgt een URL zoals `https://fk-scout-engine.onrender.com`
+
+> Op de free tier slaapt de app na 15 min inactiviteit — eerste bezoek kan ~30 sec duren om op te starten.
+
+Of gebruik de meegeleverde `render.yaml` via **New +** → **Blueprint**.
+
+### Optie C: Eigen server (VPS)
 
 Vereisten: Node.js 18+, nginx (optioneel)
 
