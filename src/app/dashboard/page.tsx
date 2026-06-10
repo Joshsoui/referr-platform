@@ -12,6 +12,7 @@ import { FadeIn } from "@/components/animations/FadeIn";
 import { ActivityFeed } from "@/components/ActivityFeed";
 import { BadgeGrid } from "@/components/BadgeGrid";
 import { ChallengeCard } from "@/components/ChallengeCard";
+import { DashboardHero } from "@/components/DashboardHero";
 import { EcosystemWidget } from "@/components/EcosystemWidget";
 import { ReferralLinkCard } from "@/components/ReferralLinkCard";
 import { RewardsWidget } from "@/components/RewardsWidget";
@@ -76,14 +77,13 @@ export default function DashboardPage() {
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <FadeIn delay={100}>
-          <div className="mb-6">
-            <p className="text-sm font-medium text-fk-navy/50">Welkom terug</p>
-            <h1 className="mt-1 text-3xl font-extrabold text-fk-navy sm:text-4xl">
-              {currentUser}
-            </h1>
-          </div>
-        </FadeIn>
+        <DashboardHero
+          userName={currentUser}
+          xp={xp}
+          scoutScore={scoutScore}
+          regionRank={stats.regionRank}
+          region={stats.region}
+        />
 
         <FadeIn delay={120}>
           <EcosystemWidget xp={xp} scoutScore={scoutScore} rewards={rewards} />
@@ -127,19 +127,6 @@ export default function DashboardPage() {
 
         <FadeIn delay={140}>
           <WkBonusBanner />
-        </FadeIn>
-
-        <FadeIn delay={160}>
-          <Card
-            variant="glass"
-            className="mb-8 border-fk-primary/20"
-            hover
-          >
-            <p className="text-center text-lg font-bold leading-snug text-fk-primary sm:text-xl">
-              &ldquo;Wat als wij niet 5 recruiters hebben die zoeken, maar 500
-              scouts die signaleren?&rdquo;
-            </p>
-          </Card>
         </FadeIn>
 
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
