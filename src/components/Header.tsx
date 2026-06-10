@@ -22,6 +22,8 @@ export function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  if (pathname === "/founders-deck") return null;
+
   return (
     <header className="sticky top-0 z-50 border-b border-fk-primary/10 bg-fk-white/95 shadow-sm backdrop-blur-md transition-shadow duration-300">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-3.5 lg:px-8">
