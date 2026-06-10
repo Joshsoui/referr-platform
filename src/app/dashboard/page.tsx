@@ -18,7 +18,6 @@ import { ReferralLinkCard } from "@/components/ReferralLinkCard";
 import { RewardsWidget } from "@/components/RewardsWidget";
 import { ScoutConfidenceScore } from "@/components/ScoutConfidenceScore";
 import { WkBonusBanner } from "@/components/WkBonusBanner";
-import { XpProgressHero } from "@/components/XpProgressHero";
 import { Card } from "@/components/ui/Card";
 import { useScout } from "@/context/ScoutContext";
 import { CURRENT_USER } from "@/lib/mock-data";
@@ -83,6 +82,7 @@ export default function DashboardPage() {
           scoutScore={scoutScore}
           regionRank={stats.regionRank}
           region={stats.region}
+          xpPulse={xpPulse}
         />
 
         <FadeIn delay={120}>
@@ -91,10 +91,6 @@ export default function DashboardPage() {
 
         <FadeIn delay={140}>
           <RewardsWidget xp={xp} rewards={rewards} />
-        </FadeIn>
-
-        <FadeIn delay={160}>
-          <XpProgressHero xp={xp} xpPulse={xpPulse} />
         </FadeIn>
 
         <ReferralLinkCard profile={referralProfile} />
@@ -132,8 +128,11 @@ export default function DashboardPage() {
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {statCards.map((stat) => (
             <FadeIn key={stat.label} delay={stat.delay}>
-              <Card hover className="h-full">
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-fk-primary-muted text-fk-primary transition-transform duration-300 hover:scale-110">
+              <Card
+                hover
+                className="group h-full border-fk-primary/10 transition-all duration-300 hover:border-fk-primary/25 hover:shadow-lg"
+              >
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-fk-primary/15 to-fk-secondary/10 text-fk-primary transition-transform duration-300 group-hover:scale-110">
                   <stat.icon size={20} />
                 </div>
                 <p className="text-2xl font-extrabold text-fk-navy tabular-nums">
