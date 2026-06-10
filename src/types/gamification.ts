@@ -1,5 +1,12 @@
 export type ChallengeStatus = "active" | "completed";
 
+export type MissionTrackType =
+  | "tips"
+  | "intake"
+  | "match"
+  | "keeper"
+  | "manual";
+
 export interface Challenge {
   id: string;
   icon: string;
@@ -12,6 +19,8 @@ export interface Challenge {
   target: number;
   status: ChallengeStatus;
   isCommunity?: boolean;
+  trackType?: MissionTrackType;
+  xpReward?: number;
 }
 
 export type FeedActivityType =
@@ -43,4 +52,4 @@ export interface ScoutBadge {
   earnedAt?: string;
 }
 
-export type LeaderboardTab = "month" | "wk-league" | "all-time";
+export type LeaderboardTab = "month" | "all-time";

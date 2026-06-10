@@ -17,13 +17,12 @@ import { EcosystemWidget } from "@/components/EcosystemWidget";
 import { ReferralLinkCard } from "@/components/ReferralLinkCard";
 import { RewardsWidget } from "@/components/RewardsWidget";
 import { ScoutConfidenceScore } from "@/components/ScoutConfidenceScore";
-import { WkBonusBanner } from "@/components/WkBonusBanner";
 import { Card } from "@/components/ui/Card";
 import { useScout } from "@/context/ScoutContext";
 import { CURRENT_USER } from "@/lib/mock-data";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
-import { CHALLENGES } from "@/lib/mockChallenges";
-import { formatCurrency } from "@/lib/xp";
+import { getActiveMissions } from "@/lib/missions";
+import { formatCurrency, KEEPER_STATUS } from "@/lib/xp";
 
 export default function DashboardPage() {
   const {
@@ -35,13 +34,11 @@ export default function DashboardPage() {
     rewards,
     scoutScore,
     candidates,
+    challenges,
   } = useScout();
   const animatedCandidates = useAnimatedNumber(stats.candidatesReferred);
   const animatedPlacements = useAnimatedNumber(stats.successfulPlacements);
-  const activeChallenges = CHALLENGES.filter((c) => c.status === "active").slice(
-    0,
-    3
-  );
+  const activeChallenges = getActiveMissions(challenges).slice(0, 3);
   const recentReferrals = candidates
     .filter((c) => c.referredBy === CURRENT_USER)
     .slice(0, 4);
@@ -122,7 +119,24 @@ export default function DashboardPage() {
         )}
 
         <FadeIn delay={140}>
-          <WkBonusBanner />
+          <Card className="mb-8 overflow-hidden border-2 border-amber-200 bg-gradient-to-br from-amber-50 via-fk-white to-amber-50/30">
+            <div className="p-6 sm:p-8">
+              <p className="text-xl font-extrabold text-fk-navy sm:text-2xl">
+                {KEEPER_STATUS.title}
+              </p>
+              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-fk-navy/70">
+                {KEEPER_STATUS.description}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <span className="rounded-full bg-fk-primary px-3 py-1 text-sm font-bold text-fk-white">
+                  +{KEEPER_STATUS.xpReward} XP
+                </span>
+                <span className="rounded-full bg-emerald-600 px-3 py-1 text-sm font-bold text-fk-white">
+                  +{formatCurrency(KEEPER_STATUS.cashReward)}
+                </span>
+              </div>
+            </div>
+          </Card>
         </FadeIn>
 
         <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -3,7 +3,7 @@
 import {
   ArrowDown,
   ArrowRight,
-  Coins,
+  Banknote,
   Star,
   TrendingUp,
   Users,
@@ -81,7 +81,7 @@ export default function WhyFinderPage() {
             {[
               { label: "XP", icon: Zap },
               { label: "Level", icon: Star },
-              { label: "Bonus", icon: Coins },
+              { label: "Bonus", icon: Banknote },
             ].map((item, i) => (
               <FadeIn key={item.label} delay={i * 100}>
                 <div className="flex flex-col items-center sm:flex-row">
@@ -173,7 +173,7 @@ export default function WhyFinderPage() {
               { hash: "XP", label: "Activiteit", icon: Zap },
               { hash: "Finderz Score", label: "Kwaliteit", icon: TrendingUp },
               { hash: "Levels", label: "Privileges", icon: Star },
-              { hash: "Cash", label: "Resultaat", icon: Coins },
+              { hash: "Cash", label: "Resultaat", icon: Banknote },
             ].map((item, i) => (
               <FadeIn key={item.hash} delay={i * 80}>
                 <Card hover className="text-center">

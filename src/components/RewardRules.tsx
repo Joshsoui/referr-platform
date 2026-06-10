@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import {
   Award,
-  Coins,
+  Banknote,
   Shield,
   Star,
   TrendingUp,
@@ -12,17 +13,19 @@ import {
 import { FadeIn } from "@/components/animations/FadeIn";
 import { Card } from "@/components/ui/Card";
 import {
+  CASH_BONUS_NOTE,
   CASH_REWARDS,
   LEVEL_CASH_MULTIPLIERS,
   MAX_CASH_PER_CANDIDATE,
-  XP_REWARDS,
+  XP_TIMELINE,
 } from "@/lib/mockRewards";
+import { LEVEL_DEFINITIONS } from "@/lib/mockLevels";
 import { FAIR_USE_RULES } from "@/lib/mockQualityRules";
-import { formatCurrency } from "@/lib/xp";
+import { formatCurrency, KEEPER_STATUS } from "@/lib/xp";
 
 const TABS = [
   { id: "xp", label: "XP", icon: Zap },
-  { id: "cash", label: "Cash", icon: Coins },
+  { id: "cash", label: "Cash", icon: Banknote },
   { id: "levels", label: "Levels", icon: Star },
   { id: "rules", label: "Regels", icon: Shield },
 ] as const;
@@ -63,35 +66,91 @@ export function RewardRules() {
                   <Zap size={22} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-fk-navy">XP-beloningen</h3>
+                  <h3 className="text-xl font-bold text-fk-navy">XP-tijdlijn</h3>
                   <p className="text-sm text-fk-navy/55">
-                    Activiteit = progressie als Finder
+                    XP is de enige progressiemeter binnen het Finderz Network
                   </p>
                 </div>
               </div>
-              <div className="space-y-2">
-                {XP_REWARDS.map((item, i) => (
-                  <div
-                    key={item.action}
-                    className="group flex items-center justify-between rounded-xl border border-transparent bg-fk-light px-4 py-3.5 text-sm transition-all duration-300 hover:border-fk-primary/15 hover:bg-fk-primary/5 hover:shadow-sm"
-                    style={{ animationDelay: `${i * 50}ms` }}
-                  >
-                    <span className="flex items-center gap-3 text-fk-navy">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-fk-primary/10 text-fk-primary transition-transform group-hover:scale-110">
-                        <Zap size={14} />
-                      </span>
-                      {item.action}
-                      {item.isBonus && (
-                        <span className="rounded-full bg-fk-secondary/15 px-2 py-0.5 text-xs font-bold text-fk-secondary">
-                          Bonus
-                        </span>
-                      )}
-                    </span>
-                    <span className="font-extrabold text-fk-primary">
-                      +{item.xp} XP
-                    </span>
-                  </div>
-                ))}
+
+              <div className="relative pl-8">
+                <div
+                  className="absolute bottom-4 left-3 top-4 w-0.5 rounded-full bg-fk-primary/15"
+                  aria-hidden
+                />
+                <div className="space-y-0">
+                  {XP_TIMELINE.map((item, i) => (
+                    <div
+                      key={item.action}
+                      className={`relative pb-6 ${item.highlight ? "last:pb-0" : ""}`}
+                      style={{ animationDelay: `${i * 50}ms` }}
+                    >
+                      <div
+                        className={`absolute -left-5 flex h-6 w-6 items-center justify-center rounded-full border-2 text-xs ${
+                          item.highlight
+                            ? "border-amber-400 bg-amber-50 shadow-md shadow-amber-200/50"
+                            : "border-fk-primary/30 bg-fk-white"
+                        }`}
+                      >
+                        {item.icon}
+                      </div>
+                      <div
+                        className={`rounded-xl border px-4 py-3.5 transition-all duration-300 ${
+                          item.highlight
+                            ? "border-amber-200 bg-gradient-to-r from-amber-50 to-fk-white shadow-sm"
+                            : "border-transparent bg-fk-light hover:border-fk-primary/15 hover:bg-fk-primary/5"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          <div>
+                            <p className="font-semibold text-fk-navy">
+                              {item.action}
+                            </p>
+                            {item.isBonus && (
+                              <span className="mt-1 inline-block rounded-full bg-fk-secondary/15 px-2 py-0.5 text-xs font-bold text-fk-secondary">
+                                Bonus bij Talent Confidence 70+
+                              </span>
+                            )}
+                            {item.highlight && (
+                              <p className="mt-1 text-xs text-fk-navy/55">
+                                {KEEPER_STATUS.description}
+                              </p>
+                            )}
+                          </div>
+                          <div className="text-right">
+                            <span
+                              className={`font-extrabold ${item.highlight ? "text-amber-700" : "text-fk-primary"}`}
+                            >
+                              +{item.xp} XP
+                            </span>
+                            {item.highlight && (
+                              <p className="mt-0.5 text-sm font-bold text-emerald-700">
+                                +{formatCurrency(KEEPER_STATUS.cashReward)}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-2xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-fk-white to-amber-50/50 p-5">
+                <p className="text-lg font-extrabold text-fk-navy">
+                  {KEEPER_STATUS.title}
+                </p>
+                <p className="mt-2 text-sm text-fk-navy/70">
+                  {KEEPER_STATUS.description}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <span className="rounded-full bg-fk-primary px-3 py-1 text-sm font-bold text-fk-white">
+                    +{KEEPER_STATUS.xpReward} XP
+                  </span>
+                  <span className="rounded-full bg-emerald-600 px-3 py-1 text-sm font-bold text-fk-white">
+                    +{formatCurrency(KEEPER_STATUS.cashReward)}
+                  </span>
+                </div>
               </div>
             </Card>
           </FadeIn>
@@ -102,12 +161,12 @@ export function RewardRules() {
             <Card hover className="overflow-hidden border-emerald-200/50">
               <div className="mb-6 flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-fk-white shadow-md">
-                  <Coins size={22} />
+                  <Banknote size={22} />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-fk-navy">Cash-beloningen</h3>
                   <p className="text-sm text-fk-navy/55">
-                    Alleen bij echt resultaat — geen geld voor alleen een naam
+                    Alleen bij echt resultaat — geen geld voor alleen een tip
                   </p>
                 </div>
               </div>
@@ -144,13 +203,13 @@ export function RewardRules() {
 
         {activeTab === "levels" && (
           <FadeIn>
-            <Card hover>
+            <Card hover className="mb-6">
               <div className="mb-6 flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-600 text-fk-white shadow-md">
                   <TrendingUp size={22} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-fk-navy">Level bonus</h3>
+                  <h3 className="text-xl font-bold text-fk-navy">Level cash bonus</h3>
                   <p className="text-sm text-fk-navy/55">
                     Hogere levels = hogere cash-multipliers
                   </p>
@@ -175,10 +234,60 @@ export function RewardRules() {
                   </div>
                 ))}
               </div>
-              <p className="mt-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                Cash wordt nooit automatisch uitgekeerd. Eerst &ldquo;in
-                behandeling&rdquo;, daarna handmatig goedgekeurd door Finderz
-                Keeperz.
+              <p className="mt-6 rounded-xl border border-fk-primary/15 bg-fk-primary-muted px-4 py-3 text-sm font-medium text-fk-navy/75">
+                {CASH_BONUS_NOTE}
+              </p>
+            </Card>
+
+            <Card hover>
+              <div className="mb-6 flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-fk-primary text-fk-white shadow-md">
+                  <Star size={22} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-fk-navy">Level voordelen</h3>
+                  <p className="text-sm text-fk-navy/55">
+                    Wat je ontgrendelt per level
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                {LEVEL_DEFINITIONS.map((level) => (
+                  <div
+                    key={level.id}
+                    className="rounded-xl border border-fk-primary/10 bg-fk-light p-4 transition-all hover:border-fk-primary/20 hover:shadow-sm"
+                  >
+                    <div className="mb-3 flex items-center gap-3">
+                      <span className="text-2xl">{level.icon}</span>
+                      <div>
+                        <p className="font-bold text-fk-navy">
+                          Level {level.level} — {level.name}
+                        </p>
+                        <p className="text-xs text-fk-navy/50">{level.tagline}</p>
+                      </div>
+                    </div>
+                    <ul className="grid gap-2 sm:grid-cols-2">
+                      {level.privileges.map((priv) => (
+                        <li
+                          key={priv}
+                          className="flex items-center gap-2 text-sm text-fk-navy/75"
+                        >
+                          <Award size={14} className="shrink-0 text-fk-primary" />
+                          {priv}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-6 text-center text-sm text-fk-navy/55">
+                Finderz Legend? Bekijk de{" "}
+                <Link
+                  href="/hall-of-fame"
+                  className="font-semibold text-fk-primary hover:text-fk-navy"
+                >
+                  Hall of Fame
+                </Link>
               </p>
             </Card>
           </FadeIn>

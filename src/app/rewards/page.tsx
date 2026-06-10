@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Coins,
+  Banknote,
   Gift,
   Sparkles,
   Star,
@@ -38,7 +38,7 @@ const PILLARS = [
   {
     hash: "Cash",
     label: "Resultaat",
-    icon: Coins,
+    icon: Banknote,
     color: "from-emerald-500 to-emerald-700",
   },
 ];
@@ -86,7 +86,7 @@ export default function RewardsPage() {
                     </p>
                   </div>
                   <div className="rounded-xl border border-fk-white/20 bg-fk-white/10 px-4 py-3 backdrop-blur-sm">
-                    <Coins size={16} className="mb-1 text-fk-white/70" />
+                    <Banknote size={16} className="mb-1 text-fk-white/70" />
                     <p className="text-xs text-fk-white/60">Verdiend</p>
                     <p className="text-xl font-extrabold">
                       {formatCurrency(animatedCash)}

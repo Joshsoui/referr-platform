@@ -6,19 +6,15 @@ import { FadeIn } from "@/components/animations/FadeIn";
 import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { useScout } from "@/context/ScoutContext";
-import {
-  LEADERBOARD_MONTHLY,
-  LEADERBOARD_WK_LEAGUE,
-} from "@/lib/mock-data";
+import { LEADERBOARD_MONTHLY } from "@/lib/mock-data";
 import { formatCurrency, getLevelForXp } from "@/lib/xp";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 import type { LeaderboardTab } from "@/types/gamification";
 import type { Scout } from "@/types";
 
 const TABS: { id: LeaderboardTab; label: string }[] = [
-  { id: "month", label: "Deze maand" },
-  { id: "wk-league", label: "WK Finderz League" },
-  { id: "all-time", label: "All-time" },
+  { id: "month", label: "Maandranking" },
+  { id: "all-time", label: "All-Time Ranking" },
 ];
 
 const PODIUM_CONFIG = [
@@ -188,11 +184,7 @@ export default function LeaderboardPage() {
   const [tabKey, setTabKey] = useState(0);
 
   const leaderboard: Scout[] =
-    activeTab === "month"
-      ? LEADERBOARD_MONTHLY
-      : activeTab === "wk-league"
-        ? LEADERBOARD_WK_LEAGUE
-        : liveLeaderboard;
+    activeTab === "month" ? LEADERBOARD_MONTHLY : liveLeaderboard;
 
   const maxXp = Math.max(...leaderboard.map((s) => s.xp), 1);
   const currentUserEntry = leaderboard.find((s) => s.isCurrentUser);
@@ -373,6 +365,18 @@ export default function LeaderboardPage() {
             </Card>
           </FadeIn>
         </div>
+
+        <FadeIn delay={200}>
+          <p className="mt-8 text-center text-sm text-fk-navy/55">
+            All-time toppers staan in de{" "}
+            <a
+              href="/hall-of-fame"
+              className="font-semibold text-fk-primary hover:text-fk-navy"
+            >
+              Hall of Fame
+            </a>
+          </p>
+        </FadeIn>
       </div>
     </div>
   );

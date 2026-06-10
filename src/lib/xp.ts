@@ -17,11 +17,19 @@ export const STATUS_ORDER: CandidateStatus[] = [
 ];
 
 export const STATUS_LABELS: Record<CandidateStatus, string> = {
-  nieuw: "Nieuw getipt",
+  nieuw: "Talent getipt",
   intake_gepland: "Intake gepland",
   voorgesteld: "Voorgesteld",
   geplaatst: "Succesvolle match",
-  proeftijd_gehaald: "Keeper-status behaald",
+  proeftijd_gehaald: "Keeper Status behaald",
+};
+
+export const KEEPER_STATUS = {
+  title: "🏆 Keeper Status Behaald",
+  description:
+    "Het talent werkt inmiddels één maand succesvol via Finderz Keeperz.",
+  xpReward: 1000,
+  cashReward: 250,
 };
 
 export interface Level {
@@ -33,8 +41,8 @@ export interface Level {
 export const LEVELS: Level[] = [
   { name: "Finder", minXp: 0, maxXp: 499 },
   { name: "Senior Finder", minXp: 500, maxXp: 1499 },
-  { name: "Elite Finder", minXp: 1500, maxXp: 3999 },
-  { name: "Master Finder", minXp: 4000, maxXp: 9999 },
+  { name: "Elite Finder", minXp: 1500, maxXp: 4999 },
+  { name: "Master Finder", minXp: 5000, maxXp: 9999 },
   { name: "Finderz Legend", minXp: 10000, maxXp: Infinity },
 ];
 
@@ -50,13 +58,20 @@ export function getLevelProgress(xp: number): {
   next: Level | null;
   progress: number;
   xpToNext: number;
+  xpTarget: number | null;
 } {
   const current = getLevelForXp(xp);
   const currentIndex = LEVELS.indexOf(current);
   const next = currentIndex < LEVELS.length - 1 ? LEVELS[currentIndex + 1] : null;
 
   if (!next) {
-    return { current, next: null, progress: 100, xpToNext: 0 };
+    return {
+      current,
+      next: null,
+      progress: 100,
+      xpToNext: 0,
+      xpTarget: null,
+    };
   }
 
   const range = next.minXp - current.minXp;
@@ -64,7 +79,15 @@ export function getLevelProgress(xp: number): {
   const progress = Math.min(100, Math.round((earned / range) * 100));
   const xpToNext = next.minXp - xp;
 
-  return { current, next, progress, xpToNext };
+  return { current, next, progress, xpToNext, xpTarget: next.minXp };
+}
+
+export function formatLevelXpProgress(xp: number): string {
+  const { xpTarget } = getLevelProgress(xp);
+  if (!xpTarget) {
+    return `${xp.toLocaleString("nl-NL")} XP`;
+  }
+  return `${xp.toLocaleString("nl-NL")} / ${xpTarget.toLocaleString("nl-NL")} XP`;
 }
 
 export function getXpForStatusChange(
@@ -84,4 +107,11 @@ export function formatCurrency(amount: number): string {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount);
+}
+
+export function applyCashLevelBonus(
+  baseAmount: number,
+  cashBonusPercent: number
+): number {
+  return Math.round(baseAmount * (1 + cashBonusPercent / 100));
 }

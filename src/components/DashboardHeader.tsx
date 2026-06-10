@@ -15,9 +15,14 @@ import { FadeIn } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
-import { CHALLENGES } from "@/lib/mockChallenges";
+import { useScout } from "@/context/ScoutContext";
 import { LEVEL_DEFINITIONS } from "@/lib/mockLevels";
-import { getLevelForXp, getLevelProgress } from "@/lib/xp";
+import { getActiveMissions } from "@/lib/missions";
+import {
+  formatLevelXpProgress,
+  getLevelForXp,
+  getLevelProgress,
+} from "@/lib/xp";
 
 interface DashboardHeaderProps {
   userName: string;
@@ -36,27 +41,71 @@ export function DashboardHeader({
   region,
   xpPulse = 0,
 }: DashboardHeaderProps) {
+  const { challenges } = useScout();
   const level = getLevelForXp(xp);
   const levelDef = LEVEL_DEFINITIONS.find((l) => l.name === level.name);
   const { next, xpToNext, progress } = getLevelProgress(xp);
   const animatedXp = useAnimatedNumber(xp);
-  const wkMission = CHALLENGES.find((c) => c.id === "wk-scout-league");
-  const missionRemaining = wkMission
-    ? wkMission.target - wkMission.current
-    : 0;
+  const activeMissions = getActiveMissions(challenges);
+  const nextMission = activeMissions[0];
 
   const progressTitle = next
     ? `Nog ${xpToNext.toLocaleString("nl-NL")} XP tot ${next.name}`
     : "Maximaal level bereikt";
 
-  const progressSubtitle =
-    missionRemaining > 0
-      ? `Nog ${missionRemaining} talent${missionRemaining === 1 ? "" : "en"} nodig voor jouw volgende Finderz Mission`
-      : undefined;
+  const missionSubtitle = nextMission
+    ? `Mission: ${nextMission.title} — ${nextMission.current}/${nextMission.target}`
+    : undefined;
 
   return (
     <div className="mb-8">
       <FadeIn>
+        <Card className="mb-4 overflow-hidden border-fk-primary/15 bg-gradient-to-r from-fk-white to-fk-primary-muted/40 p-4 sm:p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-fk-primary/20 bg-fk-white text-2xl shadow-sm">
+                {levelDef?.icon ?? "🔎"}
+              </div>
+              <div>
+                <div className="mb-1 inline-flex items-center gap-2 rounded-full bg-fk-primary px-3 py-0.5 text-xs font-bold text-fk-white">
+                  <Star size={12} />
+                  {level.name}
+                </div>
+                <p
+                  key={xpPulse}
+                  className="text-2xl font-extrabold tabular-nums text-fk-navy animate-xp-pop sm:text-3xl"
+                >
+                  {animatedXp.toLocaleString("nl-NL")} XP
+                </p>
+                <p className="text-sm font-medium text-fk-navy/60">
+                  {formatLevelXpProgress(xp)}
+                </p>
+              </div>
+            </div>
+            <div className="min-w-0 flex-1 sm:max-w-md">
+              <p className="mb-2 text-sm font-semibold text-fk-navy">
+                {progressTitle}
+              </p>
+              {next && (
+                <div className="relative h-3 overflow-hidden rounded-full bg-fk-primary/10">
+                  <div
+                    className="progress-shine h-full rounded-full bg-gradient-to-r from-fk-secondary to-fk-primary transition-all duration-1000"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              )}
+              {missionSubtitle && (
+                <p className="mt-2 flex items-center gap-1.5 text-xs text-fk-navy/55">
+                  <Sparkles size={12} />
+                  {missionSubtitle}
+                </p>
+              )}
+            </div>
+          </div>
+        </Card>
+      </FadeIn>
+
+      <FadeIn delay={40}>
         <Card variant="highlight" className="overflow-hidden border-0 p-0">
           <div className="relative p-6 sm:p-8 lg:p-10">
             <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-fk-white/10 blur-3xl" />
@@ -88,7 +137,7 @@ export function DashboardHeader({
                   {
                     icon: Zap,
                     label: "XP",
-                    value: animatedXp.toLocaleString("nl-NL"),
+                    value: formatLevelXpProgress(xp),
                     pulse: true,
                   },
                   {
@@ -110,7 +159,7 @@ export function DashboardHeader({
                     <p className="text-xs text-fk-white/60">{stat.label}</p>
                     <p
                       key={stat.pulse ? xpPulse : stat.label}
-                      className={`font-bold tabular-nums ${stat.pulse ? "animate-xp-pop" : ""}`}
+                      className={`text-sm font-bold tabular-nums sm:text-base ${stat.pulse ? "animate-xp-pop" : ""}`}
                     >
                       {stat.value}
                     </p>
@@ -131,10 +180,10 @@ export function DashboardHeader({
                     />
                   </div>
                 )}
-                {progressSubtitle && (
+                {missionSubtitle && (
                   <p className="flex items-center gap-1.5 text-sm text-fk-white/85">
                     <Sparkles size={14} />
-                    {progressSubtitle}
+                    {missionSubtitle}
                   </p>
                 )}
               </div>

@@ -1,28 +1,40 @@
+export const XP_TIMELINE = [
+  { action: "Talent Tip", xp: 10, icon: "👤" },
+  { action: "Sterke Tip", xp: 25, icon: "✨", isBonus: true },
+  { action: "Intake Gepland", xp: 50, icon: "📅" },
+  { action: "Voorgesteld", xp: 100, icon: "📋" },
+  { action: "Succesvolle Match", xp: 500, icon: "🎯" },
+  { action: "Keeper Status", xp: 1000, icon: "🏆", highlight: true },
+];
+
 export const XP_REWARDS = [
   { action: "Talent getipt", xp: 10 },
   { action: "Sterke tip (Talent Confidence 70+)", xp: 25, isBonus: true },
   { action: "Intake gepland", xp: 50 },
   { action: "Voorgesteld", xp: 100 },
   { action: "Succesvolle match", xp: 500 },
-  { action: "1 maand werkzaam / Keeper-status", xp: 1000 },
+  { action: "Keeper Status behaald", xp: 1000, highlight: true },
 ];
 
 export const CASH_REWARDS = [
   { action: "Alleen talent getipt", cash: 0, note: "Geen cash" },
   { action: "Succesvolle intake", cash: 25 },
   { action: "Succesvolle match", cash: 250 },
-  { action: "Talent na 1 maand nog werkzaam", cash: 250, note: "Keeper-bonus" },
+  { action: "Keeper Status", cash: 250, note: "Keeper-bonus" },
 ];
 
 export const MAX_CASH_PER_CANDIDATE = 525;
 
 export const LEVEL_CASH_MULTIPLIERS = [
-  { level: "Finder", bonus: "Standaard" },
-  { level: "Senior Finder", bonus: "+5%" },
-  { level: "Elite Finder", bonus: "+10%" },
-  { level: "Master Finder", bonus: "+20%" },
-  { level: "Finderz Legend", bonus: "+30%" },
+  { level: "Finder", bonus: "+0%", percent: 0 },
+  { level: "Senior Finder", bonus: "+2%", percent: 2 },
+  { level: "Elite Finder", bonus: "+5%", percent: 5 },
+  { level: "Master Finder", bonus: "+7.5%", percent: 7.5 },
+  { level: "Finderz Legend", bonus: "+10%", percent: 10 },
 ];
+
+export const CASH_BONUS_NOTE =
+  "Level bonus wordt toegepast op goedgekeurde beloningen. Niet op tips. Niet op XP. Alleen op cash rewards.";
 
 export const INITIAL_REWARD_SUMMARY = {
   cashEarned: 1250,

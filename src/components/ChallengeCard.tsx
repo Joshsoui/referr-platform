@@ -13,10 +13,16 @@ export function ChallengeCard({ challenge, compact = false }: ChallengeCardProps
     Math.round((challenge.current / challenge.target) * 100)
   );
 
+  const isCompleted = challenge.status === "completed";
+
   return (
     <div
-      className={`rounded-2xl border border-fk-primary/10 bg-fk-white shadow-sm transition-all duration-300 ${
+      className={`rounded-2xl border shadow-sm transition-all duration-300 ${
         compact ? "p-4" : "p-6 card-hover"
+      } ${
+        isCompleted
+          ? "border-emerald-200 bg-emerald-50/50"
+          : "border-fk-primary/10 bg-fk-white"
       } ${challenge.isCommunity ? "ring-1 ring-fk-secondary/20" : ""}`}
     >
       <div className="mb-3 flex items-start justify-between gap-3">

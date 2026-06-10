@@ -7,7 +7,8 @@ import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { useScout } from "@/context/ScoutContext";
 import { LEVEL_DEFINITIONS } from "@/lib/mockLevels";
-import { getLevelForXp, getLevelProgress } from "@/lib/xp";
+import Link from "next/link";
+import { formatLevelXpProgress, getLevelForXp, getLevelProgress } from "@/lib/xp";
 
 export default function LevelsPage() {
   const { xp, scoutScore } = useScout();
@@ -55,7 +56,10 @@ export default function LevelsPage() {
                     <h2 className="text-2xl font-extrabold sm:text-3xl">
                       {currentLevel.name}
                     </h2>
-                    <p className="mt-1 text-fk-white/80">{currentDef?.tagline}</p>
+                    <p className="mt-1 font-medium tabular-nums text-fk-white/90">
+                      {formatLevelXpProgress(xp)}
+                    </p>
+                    <p className="mt-0.5 text-fk-white/80">{currentDef?.tagline}</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 sm:text-right">
@@ -158,6 +162,18 @@ export default function LevelsPage() {
 
         <FadeIn delay={160}>
           <LevelOverview currentLevel={currentLevel} currentXp={xp} />
+        </FadeIn>
+
+        <FadeIn delay={200}>
+          <p className="mt-8 text-center text-sm text-fk-navy/55">
+            Bereik Finderz Legend en kom in de{" "}
+            <Link
+              href="/hall-of-fame"
+              className="font-semibold text-fk-primary hover:text-fk-navy"
+            >
+              Hall of Fame
+            </Link>
+          </p>
         </FadeIn>
       </div>
     </div>

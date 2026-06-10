@@ -17,11 +17,13 @@ import {
   INITIAL_LEADERBOARD,
 } from "@/lib/mock-data";
 import { CURRENT_SCOUT_REFERRAL, type ReferralProfile } from "@/lib/mockReferrals";
+import { syncMissions } from "@/lib/missions";
 import {
   CONFIDENCE_BONUS_THRESHOLD,
   CONFIDENCE_BONUS_XP,
   INITIAL_REWARD_SUMMARY,
 } from "@/lib/mockRewards";
+import type { Challenge } from "@/types/gamification";
 import { calculateConfidenceScore, calculateScoutScore } from "@/lib/scoring";
 import {
   STATUS_LABELS,
@@ -59,6 +61,7 @@ interface ScoutContextValue {
   stats: typeof DASHBOARD_STATS;
   referralProfile: ReferralProfile;
   rewards: RewardSummary;
+  challenges: Challenge[];
   scoutScore: number;
   submitCandidate: (data: CandidateFormData) => number;
   submitReferralCandidate: (
@@ -124,6 +127,11 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     const calculated = calculateScoutScore(candidates).score;
     return Math.max(94, calculated);
   }, [candidates]);
+
+  const challenges = useMemo(
+    () => syncMissions(candidates, CURRENT_USER),
+    [candidates]
+  );
 
   const nextId = useCallback((prefix: string) => {
     idCounter.current += 1;
@@ -254,7 +262,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
                 : newStatus === "geplaatst"
                   ? "succesvol geplaatst"
                   : newStatus === "proeftijd_gehaald"
-                    ? "proeftijd gehaald"
+                    ? "Keeper Status behaald"
                     : STATUS_LABELS[newStatus].toLowerCase();
 
           addActivity(`${candidate.name} ${actionLabel}`, xpGain);
@@ -385,6 +393,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       stats,
       referralProfile,
       rewards,
+      challenges,
       scoutScore,
       submitCandidate,
       submitReferralCandidate,
@@ -408,6 +417,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       stats,
       referralProfile,
       rewards,
+      challenges,
       scoutScore,
       submitCandidate,
       submitReferralCandidate,

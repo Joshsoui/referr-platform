@@ -165,18 +165,11 @@ export function LevelOverview({ currentLevel, currentXp }: LevelOverviewProps) {
                   </ul>
                 </div>
 
-                {(level.cashBonusPercent > 0 || level.xpChallengeBonusPercent > 0) && (
+                {level.cashBonusPercent > 0 && (
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {level.xpChallengeBonusPercent > 0 && (
-                      <span className="rounded-lg bg-fk-primary-muted px-2.5 py-1 text-xs font-semibold text-fk-primary">
-                        +{level.xpChallengeBonusPercent}% mission XP
-                      </span>
-                    )}
-                    {level.cashBonusPercent > 0 && (
-                      <span className="rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-                        +{level.cashBonusPercent}% matchbonus
-                      </span>
-                    )}
+                    <span className="rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+                      +{level.cashBonusPercent}% cash bonus
+                    </span>
                   </div>
                 )}
               </Card>
