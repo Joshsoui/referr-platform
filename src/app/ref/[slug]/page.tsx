@@ -15,6 +15,11 @@ const emptyForm: CandidateFormData = {
   name: "",
   emailOrPhone: "",
   linkedin: "",
+  sector: "",
+  reasons: [],
+  relationship: "",
+  recommendation: "",
+  cvUploaded: false,
   role: "",
   description: "",
 };

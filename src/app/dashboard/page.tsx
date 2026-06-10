@@ -12,23 +12,39 @@ import { FadeIn } from "@/components/animations/FadeIn";
 import { ActivityFeed } from "@/components/ActivityFeed";
 import { BadgeGrid } from "@/components/BadgeGrid";
 import { ChallengeCard } from "@/components/ChallengeCard";
+import { EcosystemWidget } from "@/components/EcosystemWidget";
 import { ReferralLinkCard } from "@/components/ReferralLinkCard";
+import { RewardsWidget } from "@/components/RewardsWidget";
+import { ScoutConfidenceScore } from "@/components/ScoutConfidenceScore";
 import { WkBonusBanner } from "@/components/WkBonusBanner";
 import { XpProgressHero } from "@/components/XpProgressHero";
 import { Card } from "@/components/ui/Card";
 import { useScout } from "@/context/ScoutContext";
+import { CURRENT_USER } from "@/lib/mock-data";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 import { CHALLENGES } from "@/lib/mockChallenges";
 import { formatCurrency } from "@/lib/xp";
 
 export default function DashboardPage() {
-  const { currentUser, xp, xpPulse, stats, referralProfile } = useScout();
+  const {
+    currentUser,
+    xp,
+    xpPulse,
+    stats,
+    referralProfile,
+    rewards,
+    scoutScore,
+    candidates,
+  } = useScout();
   const animatedCandidates = useAnimatedNumber(stats.candidatesReferred);
   const animatedPlacements = useAnimatedNumber(stats.successfulPlacements);
   const activeChallenges = CHALLENGES.filter((c) => c.status === "active").slice(
     0,
     3
   );
+  const recentReferrals = candidates
+    .filter((c) => c.referredBy === CURRENT_USER)
+    .slice(0, 4);
 
   const statCards = [
     {
@@ -69,11 +85,45 @@ export default function DashboardPage() {
           </div>
         </FadeIn>
 
-        <ReferralLinkCard profile={referralProfile} />
-
         <FadeIn delay={120}>
+          <EcosystemWidget xp={xp} scoutScore={scoutScore} rewards={rewards} />
+        </FadeIn>
+
+        <FadeIn delay={140}>
+          <RewardsWidget xp={xp} rewards={rewards} />
+        </FadeIn>
+
+        <FadeIn delay={160}>
           <XpProgressHero xp={xp} xpPulse={xpPulse} />
         </FadeIn>
+
+        <ReferralLinkCard profile={referralProfile} />
+
+        {recentReferrals.length > 0 && (
+          <FadeIn delay={200}>
+            <Card className="mb-8">
+              <h2 className="mb-4 text-xl font-bold text-fk-navy">
+                Recente referrals
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {recentReferrals.map((c) => (
+                  <div
+                    key={c.id}
+                    className="flex flex-col gap-3 rounded-xl border border-fk-primary/10 bg-fk-light/50 p-4 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div>
+                      <p className="font-bold text-fk-navy">{c.name}</p>
+                      <p className="text-sm text-fk-navy/55">
+                        {c.sector} · {c.xpAwarded} XP
+                      </p>
+                    </div>
+                    <ScoutConfidenceScore score={c.confidenceScore} size="sm" showBar={false} />
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </FadeIn>
+        )}
 
         <FadeIn delay={140}>
           <WkBonusBanner />
@@ -141,7 +191,7 @@ export default function DashboardPage() {
 
         <FadeIn delay={520}>
           <Card className="mb-8">
-            <BadgeGrid compact />
+            <BadgeGrid detailed />
           </Card>
         </FadeIn>
 

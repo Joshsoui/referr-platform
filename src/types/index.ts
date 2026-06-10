@@ -1,3 +1,11 @@
+import type {
+  CashStatus,
+  DuplicateStatus,
+  ReferralApproval,
+  RelationshipType,
+  Sector,
+} from "@/types/incentives";
+
 export type CandidateStatus =
   | "nieuw"
   | "intake_gepland"
@@ -11,10 +19,19 @@ export interface Candidate {
   emailOrPhone: string;
   linkedin?: string;
   role: string;
+  sector: Sector;
   description?: string;
+  recommendation?: string;
+  reasons: string[];
+  relationship: RelationshipType;
+  cvUploaded?: boolean;
   referredBy: string;
   status: CandidateStatus;
   xpAwarded: number;
+  confidenceScore: number;
+  cashStatus: CashStatus;
+  duplicateStatus: DuplicateStatus;
+  referralApproval: ReferralApproval;
   createdAt: string;
 }
 
@@ -38,6 +55,12 @@ export interface CandidateFormData {
   name: string;
   emailOrPhone: string;
   linkedin: string;
+  sector: Sector | "";
+  reasons: string[];
+  relationship: RelationshipType | "";
+  recommendation: string;
+  cvUploaded: boolean;
+  /** Legacy mapping for display */
   role: string;
   description: string;
 }

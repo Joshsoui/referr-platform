@@ -1,17 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/finderz-keeperz-logo.png";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/aandragen", label: "Aandragen" },
   { href: "/challenges", label: "Challenges" },
-  { href: "/aandragen", label: "Kandidaat aandragen" },
   { href: "/leaderboard", label: "Leaderboard" },
+  { href: "/levels", label: "Levels" },
+  { href: "/rewards", label: "Rewards" },
+  { href: "/admin", label: "Admin" },
 ];
 
 export function Header() {
@@ -20,27 +23,27 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-fk-primary/10 bg-fk-white/95 shadow-sm backdrop-blur-md transition-shadow duration-300">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
         <Link href="/" className="shrink-0">
           <Image
             src={logo}
             alt="Finderz Keeperz"
             priority
-            className="h-14 w-auto sm:h-16"
+            className="h-12 w-auto sm:h-14"
           />
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 overflow-x-auto md:flex [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {navLinks.map((link) => {
             const active = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
+                className={`shrink-0 rounded-lg px-2 py-2 text-xs font-medium transition-all duration-200 sm:px-2.5 sm:text-sm ${
                   active
                     ? "bg-fk-primary-muted text-fk-primary shadow-sm"
-                    : "text-fk-navy/70 hover:bg-fk-light hover:text-fk-navy hover:scale-[1.02]"
+                    : "text-fk-navy/70 hover:bg-fk-light hover:text-fk-navy"
                 }`}
               >
                 {link.label}
@@ -49,12 +52,12 @@ export function Header() {
           })}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2">
           <Link
             href="/aandragen"
-            className="btn-press hidden rounded-xl bg-fk-primary px-4 py-2.5 text-sm font-semibold text-fk-white shadow-sm sm:inline-flex"
+            className="btn-press hidden rounded-xl bg-fk-primary px-3 py-2 text-xs font-semibold text-fk-white shadow-sm sm:inline-flex sm:px-4 sm:py-2.5 sm:text-sm"
           >
-            Draag kandidaat aan
+            Draag aan
           </Link>
 
           <button

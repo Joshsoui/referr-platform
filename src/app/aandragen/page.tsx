@@ -1,13 +1,13 @@
 "use client";
 
 import {
+  ArrowLeft,
+  ArrowRight,
   Briefcase,
   CheckCircle2,
   Link2,
-  Mail,
   Sparkles,
-  Target,
-  TrendingUp,
+  Upload,
   User,
   UserPlus,
   Zap,
@@ -16,97 +16,86 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Confetti } from "@/components/animations/Confetti";
 import { FadeIn } from "@/components/animations/FadeIn";
+import { ScoutConfidenceScore } from "@/components/ScoutConfidenceScore";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { useScout } from "@/context/ScoutContext";
+import {
+  INTEREST_REASONS,
+  RELATIONSHIP_OPTIONS,
+  SECTORS,
+} from "@/lib/mockQualityRules";
 import { getReferralLink } from "@/lib/referrals";
-import { STATUS_XP } from "@/lib/xp";
+import { calculateConfidenceScore } from "@/lib/scoring";
 import type { CandidateFormData } from "@/types";
+
+const STEPS = [
+  "Kandidaat",
+  "Sector",
+  "Interesse",
+  "Relatie",
+  "Aanbeveling",
+];
 
 const emptyForm: CandidateFormData = {
   name: "",
   emailOrPhone: "",
   linkedin: "",
+  sector: "",
+  reasons: [],
+  relationship: "",
+  recommendation: "",
+  cvUploaded: false,
   role: "",
   description: "",
 };
 
-const xpSteps = [
-  { label: "Aandragen", xp: STATUS_XP.nieuw, icon: UserPlus },
-  { label: "Intake", xp: STATUS_XP.intake_gepland, icon: Mail },
-  { label: "Voorgesteld", xp: STATUS_XP.voorgesteld, icon: Briefcase },
-  { label: "Geplaatst", xp: STATUS_XP.geplaatst, icon: Target },
-  { label: "Proeftijd", xp: STATUS_XP.proeftijd_gehaald, icon: TrendingUp },
-];
-
-const formFields = [
-  {
-    id: "name",
-    label: "Naam kandidaat",
-    type: "text",
-    required: true,
-    placeholder: "Bijv. Jan de Vries",
-    icon: User,
-  },
-  {
-    id: "emailOrPhone",
-    label: "E-mail of telefoon",
-    type: "text",
-    required: true,
-    placeholder: "jan@email.nl of 06-12345678",
-    icon: Mail,
-  },
-  {
-    id: "linkedin",
-    label: "LinkedIn profiel",
-    type: "url",
-    required: false,
-    placeholder: "https://linkedin.com/in/...",
-    icon: Link2,
-  },
-  {
-    id: "role",
-    label: "Functie / interessegebied",
-    type: "text",
-    required: true,
-    placeholder: "Bijv. Software Engineer",
-    icon: Briefcase,
-  },
-] as const;
-
 export default function AandragenPage() {
   const { submitCandidate, referralProfile, xp } = useScout();
   const [form, setForm] = useState<CandidateFormData>(emptyForm);
+  const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [lastName, setLastName] = useState("");
+  const [confidenceScore, setConfidenceScore] = useState(0);
   const [referralLink, setReferralLink] = useState("");
-  const [activeField, setActiveField] = useState<string | null>(null);
 
   useEffect(() => {
     setReferralLink(getReferralLink(referralProfile.slug));
   }, [referralProfile.slug]);
 
-  const formProgress = useMemo(() => {
-    const required = ["name", "emailOrPhone", "role"] as const;
-    const filled = required.filter((key) => form[key].trim().length > 0).length;
-    return Math.round((filled / required.length) * 100);
-  }, [form]);
+  const stepProgress = Math.round((step / STEPS.length) * 100);
+  const previewScore = useMemo(() => calculateConfidenceScore(form), [form]);
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  function toggleReason(reason: string) {
+    setForm((prev) => ({
+      ...prev,
+      reasons: prev.reasons.includes(reason)
+        ? prev.reasons.filter((r) => r !== reason)
+        : [...prev.reasons, reason],
+    }));
+  }
+
+  function canProceed(): boolean {
+    if (step === 1) return form.name.trim().length > 0 && form.linkedin.trim().length > 0;
+    if (step === 2) return !!form.sector;
+    if (step === 3) return form.reasons.length > 0;
+    if (step === 4) return !!form.relationship;
+    if (step === 5) return form.recommendation.trim().length >= 10;
+    return false;
   }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!canProceed()) return;
     setLoading(true);
     await new Promise((r) => setTimeout(r, 700));
-    submitCandidate(form);
+    const score = submitCandidate(form);
+    setConfidenceScore(score);
     setLastName(form.name);
     setForm(emptyForm);
+    setStep(1);
     setLoading(false);
     setSubmitted(true);
   }
@@ -118,21 +107,23 @@ export default function AandragenPage() {
           <Card className="relative overflow-hidden py-12 animate-celebrate">
             <Confetti />
             <div className="relative">
-              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-lg animate-pulse-glow">
+              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-lg">
                 <CheckCircle2 size={40} className="animate-scale-in" />
               </div>
-              <div className="animate-fade-in-up stagger-1 mb-4 inline-flex items-center gap-2 rounded-full bg-fk-primary px-4 py-2 text-sm font-bold text-fk-white shadow-md animate-xp-pop">
+              <div className="animate-fade-in-up stagger-1 mb-4 inline-flex items-center gap-2 rounded-full bg-fk-primary px-4 py-2 text-sm font-bold text-fk-white">
                 <Zap size={16} />
-                +10 XP verdiend!
+                +10 XP{confidenceScore >= 70 ? " +25 bonus XP" : ""} verdiend!
               </div>
               <h1 className="animate-fade-in-up stagger-2 text-2xl font-extrabold text-fk-navy">
                 Kandidaat aangedragen!
               </h1>
               <p className="animate-fade-in-up stagger-3 mt-3 text-fk-navy/65">
-                <strong>{lastName}</strong> is succesvol aangedragen. Je hebt{" "}
-                <span className="font-bold text-fk-primary">10 XP</span> verdiend.
+                <strong>{lastName}</strong> is succesvol geregistreerd.
               </p>
-              <p className="animate-fade-in-up stagger-3 mt-2 text-sm font-semibold text-fk-secondary">
+              <div className="animate-fade-in-up stagger-3 mx-auto mt-6 max-w-sm text-left">
+                <ScoutConfidenceScore score={confidenceScore} size="lg" />
+              </div>
+              <p className="animate-fade-in-up stagger-4 mt-4 text-sm text-fk-secondary">
                 Nieuw totaal: {xp.toLocaleString("nl-NL")} XP
               </p>
               <div className="animate-fade-in-up stagger-4 mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
@@ -156,194 +147,285 @@ export default function AandragenPage() {
       <div className="mx-auto max-w-6xl">
         <FadeIn>
           <div className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-fk-primary via-fk-primary to-fk-secondary p-6 sm:p-8">
-            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-fk-white/10 blur-2xl" />
-            <div className="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-fk-white/5 blur-xl" />
-            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-fk-white/20 bg-fk-white/10 px-3 py-1 text-xs font-semibold text-fk-white/90 backdrop-blur-sm">
+                <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-fk-white/20 bg-fk-white/10 px-3 py-1 text-xs font-semibold text-fk-white/90">
                   <Sparkles size={14} />
-                  Scout activiteit
+                  Kwaliteit = hogere Scout Score
                 </div>
                 <h1 className="text-3xl font-extrabold text-fk-white sm:text-4xl">
                   Kandidaat aandragen
                 </h1>
-                <p className="mt-3 max-w-xl text-fk-white/85">
-                  Ken jij talent? Draag hem of haar aan en verdien direct XP.
-                  Elke succesvolle match telt mee voor je ranking.
+                <p className="mt-2 max-w-xl text-fk-white/85">
+                  Meer context = hogere Scout Confidence Score = sterkere
+                  referral en meer XP.
                 </p>
               </div>
-              <div className="flex shrink-0 flex-col items-center rounded-2xl border border-fk-white/20 bg-fk-white/10 px-6 py-4 backdrop-blur-sm">
-                <Zap size={28} className="mb-1 text-fk-white" />
-                <p className="text-3xl font-extrabold tabular-nums text-fk-white">
-                  +10
-                </p>
-                <p className="text-sm font-semibold text-fk-white/75">XP direct</p>
+              <div className="rounded-2xl border border-fk-white/20 bg-fk-white/10 px-5 py-3 backdrop-blur-sm">
+                <p className="text-xs text-fk-white/70">Live confidence preview</p>
+                <p className="text-2xl font-extrabold text-fk-white">{previewScore}/100</p>
               </div>
             </div>
           </div>
         </FadeIn>
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+        <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
           <div>
             <FadeIn delay={100}>
-              <Card className="mb-4 border-fk-primary/15" hover>
-                <div className="mb-2 flex items-center justify-between text-sm">
-                  <span className="font-semibold text-fk-navy/60">
-                    Formulier voortgang
-                  </span>
-                  <span className="font-bold text-fk-primary">{formProgress}%</span>
+              <Card className="mb-4">
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {STEPS.map((label, i) => (
+                    <span
+                      key={label}
+                      className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
+                        step === i + 1
+                          ? "bg-fk-primary text-fk-white"
+                          : step > i + 1
+                            ? "bg-fk-primary/15 text-fk-primary"
+                            : "bg-fk-light text-fk-navy/40"
+                      }`}
+                    >
+                      {i + 1}. {label}
+                    </span>
+                  ))}
                 </div>
-                <ProgressBar progress={formProgress} animated />
+                <ProgressBar progress={stepProgress} label={`Stap ${step} van ${STEPS.length}`} />
               </Card>
             </FadeIn>
 
             <FadeIn delay={150}>
               <Card hover>
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  {formFields.map((field, i) => (
-                    <div
-                      key={field.id}
-                      className="animate-fade-in-up"
-                      style={{ animationDelay: `${180 + i * 70}ms` }}
-                    >
-                      <label
-                        htmlFor={field.id}
-                        className="mb-1.5 flex items-center gap-2 text-sm font-semibold text-fk-navy"
-                      >
-                        <field.icon
-                          size={15}
-                          className={
-                            activeField === field.id
-                              ? "text-fk-primary"
-                              : "text-fk-navy/40"
-                          }
+                <form
+                  onSubmit={step === 5 ? handleSubmit : (e) => e.preventDefault()}
+                  className="space-y-5"
+                >
+                  {step === 1 && (
+                    <div className="animate-fade-in-up space-y-4">
+                      <h2 className="flex items-center gap-2 text-lg font-bold text-fk-navy">
+                        <User size={20} className="text-fk-primary" />
+                        Stap 1: Kandidaat
+                      </h2>
+                      <div>
+                        <label htmlFor="name" className="mb-1.5 block text-sm font-semibold text-fk-navy">
+                          Naam kandidaat *
+                        </label>
+                        <input
+                          id="name"
+                          name="name"
+                          required
+                          value={form.name}
+                          onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+                          placeholder="Bijv. Kevin de Vries"
+                          className="w-full rounded-xl border border-fk-primary/20 bg-fk-light px-4 py-3 text-sm outline-none focus:border-fk-primary focus:ring-2 focus:ring-fk-primary/20"
                         />
-                        {field.label}
-                      </label>
-                      <input
-                        id={field.id}
-                        name={field.id}
-                        type={field.type}
-                        required={field.required}
-                        value={form[field.id]}
-                        onChange={handleChange}
-                        onFocus={() => setActiveField(field.id)}
-                        onBlur={() => setActiveField(null)}
-                        placeholder={field.placeholder}
-                        className={`w-full rounded-xl border bg-fk-light px-4 py-3 text-sm text-fk-navy outline-none transition-all duration-300 focus:bg-fk-white focus:shadow-md ${
-                          activeField === field.id
-                            ? "border-fk-primary ring-2 ring-fk-primary/20 scale-[1.01]"
-                            : "border-fk-primary/20"
-                        }`}
-                      />
+                      </div>
+                      <div>
+                        <label htmlFor="linkedin" className="mb-1.5 block text-sm font-semibold text-fk-navy">
+                          LinkedIn profiel URL *
+                        </label>
+                        <input
+                          id="linkedin"
+                          name="linkedin"
+                          required
+                          value={form.linkedin}
+                          onChange={(e) => setForm((p) => ({ ...p, linkedin: e.target.value }))}
+                          placeholder="https://linkedin.com/in/..."
+                          className="w-full rounded-xl border border-fk-primary/20 bg-fk-light px-4 py-3 text-sm outline-none focus:border-fk-primary focus:ring-2 focus:ring-fk-primary/20"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="emailOrPhone" className="mb-1.5 block text-sm font-semibold text-fk-navy">
+                          Telefoon of e-mail (optioneel)
+                        </label>
+                        <input
+                          id="emailOrPhone"
+                          name="emailOrPhone"
+                          value={form.emailOrPhone}
+                          onChange={(e) => setForm((p) => ({ ...p, emailOrPhone: e.target.value }))}
+                          placeholder="jan@email.nl of 06-12345678"
+                          className="w-full rounded-xl border border-fk-primary/20 bg-fk-light px-4 py-3 text-sm outline-none focus:border-fk-primary focus:ring-2 focus:ring-fk-primary/20"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1.5 block text-sm font-semibold text-fk-navy">
+                          CV upload (optioneel)
+                        </label>
+                        <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-fk-primary/25 bg-fk-light px-4 py-4 hover:bg-fk-primary/5">
+                          <Upload size={20} className="text-fk-primary" />
+                          <span className="text-sm text-fk-navy/60">
+                            {form.cvUploaded ? "CV geselecteerd" : "Klik om CV te uploaden"}
+                          </span>
+                          <input
+                            type="file"
+                            className="hidden"
+                            accept=".pdf,.doc,.docx"
+                            onChange={() => setForm((p) => ({ ...p, cvUploaded: true }))}
+                          />
+                        </label>
+                      </div>
                     </div>
-                  ))}
+                  )}
 
-                  <div
-                    className="animate-fade-in-up"
-                    style={{ animationDelay: "460ms" }}
-                  >
-                    <label
-                      htmlFor="description"
-                      className="mb-1.5 block text-sm font-semibold text-fk-navy"
-                    >
-                      Korte toelichting
-                    </label>
-                    <textarea
-                      id="description"
-                      name="description"
-                      rows={4}
-                      value={form.description}
-                      onChange={handleChange}
-                      onFocus={() => setActiveField("description")}
-                      onBlur={() => setActiveField(null)}
-                      placeholder="Waarom is deze persoon geschikt? Wat zoekt hij/zij?"
-                      className={`w-full resize-none rounded-xl border bg-fk-light px-4 py-3 text-sm text-fk-navy outline-none transition-all duration-300 focus:bg-fk-white focus:shadow-md ${
-                        activeField === "description"
-                          ? "border-fk-primary ring-2 ring-fk-primary/20"
-                          : "border-fk-primary/20"
-                      }`}
-                    />
-                  </div>
+                  {step === 2 && (
+                    <div className="animate-fade-in-up space-y-4">
+                      <h2 className="flex items-center gap-2 text-lg font-bold text-fk-navy">
+                        <Briefcase size={20} className="text-fk-primary" />
+                        Stap 2: Sector
+                      </h2>
+                      <select
+                        required
+                        value={form.sector}
+                        onChange={(e) =>
+                          setForm((p) => ({
+                            ...p,
+                            sector: e.target.value as CandidateFormData["sector"],
+                            role: e.target.value,
+                          }))
+                        }
+                        className="w-full rounded-xl border border-fk-primary/20 bg-fk-light px-4 py-3 text-sm outline-none focus:border-fk-primary focus:ring-2 focus:ring-fk-primary/20"
+                      >
+                        <option value="">Kies sector...</option>
+                        {SECTORS.map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
 
-                  <div
-                    className="animate-fade-in-up pt-2"
-                    style={{ animationDelay: "520ms" }}
-                  >
-                    <Button
-                      type="submit"
-                      loading={loading}
-                      className="w-full sm:w-auto"
-                    >
-                      <UserPlus size={18} />
-                      Kandidaat aandragen · +10 XP
-                    </Button>
+                  {step === 3 && (
+                    <div className="animate-fade-in-up space-y-4">
+                      <h2 className="text-lg font-bold text-fk-navy">
+                        Stap 3: Waarom interessant?
+                      </h2>
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        {INTEREST_REASONS.map((reason) => (
+                          <label
+                            key={reason}
+                            className={`flex cursor-pointer items-start gap-2 rounded-xl border px-3 py-2.5 text-sm transition-all ${
+                              form.reasons.includes(reason)
+                                ? "border-fk-primary bg-fk-primary/5"
+                                : "border-fk-primary/15 hover:bg-fk-light"
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={form.reasons.includes(reason)}
+                              onChange={() => toggleReason(reason)}
+                              className="mt-1"
+                            />
+                            {reason}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {step === 4 && (
+                    <div className="animate-fade-in-up space-y-3">
+                      <h2 className="text-lg font-bold text-fk-navy">
+                        Stap 4: Hoe goed ken je deze kandidaat?
+                      </h2>
+                      {RELATIONSHIP_OPTIONS.map((opt) => (
+                        <label
+                          key={opt.value}
+                          className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 text-sm ${
+                            form.relationship === opt.value
+                              ? "border-fk-primary bg-fk-primary/5"
+                              : "border-fk-primary/15"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="relationship"
+                            checked={form.relationship === opt.value}
+                            onChange={() =>
+                              setForm((p) => ({ ...p, relationship: opt.value }))
+                            }
+                          />
+                          {opt.label}
+                        </label>
+                      ))}
+                    </div>
+                  )}
+
+                  {step === 5 && (
+                    <div className="animate-fade-in-up space-y-4">
+                      <h2 className="text-lg font-bold text-fk-navy">
+                        Stap 5: Korte aanbeveling
+                      </h2>
+                      <textarea
+                        required
+                        maxLength={300}
+                        rows={5}
+                        value={form.recommendation}
+                        onChange={(e) =>
+                          setForm((p) => ({
+                            ...p,
+                            recommendation: e.target.value,
+                            description: e.target.value,
+                          }))
+                        }
+                        placeholder="Bijvoorbeeld: Kevin is een ervaren werkvoorbereider. Ik heb met hem gewerkt en weet dat hij openstaat voor een nieuwe stap dichter bij huis."
+                        className="w-full resize-none rounded-xl border border-fk-primary/20 bg-fk-light px-4 py-3 text-sm outline-none focus:border-fk-primary focus:ring-2 focus:ring-fk-primary/20"
+                      />
+                      <p className="text-right text-xs text-fk-navy/45">
+                        {form.recommendation.length}/300
+                      </p>
+                      <ScoutConfidenceScore score={previewScore} />
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap gap-3 pt-2">
+                    {step > 1 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setStep((s) => s - 1)}
+                      >
+                        <ArrowLeft size={16} />
+                        Vorige
+                      </Button>
+                    )}
+                    {step < 5 ? (
+                      <Button
+                        type="button"
+                        disabled={!canProceed()}
+                        onClick={() => setStep((s) => s + 1)}
+                      >
+                        Volgende
+                        <ArrowRight size={16} />
+                      </Button>
+                    ) : (
+                      <Button type="submit" loading={loading} disabled={!canProceed()}>
+                        <UserPlus size={18} />
+                        Kandidaat aandragen
+                      </Button>
+                    )}
                   </div>
                 </form>
               </Card>
             </FadeIn>
           </div>
 
-          <div className="space-y-4">
-            <FadeIn delay={200}>
-              <Card className="border-fk-primary/15 bg-gradient-to-br from-fk-white to-fk-primary/5">
-                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-fk-secondary">
-                  <TrendingUp size={16} />
-                  XP-reis per kandidaat
-                </h3>
-                <div className="space-y-3">
-                  {xpSteps.map((step, i) => (
-                    <div
-                      key={step.label}
-                      className="animate-slide-in-right flex items-center justify-between rounded-xl border border-fk-primary/10 bg-fk-white px-3 py-2.5"
-                      style={{ animationDelay: `${240 + i * 60}ms` }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-fk-primary-muted text-fk-primary">
-                          <step.icon size={15} />
-                        </div>
-                        <span className="text-sm font-medium text-fk-navy">
-                          {step.label}
-                        </span>
-                      </div>
-                      <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-700">
-                        +{step.xp} XP
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <p className="mt-4 text-xs leading-relaxed text-fk-navy/50">
-                  Tot{" "}
-                  <strong className="text-fk-primary">
-                    {Object.values(STATUS_XP).reduce((a, b) => a + b, 0)} XP
-                  </strong>{" "}
-                  per succesvolle kandidaat.
-                </p>
-              </Card>
-            </FadeIn>
-
-            <FadeIn delay={280}>
+          <FadeIn delay={200}>
+            <div className="space-y-4">
+              <ScoutConfidenceScore score={previewScore} />
               <Card variant="glass" className="border-fk-primary/20">
                 <h3 className="mb-2 flex items-center gap-2 font-bold text-fk-navy">
                   <Link2 size={18} className="text-fk-primary" />
-                  Deel je Scout-link
+                  Scout-link
                 </h3>
-                <p className="mb-3 text-sm text-fk-navy/60">
-                  Laat anderen via jouw link aandragen — jij verdient de XP.
+                <p className="mb-3 break-all text-xs font-semibold text-fk-primary">
+                  {referralLink}
                 </p>
-                <p className="mb-4 break-all rounded-lg border border-fk-primary/15 bg-fk-white px-3 py-2 text-xs font-semibold text-fk-primary">
-                  {referralLink || `/ref/${referralProfile.slug}`}
-                </p>
-                <Link
-                  href="/dashboard#scout-referral-link"
-                  className="inline-flex items-center gap-1 text-sm font-semibold text-fk-primary hover:text-fk-navy"
-                >
-                  Naar volledige referral card
-                  <Sparkles size={14} />
+                <Link href="/dashboard#scout-referral-link" className="text-sm font-semibold text-fk-primary hover:underline">
+                  Volledige referral card →
                 </Link>
               </Card>
-            </FadeIn>
-          </div>
+            </div>
+          </FadeIn>
         </div>
       </div>
     </div>

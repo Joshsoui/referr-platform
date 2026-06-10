@@ -37,6 +37,8 @@ export interface ScoutBadge {
   icon: string;
   name: string;
   description: string;
+  howToEarn: string;
+  meaning: string;
   earned: boolean;
   earnedAt?: string;
 }
