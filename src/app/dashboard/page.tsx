@@ -12,7 +12,7 @@ import { FadeIn } from "@/components/animations/FadeIn";
 import { ActivityFeed } from "@/components/ActivityFeed";
 import { BadgeGrid } from "@/components/BadgeGrid";
 import { ChallengeCard } from "@/components/ChallengeCard";
-import { DashboardHero } from "@/components/DashboardHero";
+import { DashboardHeader } from "@/components/DashboardHeader";
 import { EcosystemWidget } from "@/components/EcosystemWidget";
 import { ReferralLinkCard } from "@/components/ReferralLinkCard";
 import { RewardsWidget } from "@/components/RewardsWidget";
@@ -77,7 +77,7 @@ export default function DashboardPage() {
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <DashboardHero
+        <DashboardHeader
           userName={currentUser}
           xp={xp}
           scoutScore={scoutScore}

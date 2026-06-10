@@ -1,12 +1,14 @@
 import {
   ArrowRight,
   Gift,
+  HelpCircle,
   Network,
   Search,
   Sparkles,
   UserPlus,
   Zap,
 } from "lucide-react";
+import Link from "next/link";
 import Image from "next/image";
 import heroBg from "@/assets/hero-bg.png";
 import { FloatingOrbs } from "@/components/animations/FloatingOrbs";
@@ -87,30 +89,36 @@ export default function LandingPage() {
 
           <h1 className="animate-fade-in-up stagger-1 text-3xl font-extrabold leading-tight tracking-tight text-fk-white drop-shadow-lg sm:text-5xl lg:text-6xl">
             Iedereen kent talent.
-            <br />
-            <span className="text-fk-secondary">
-              Niet iedereen wordt ervoor beloond.
-            </span>
           </h1>
 
           <p className="animate-fade-in-up stagger-2 mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-fk-white/90 drop-shadow-md sm:text-xl">
-            Met Finderz Keeperz Scout Engine maken we van jouw netwerk een nieuw
-            recruitmentkanaal. Draag kandidaten aan, verdien XP, stijg op de
-            ranking en ontvang beloningen bij succesvolle matches.
+            Bouw jouw reputatie als Scout, help mensen aan een nieuwe uitdaging
+            en verdien beloningen voor succesvolle matches.
           </p>
 
-          <div className="animate-fade-in-up stagger-3 mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button href="/dashboard" variant="primary">
-              Word Scout
-              <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+          <div className="animate-fade-in-up stagger-3 mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
+            <Button href="/why-scout" variant="primary">
+              <HelpCircle size={18} />
+              Waarom Scout worden?
             </Button>
-            <Button
-              href="/aandragen"
-              variant="on-dark-outline"
-            >
+            <Button href="/aandragen" variant="on-dark">
               Draag kandidaat aan
             </Button>
+            <Button href="/challenges" variant="on-dark-outline">
+              Bekijk challenges
+            </Button>
           </div>
+
+          <p className="animate-fade-in-up stagger-3 mt-6 text-sm text-fk-white/70">
+            Nieuw bij Scout Engine?{" "}
+            <Link
+              href="/why-scout"
+              className="inline-flex items-center gap-1 font-semibold text-fk-white hover:text-fk-secondary"
+            >
+              Ontdek hoe het werkt
+              <ArrowRight size={14} />
+            </Link>
+          </p>
 
           {/* XP milestones strip */}
           <div className="animate-fade-in-up stagger-4 mt-14 flex flex-wrap justify-center gap-3">
@@ -169,27 +177,25 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* XP teaser */}
+      {/* Onboarding CTA */}
       <section className="bg-fk-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">
           <Card variant="highlight" hover className="animate-scale-in relative overflow-hidden text-center">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.12),transparent_60%)]" />
             <div className="relative">
               <h2 className="text-2xl font-extrabold sm:text-3xl">
-                Wat als wij niet 5 recruiters hebben die zoeken,
-                <br className="hidden sm:block" />
-                maar 500 scouts die signaleren?
+                Klaar om jouw netwerk in te zetten?
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-fk-white/80">
-                Start vandaag als Scout. Verdien XP bij elke mijlpaal en claim
-                jouw plek op het leaderboard.
+                Ontdek waarom Scout worden de moeite waard is — van XP en levels
+                tot beloningen bij succesvolle matches.
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button href="/dashboard" variant="on-dark">
-                  Bekijk dashboard
+                <Button href="/why-scout" variant="on-dark">
+                  Waarom Scout worden?
                 </Button>
-                <Button href="/leaderboard" variant="inverse">
-                  Bekijk leaderboard
+                <Button href="/dashboard" variant="inverse">
+                  Bekijk dashboard
                 </Button>
               </div>
             </div>
