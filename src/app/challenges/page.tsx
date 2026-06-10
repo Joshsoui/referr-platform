@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useScout } from "@/context/ScoutContext";
 import { getActiveMissions, getCompletedMissions } from "@/lib/missions";
+import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { MISSION_STATS } from "@/lib/mockChallenges";
 
 export default function ChallengesPage() {
@@ -74,6 +75,19 @@ export default function ChallengesPage() {
                   ))}
                 </div>
               </div>
+            </div>
+          </Card>
+        </FadeIn>
+
+        <FadeIn delay={60}>
+          <Card className="mb-8 border-fk-primary/15 bg-fk-primary-muted/20 p-4">
+            <p className="mb-3 text-sm font-semibold text-fk-navy">
+              Vacature difficulty bepaalt cash beloningen
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <DifficultyBadge difficulty="easy" />
+              <DifficultyBadge difficulty="hard" />
+              <DifficultyBadge difficulty="expert" />
             </div>
           </Card>
         </FadeIn>

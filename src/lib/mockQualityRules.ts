@@ -16,7 +16,7 @@ export const CASH_STATUS_LABELS: Record<string, string> = {
   intake_goedgekeurd: "Intake bonus goedgekeurd",
   plaatsing_in_behandeling: "Matchbonus in behandeling",
   plaatsing_goedgekeurd: "Matchbonus goedgekeurd",
-  retentie_goedgekeurd: "Keeper-bonus goedgekeurd",
+  retentie_goedgekeurd: "🏆 Keeper Bonus goedgekeurd",
   afgekeurd: "Afgekeurd",
 };
 

@@ -22,6 +22,7 @@ import { useScout } from "@/context/ScoutContext";
 import { CURRENT_USER } from "@/lib/mock-data";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 import { getActiveMissions } from "@/lib/missions";
+import { DIFFICULTY_CASH_REWARDS, KEEPER_BONUS } from "@/lib/vacancyRewards";
 import { formatCurrency, KEEPER_STATUS } from "@/lib/xp";
 
 export default function DashboardPage() {
@@ -119,20 +120,31 @@ export default function DashboardPage() {
         )}
 
         <FadeIn delay={140}>
-          <Card className="mb-8 overflow-hidden border-2 border-amber-200 bg-gradient-to-br from-amber-50 via-fk-white to-amber-50/30">
+          <Card className="mb-8 overflow-hidden border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-fk-white to-amber-100/40 shadow-md shadow-amber-100/50">
             <div className="p-6 sm:p-8">
-              <p className="text-xl font-extrabold text-fk-navy sm:text-2xl">
-                {KEEPER_STATUS.title}
+              <p className="text-2xl font-extrabold text-amber-900 sm:text-3xl">
+                {KEEPER_BONUS.title}
               </p>
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-fk-navy/70">
-                {KEEPER_STATUS.description}
+                {KEEPER_BONUS.description}
               </p>
-              <div className="mt-4 flex flex-wrap gap-3">
+              <div className="mt-5 flex flex-wrap items-end gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase text-fk-navy/45">
+                    Keeper Bonus (Expert)
+                  </p>
+                  <p className="text-3xl font-extrabold text-amber-700">
+                    {formatCurrency(DIFFICULTY_CASH_REWARDS.expert.keeper)}
+                  </p>
+                </div>
+                <div className="rounded-xl bg-fk-light px-3 py-2">
+                  <p className="text-xs text-fk-navy/45">Match Reward (ter vergelijking)</p>
+                  <p className="text-lg font-bold text-emerald-700">
+                    {formatCurrency(DIFFICULTY_CASH_REWARDS.expert.match)}
+                  </p>
+                </div>
                 <span className="rounded-full bg-fk-primary px-3 py-1 text-sm font-bold text-fk-white">
-                  +{KEEPER_STATUS.xpReward} XP
-                </span>
-                <span className="rounded-full bg-emerald-600 px-3 py-1 text-sm font-bold text-fk-white">
-                  +{formatCurrency(KEEPER_STATUS.cashReward)}
+                  +{KEEPER_STATUS.xpReward} XP bij Keeper Status
                 </span>
               </div>
             </div>

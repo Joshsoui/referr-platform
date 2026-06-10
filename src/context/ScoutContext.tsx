@@ -23,7 +23,13 @@ import {
   CONFIDENCE_BONUS_XP,
   INITIAL_REWARD_SUMMARY,
 } from "@/lib/mockRewards";
+import { INITIAL_VACANCIES } from "@/lib/mockVacancies";
 import type { Challenge } from "@/types/gamification";
+import {
+  getIntakeReward,
+  getKeeperBonusReward,
+  getMatchReward,
+} from "@/lib/vacancyRewards";
 import { calculateConfidenceScore, calculateScoutScore } from "@/lib/scoring";
 import {
   STATUS_LABELS,
@@ -44,6 +50,7 @@ import type {
   ReferralApproval,
   RewardSummary,
 } from "@/types/incentives";
+import type { Vacancy, VacancyFormData } from "@/types/vacancy";
 
 export interface XpEvent {
   id: number;
@@ -62,7 +69,11 @@ interface ScoutContextValue {
   referralProfile: ReferralProfile;
   rewards: RewardSummary;
   challenges: Challenge[];
+  vacancies: Vacancy[];
   scoutScore: number;
+  addVacancy: (data: VacancyFormData) => void;
+  updateVacancy: (id: string, data: VacancyFormData) => void;
+  assignCandidateVacancy: (candidateId: string, vacancyId: string) => void;
   submitCandidate: (data: CandidateFormData) => number;
   submitReferralCandidate: (
     data: CandidateFormData,
@@ -121,7 +132,16 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
   const [stats, setStats] = useState(DASHBOARD_STATS);
   const [referralProfile, setReferralProfile] = useState(CURRENT_SCOUT_REFERRAL);
   const [rewards, setRewards] = useState<RewardSummary>(INITIAL_REWARD_SUMMARY);
+  const [vacancies, setVacancies] = useState<Vacancy[]>(INITIAL_VACANCIES);
   const idCounter = useRef(0);
+
+  const getCandidateDifficulty = useCallback(
+    (candidate: Candidate) => {
+      const vacancy = vacancies.find((item) => item.id === candidate.vacancyId);
+      return vacancy?.difficulty ?? "easy";
+    },
+    [vacancies]
+  );
 
   const scoutScore = useMemo(() => {
     const calculated = calculateScoutScore(candidates).score;
@@ -320,42 +340,108 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [updateCandidateInState]
   );
 
+  const addVacancy = useCallback(
+    (data: VacancyFormData) => {
+      if (!data.sector) return;
+      idCounter.current += 1;
+      const vacancy: Vacancy = {
+        id: `v-${idCounter.current}`,
+        title: data.title,
+        sector: data.sector,
+        location: data.location,
+        description: data.description,
+        difficulty: data.difficulty,
+        status: data.status,
+        createdAt: new Date().toISOString(),
+      };
+      setVacancies((prev) => [vacancy, ...prev]);
+    },
+    []
+  );
+
+  const updateVacancy = useCallback((id: string, data: VacancyFormData) => {
+    if (!data.sector) return;
+    setVacancies((prev) =>
+      prev.map((vacancy) =>
+        vacancy.id === id
+          ? {
+              ...vacancy,
+              title: data.title,
+              sector: data.sector as Vacancy["sector"],
+              location: data.location,
+              description: data.description,
+              difficulty: data.difficulty,
+              status: data.status,
+            }
+          : vacancy
+      )
+    );
+  }, []);
+
+  const assignCandidateVacancy = useCallback(
+    (candidateId: string, vacancyId: string) => {
+      updateCandidateInState(candidateId, (candidate) => ({
+        ...candidate,
+        vacancyId: vacancyId || undefined,
+      }));
+    },
+    [updateCandidateInState]
+  );
+
   const grantIntakeBonus = useCallback(
     (id: string) => {
+      const candidate = candidates.find((item) => item.id === id);
+      if (!candidate) return;
+
+      const amount = getIntakeReward(getCandidateDifficulty(candidate));
       setCashStatus(id, "intake_goedgekeurd");
       setRewards((r) => ({
         ...r,
-        cashEarned: r.cashEarned + 25,
-        cashPending: Math.max(0, r.cashPending - 25),
+        cashEarned: r.cashEarned + amount,
+        cashPending: Math.max(0, r.cashPending - amount),
       }));
-      setStats((s) => ({ ...s, totalReward: s.totalReward + 25 }));
+      setStats((s) => ({ ...s, totalReward: s.totalReward + amount }));
     },
-    [setCashStatus]
+    [candidates, getCandidateDifficulty, setCashStatus]
   );
 
   const grantPlacementBonus = useCallback(
     (id: string) => {
+      const candidate = candidates.find((item) => item.id === id);
+      if (!candidate) return;
+
+      const amount = getMatchReward(
+        getCandidateDifficulty(candidate),
+        candidate.referredBy === CURRENT_USER ? xp : 0
+      );
       setCashStatus(id, "plaatsing_goedgekeurd");
       setRewards((r) => ({
         ...r,
-        cashEarned: r.cashEarned + 250,
-        cashPending: Math.max(0, r.cashPending - 250),
+        cashEarned: r.cashEarned + amount,
+        cashPending: Math.max(0, r.cashPending - amount),
       }));
-      setStats((s) => ({ ...s, totalReward: s.totalReward + 250 }));
+      setStats((s) => ({ ...s, totalReward: s.totalReward + amount }));
     },
-    [setCashStatus]
+    [candidates, getCandidateDifficulty, setCashStatus, xp]
   );
 
   const grantRetentionBonus = useCallback(
     (id: string) => {
+      const candidate = candidates.find((item) => item.id === id);
+      if (!candidate) return;
+
+      const amount = getKeeperBonusReward(
+        getCandidateDifficulty(candidate),
+        candidate.referredBy === CURRENT_USER ? xp : 0
+      );
       setCashStatus(id, "retentie_goedgekeurd");
       setRewards((r) => ({
         ...r,
-        cashEarned: r.cashEarned + 250,
+        cashEarned: r.cashEarned + amount,
       }));
-      setStats((s) => ({ ...s, totalReward: s.totalReward + 250 }));
+      setStats((s) => ({ ...s, totalReward: s.totalReward + amount }));
     },
-    [setCashStatus]
+    [candidates, getCandidateDifficulty, setCashStatus, xp]
   );
 
   const revokeXp = useCallback(
@@ -394,7 +480,11 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       referralProfile,
       rewards,
       challenges,
+      vacancies,
       scoutScore,
+      addVacancy,
+      updateVacancy,
+      assignCandidateVacancy,
       submitCandidate,
       submitReferralCandidate,
       updateCandidateStatus,
@@ -418,7 +508,11 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       referralProfile,
       rewards,
       challenges,
+      vacancies,
       scoutScore,
+      addVacancy,
+      updateVacancy,
+      assignCandidateVacancy,
       submitCandidate,
       submitReferralCandidate,
       updateCandidateStatus,

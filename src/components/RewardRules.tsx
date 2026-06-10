@@ -21,6 +21,7 @@ import {
 } from "@/lib/mockRewards";
 import { LEVEL_DEFINITIONS } from "@/lib/mockLevels";
 import { FAIR_USE_RULES } from "@/lib/mockQualityRules";
+import { KEEPER_BONUS } from "@/lib/vacancyRewards";
 import { formatCurrency, KEEPER_STATUS } from "@/lib/xp";
 
 const TABS = [
@@ -113,7 +114,8 @@ export function RewardRules() {
                             )}
                             {item.highlight && (
                               <p className="mt-1 text-xs text-fk-navy/55">
-                                {KEEPER_STATUS.description}
+                                {KEEPER_STATUS.description} Cash via{" "}
+                                {KEEPER_BONUS.title} — afhankelijk van vacature-difficulty.
                               </p>
                             )}
                           </div>
@@ -124,8 +126,8 @@ export function RewardRules() {
                               +{item.xp} XP
                             </span>
                             {item.highlight && (
-                              <p className="mt-0.5 text-sm font-bold text-emerald-700">
-                                +{formatCurrency(KEEPER_STATUS.cashReward)}
+                              <p className="mt-0.5 text-sm font-bold text-amber-700">
+                                Cash via {KEEPER_BONUS.title}
                               </p>
                             )}
                           </div>
@@ -138,17 +140,17 @@ export function RewardRules() {
 
               <div className="mt-4 rounded-2xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-fk-white to-amber-50/50 p-5">
                 <p className="text-lg font-extrabold text-fk-navy">
-                  {KEEPER_STATUS.title}
+                  {KEEPER_BONUS.title}
                 </p>
                 <p className="mt-2 text-sm text-fk-navy/70">
-                  {KEEPER_STATUS.description}
+                  {KEEPER_BONUS.description}
                 </p>
                 <div className="mt-4 flex flex-wrap gap-3">
                   <span className="rounded-full bg-fk-primary px-3 py-1 text-sm font-bold text-fk-white">
                     +{KEEPER_STATUS.xpReward} XP
                   </span>
-                  <span className="rounded-full bg-emerald-600 px-3 py-1 text-sm font-bold text-fk-white">
-                    +{formatCurrency(KEEPER_STATUS.cashReward)}
+                  <span className="rounded-full bg-amber-500 px-3 py-1 text-sm font-bold text-fk-white">
+                    Cash afhankelijk van difficulty
                   </span>
                 </div>
               </div>
@@ -174,29 +176,44 @@ export function RewardRules() {
                 {CASH_REWARDS.map((item, i) => (
                   <div
                     key={item.action}
-                    className="group flex items-center justify-between rounded-xl border border-transparent bg-emerald-50/80 px-4 py-3.5 text-sm transition-all duration-300 hover:border-emerald-200 hover:shadow-sm"
+                    className={`group flex items-center justify-between rounded-xl border px-4 py-3.5 text-sm transition-all duration-300 hover:shadow-sm ${
+                      item.highlight
+                        ? "border-amber-200 bg-gradient-to-r from-amber-50 to-fk-white"
+                        : "border-transparent bg-emerald-50/80 hover:border-emerald-200"
+                    }`}
                     style={{ animationDelay: `${i * 50}ms` }}
                   >
-                    <span className="text-fk-navy">
+                    <span className={item.highlight ? "font-semibold text-amber-900" : "text-fk-navy"}>
                       {item.action}
                       {item.note && (
                         <span className="ml-1 text-fk-navy/45">({item.note})</span>
                       )}
                     </span>
-                    <span className="text-lg font-extrabold text-emerald-700">
-                      {item.cash === 0 ? "€0" : formatCurrency(item.cash)}
+                    <span
+                      className={`font-extrabold ${
+                        item.highlight
+                          ? "text-2xl text-amber-700"
+                          : "text-lg text-emerald-700"
+                      }`}
+                    >
+                      {item.cash === null
+                        ? "Per difficulty"
+                        : item.cash === 0
+                          ? "€0"
+                          : formatCurrency(item.cash)}
                     </span>
                   </div>
                 ))}
               </div>
               <div className="mt-6 rounded-2xl bg-gradient-to-r from-fk-primary/10 to-emerald-50 px-5 py-4 text-center">
                 <p className="text-xs font-semibold uppercase tracking-wider text-fk-secondary">
-                  Maximaal per talent
+                  Maximaal per talent (Expert)
                 </p>
                 <p className="mt-1 text-3xl font-extrabold text-fk-navy">
                   {formatCurrency(MAX_CASH_PER_CANDIDATE)}
                 </p>
               </div>
+
             </Card>
           </FadeIn>
         )}

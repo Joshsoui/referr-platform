@@ -32,6 +32,7 @@ export interface Candidate {
   cashStatus: CashStatus;
   duplicateStatus: DuplicateStatus;
   referralApproval: ReferralApproval;
+  vacancyId?: string;
   createdAt: string;
 }
 

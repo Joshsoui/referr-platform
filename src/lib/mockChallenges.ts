@@ -48,6 +48,20 @@ export const CHALLENGES: Challenge[] = [
     xpReward: 500,
   },
   {
+    id: "expert-vacancy-mission",
+    icon: "🔴",
+    title: "Expert Mission",
+    description:
+      "Tip talent voor een Expert vacature en behaal een succesvolle match.",
+    goal: "1 match op Expert vacature",
+    reward: "+750 XP",
+    current: 0,
+    target: 1,
+    status: "active",
+    trackType: "manual",
+    xpReward: 750,
+  },
+  {
     id: "keeper-mission",
     icon: "🏆",
     title: "Keeper Mission",

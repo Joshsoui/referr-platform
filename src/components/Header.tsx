@@ -10,6 +10,7 @@ import logo from "@/assets/finderz-keeperz-logo.png";
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/aandragen", label: "Tip Talent" },
+  { href: "/vacatures", label: "Vacatures" },
   { href: "/challenges", label: "Finderz Missions" },
   { href: "/leaderboard", label: "Finderz League" },
   { href: "/levels", label: "Levels" },

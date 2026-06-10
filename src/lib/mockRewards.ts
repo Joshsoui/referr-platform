@@ -1,3 +1,5 @@
+import { DIFFICULTY_CASH_REWARDS } from "@/lib/vacancyRewards";
+
 export const XP_TIMELINE = [
   { action: "Talent Tip", xp: 10, icon: "👤" },
   { action: "Sterke Tip", xp: 25, icon: "✨", isBonus: true },
@@ -18,15 +20,15 @@ export const XP_REWARDS = [
 
 export const CASH_REWARDS = [
   { action: "Alleen talent getipt", cash: 0, note: "Geen cash" },
-  { action: "Succesvolle intake", cash: 25 },
-  { action: "Succesvolle match", cash: 250 },
-  { action: "Keeper Status", cash: 250, note: "Keeper-bonus" },
+  { action: "Intake Reward", cash: 25, note: "Vast, geen level bonus" },
+  { action: "Match Reward", cash: null, note: "Afhankelijk van difficulty" },
+  { action: "🏆 Keeper Bonus", cash: null, note: "Afhankelijk van difficulty", highlight: true },
 ];
 
-export const MAX_CASH_PER_CANDIDATE = 525;
+export const MAX_CASH_PER_CANDIDATE = DIFFICULTY_CASH_REWARDS.expert.total;
 
 export const LEVEL_CASH_MULTIPLIERS = [
-  { level: "Finder", bonus: "+0%", percent: 0 },
+  { level: "Finder", bonus: "0%", percent: 0 },
   { level: "Senior Finder", bonus: "+2%", percent: 2 },
   { level: "Elite Finder", bonus: "+5%", percent: 5 },
   { level: "Master Finder", bonus: "+7.5%", percent: 7.5 },
@@ -34,12 +36,12 @@ export const LEVEL_CASH_MULTIPLIERS = [
 ];
 
 export const CASH_BONUS_NOTE =
-  "Level bonus wordt toegepast op goedgekeurde beloningen. Niet op tips. Niet op XP. Alleen op cash rewards.";
+  "Level bonus geldt uitsluitend op Match Reward en Keeper Bonus. Niet op Intake Reward of XP.";
 
 export const INITIAL_REWARD_SUMMARY = {
   cashEarned: 1250,
   cashPending: 250,
-  nextRewardHint: "€250 bij succesvolle match van Kevin de Vries",
+  nextRewardHint: "Match Reward bij Kevin de Vries (Easy vacature)",
 };
 
 export const CONFIDENCE_BONUS_XP = 25;

@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { RewardRules } from "@/components/RewardRules";
+import { VacatureRewardsSection } from "@/components/VacatureRewardsSection";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useScout } from "@/context/ScoutContext";
@@ -127,6 +128,10 @@ export default function RewardsPage() {
         </FadeIn>
 
         <RewardRules />
+
+        <FadeIn delay={160}>
+          <VacatureRewardsSection />
+        </FadeIn>
 
         <FadeIn delay={200}>
           <Card

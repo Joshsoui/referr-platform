@@ -5,10 +5,16 @@ import { useState } from "react";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
+import { VacancyManager } from "@/components/admin/VacancyManager";
+import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { getNextStatus, useScout } from "@/context/ScoutContext";
 import { CASH_STATUS_LABELS } from "@/lib/mockQualityRules";
 import { getConfidenceLabel } from "@/lib/scoring";
-import { STATUS_LABELS } from "@/lib/xp";
+import {
+  getKeeperBonusReward,
+  getMatchReward,
+} from "@/lib/vacancyRewards";
+import { formatCurrency, STATUS_LABELS } from "@/lib/xp";
 import type { CandidateStatus } from "@/types";
 import type { CashStatus } from "@/types/incentives";
 
@@ -39,6 +45,9 @@ export default function AdminPage() {
     grantPlacementBonus,
     grantRetentionBonus,
     revokeXp,
+    vacancies,
+    assignCandidateVacancy,
+    xp,
   } = useScout();
   const [flashingId, setFlashingId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -75,12 +84,25 @@ export default function AdminPage() {
           </div>
         </FadeIn>
 
+        <FadeIn delay={80}>
+          <VacancyManager />
+        </FadeIn>
+
         <FadeIn delay={100}>
           <div className="space-y-4">
             {candidates.map((candidate) => {
               const nextStatus = getNextStatus(candidate.status);
               const isFlashing = flashingId === candidate.id;
               const isUpdating = updatingId === candidate.id;
+              const vacancy = vacancies.find(
+                (item) => item.id === candidate.vacancyId
+              );
+              const keeperBonus = vacancy
+                ? getKeeperBonusReward(vacancy.difficulty, xp)
+                : getKeeperBonusReward("easy", xp);
+              const matchBonus = vacancy
+                ? getMatchReward(vacancy.difficulty, xp)
+                : getMatchReward("easy", xp);
 
               return (
                 <Card
@@ -97,6 +119,14 @@ export default function AdminPage() {
                           <p className="text-sm text-fk-navy/55">
                             Getipt door: {candidate.referredBy} · {candidate.sector}
                           </p>
+                          {vacancy && (
+                            <div className="mt-2 flex flex-wrap items-center gap-2">
+                              <span className="text-xs text-fk-navy/45">
+                                Vacature: {vacancy.title}
+                              </span>
+                              <DifficultyBadge difficulty={vacancy.difficulty} size="sm" />
+                            </div>
+                          )}
                         </div>
                         <div className="flex flex-wrap gap-2">
                           <Badge variant={statusVariant(candidate.status)}>
@@ -193,6 +223,20 @@ export default function AdminPage() {
                       >
                         Markeer als duplicate
                       </button>
+                      <select
+                        value={candidate.vacancyId ?? ""}
+                        onChange={(e) =>
+                          assignCandidateVacancy(candidate.id, e.target.value)
+                        }
+                        className="rounded-lg border border-fk-primary/20 bg-fk-white px-2 py-2 text-xs"
+                      >
+                        <option value="">Koppel vacature...</option>
+                        {vacancies.map((item) => (
+                          <option key={item.id} value={item.id}>
+                            {item.title} ({item.difficulty})
+                          </option>
+                        ))}
+                      </select>
                       <hr className="border-fk-primary/10" />
                       <button
                         type="button"
@@ -213,7 +257,7 @@ export default function AdminPage() {
                         }
                         className="rounded-lg bg-fk-primary px-3 py-2 text-xs font-semibold text-white"
                       >
-                        Ken matchbonus toe
+                        Ken matchbonus toe ({formatCurrency(matchBonus)})
                       </button>
                       <button
                         type="button"
@@ -222,7 +266,7 @@ export default function AdminPage() {
                         }
                         className="rounded-lg bg-fk-secondary px-3 py-2 text-xs font-semibold text-white"
                       >
-                        Ken retentiebonus toe (€250)
+                        Ken {formatCurrency(keeperBonus)} Keeper Bonus toe
                       </button>
                       <select
                         value={candidate.cashStatus}

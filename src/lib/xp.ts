@@ -25,11 +25,9 @@ export const STATUS_LABELS: Record<CandidateStatus, string> = {
 };
 
 export const KEEPER_STATUS = {
-  title: "🏆 Keeper Status Behaald",
-  description:
-    "Het talent werkt inmiddels één maand succesvol via Finderz Keeperz.",
+  title: "Keeper Status behaald",
+  description: "+1000 XP wanneer jouw talent Keeper Status behaalt.",
   xpReward: 1000,
-  cashReward: 250,
 };
 
 export interface Level {
