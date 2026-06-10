@@ -16,10 +16,10 @@ export default function RewardsPage() {
             </div>
             <div>
               <h1 className="text-3xl font-extrabold text-fk-navy">
-                Zo verdien je als Scout
+                Verdienen binnen het Finderz Network
               </h1>
               <p className="text-fk-navy/60">
-                XP, Scout Score en cash — helder gescheiden
+                XP, Finderz Score en cash — helder gescheiden
               </p>
             </div>
           </div>
@@ -29,9 +29,10 @@ export default function RewardsPage() {
           <Card variant="highlight" className="mb-8 border-0">
             <p className="text-lg font-bold">Kernprincipe</p>
             <ul className="mt-3 space-y-2 text-sm text-fk-white/90">
-              <li>XP verdien je met activiteit.</li>
-              <li>Scout Score bouw je op met kwaliteit.</li>
-              <li>Cash verdien je alleen met resultaat.</li>
+              <li>XP = activiteit</li>
+              <li>Finderz Score = kwaliteit</li>
+              <li>Levels = privileges</li>
+              <li>Cash = resultaat</li>
             </ul>
           </Card>
         </FadeIn>

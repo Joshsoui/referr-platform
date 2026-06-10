@@ -17,11 +17,11 @@ export const STATUS_ORDER: CandidateStatus[] = [
 ];
 
 export const STATUS_LABELS: Record<CandidateStatus, string> = {
-  nieuw: "Nieuw",
+  nieuw: "Nieuw getipt",
   intake_gepland: "Intake gepland",
   voorgesteld: "Voorgesteld",
-  geplaatst: "Geplaatst",
-  proeftijd_gehaald: "Proeftijd gehaald",
+  geplaatst: "Succesvolle match",
+  proeftijd_gehaald: "Keeper-status behaald",
 };
 
 export interface Level {
@@ -31,11 +31,11 @@ export interface Level {
 }
 
 export const LEVELS: Level[] = [
-  { name: "Talent Spotter", minXp: 0, maxXp: 499 },
-  { name: "Scout", minXp: 500, maxXp: 1499 },
-  { name: "Senior Scout", minXp: 1500, maxXp: 3999 },
-  { name: "Elite Scout", minXp: 4000, maxXp: 9999 },
-  { name: "FK Legend", minXp: 10000, maxXp: Infinity },
+  { name: "Finder", minXp: 0, maxXp: 499 },
+  { name: "Senior Finder", minXp: 500, maxXp: 1499 },
+  { name: "Elite Finder", minXp: 1500, maxXp: 3999 },
+  { name: "Master Finder", minXp: 4000, maxXp: 9999 },
+  { name: "Finderz Legend", minXp: 10000, maxXp: Infinity },
 ];
 
 export function getLevelForXp(xp: number): Level {

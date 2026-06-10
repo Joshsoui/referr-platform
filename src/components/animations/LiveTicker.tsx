@@ -2,10 +2,10 @@ const items = [
   "Kevin de Vries +10 XP",
   "Emma Jansen +50 XP",
   "Mike van Dijk +500 XP",
-  "Lennart Lakeman #1 Scout",
+  "Lennart Lakeman #1 Finder",
   "Sophie van der Meer +100 XP",
-  "Joshua Souisay Elite Scout",
-  "Peter Jansen +1000 XP",
+  "Joshua Souisay Master Finder",
+  "Sanne de Vries eerste Keeper +1000 XP",
 ];
 
 export function LiveTicker() {

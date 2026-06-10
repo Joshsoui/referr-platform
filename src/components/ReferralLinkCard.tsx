@@ -37,7 +37,7 @@ export function ReferralLinkCard({ profile }: ReferralLinkCardProps) {
   }, [profile.slug]);
 
   const shareText =
-    "Ken jij talent? Draag een kandidaat aan via mijn Finderz Keeperz Scout-link en help verborgen talent zichtbaar maken. ";
+    "Ken jij talent? Tip talent via mijn Finderz Link en help verborgen talent zichtbaar maken. ";
 
   async function handleCopy() {
     try {
@@ -57,7 +57,7 @@ export function ReferralLinkCard({ profile }: ReferralLinkCardProps) {
     },
     {
       icon: UserPlus,
-      label: "Kandidaten via jouw link",
+      label: "Talenten getipt",
       value: animatedCandidates.toString(),
     },
     {
@@ -67,13 +67,13 @@ export function ReferralLinkCard({ profile }: ReferralLinkCardProps) {
     },
     {
       icon: Zap,
-      label: "XP via referral link",
+      label: "XP via Finderz Link",
       value: animatedXp.toLocaleString("nl-NL"),
     },
   ];
 
   return (
-    <div id="scout-referral-link">
+    <div id="finderz-link">
     <Card
       className="mb-8 overflow-hidden border-2 border-fk-primary/25 p-0 shadow-md ring-4 ring-fk-primary/5"
       hover
@@ -85,10 +85,10 @@ export function ReferralLinkCard({ profile }: ReferralLinkCardProps) {
           </div>
           <div>
             <h2 className="text-xl font-extrabold text-fk-white sm:text-2xl">
-              Jouw persoonlijke Scout-link
+              Jouw Finderz Link
             </h2>
             <p className="text-sm text-fk-white/80">
-              Deel je netwerk · Verdien XP · Klim in de ranking
+              Deel je netwerk · Verdien XP · Stijg in de Finderz League
             </p>
           </div>
         </div>
@@ -105,7 +105,7 @@ export function ReferralLinkCard({ profile }: ReferralLinkCardProps) {
             htmlFor="referral-url"
             className="mb-2 block text-xs font-bold uppercase tracking-wider text-fk-secondary"
           >
-            Jouw referral link
+            Jouw Finderz Link
           </label>
           <div className="mb-5 overflow-hidden rounded-xl border-2 border-fk-primary/25 bg-fk-white shadow-inner">
             <div className="flex items-start gap-2 px-4 py-3.5">
@@ -144,7 +144,7 @@ export function ReferralLinkCard({ profile }: ReferralLinkCardProps) {
               className="btn-press inline-flex items-center gap-2 rounded-xl border border-fk-primary/20 bg-fk-white px-4 py-2.5 text-sm font-semibold text-fk-navy shadow-sm hover:bg-fk-light"
             >
               <MessageCircle size={16} className="text-emerald-600" />
-              WhatsApp
+              Deel via WhatsApp
             </a>
             <a
               href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`}
@@ -153,7 +153,7 @@ export function ReferralLinkCard({ profile }: ReferralLinkCardProps) {
               className="btn-press inline-flex items-center gap-2 rounded-xl border border-fk-primary/20 bg-fk-white px-4 py-2.5 text-sm font-semibold text-fk-navy shadow-sm hover:bg-fk-light"
             >
               <Linkedin size={16} className="text-fk-primary" />
-              LinkedIn
+              Deel op LinkedIn
             </a>
           </div>
 
@@ -176,7 +176,7 @@ export function ReferralLinkCard({ profile }: ReferralLinkCardProps) {
 
         <div className="flex flex-col items-center justify-center border-t border-fk-primary/10 bg-gradient-to-br from-fk-light to-fk-white px-6 py-8 lg:border-l lg:border-t-0">
           <p className="mb-4 text-center text-sm font-bold text-fk-navy">
-            Jouw Scout QR
+            Jouw Finderz QR
           </p>
           <QrCodePlaceholder label="FK" />
           <p className="mt-4 max-w-[200px] text-center text-xs leading-relaxed text-fk-navy/55">

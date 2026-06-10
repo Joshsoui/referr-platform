@@ -69,7 +69,7 @@ export default function AdminPage() {
             <div>
               <h1 className="text-3xl font-extrabold text-fk-navy">Admin</h1>
               <p className="text-fk-navy/60">
-                Beheer referrals, XP, cash en kwaliteit
+                Beheer talenttips, XP, cash en kwaliteit
               </p>
             </div>
           </div>
@@ -95,7 +95,7 @@ export default function AdminPage() {
                             {candidate.name}
                           </h3>
                           <p className="text-sm text-fk-navy/55">
-                            Scout: {candidate.referredBy} · {candidate.sector}
+                            Getipt door: {candidate.referredBy} · {candidate.sector}
                           </p>
                         </div>
                         <div className="flex flex-wrap gap-2">
@@ -139,7 +139,7 @@ export default function AdminPage() {
                       <div className="flex flex-wrap items-center gap-4">
                         <div>
                           <p className="text-xs font-semibold uppercase text-fk-navy/45">
-                            Scout Confidence
+                            Talent Confidence Score
                           </p>
                           <p className="font-bold text-fk-primary">
                             {candidate.confidenceScore}/100 ·{" "}
@@ -177,14 +177,14 @@ export default function AdminPage() {
                         onClick={() => flash(candidate.id, () => approveReferral(candidate.id))}
                         className="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
                       >
-                        Goedkeuren referral
+                        Tip goedkeuren
                       </button>
                       <button
                         type="button"
                         onClick={() => flash(candidate.id, () => rejectReferral(candidate.id))}
                         className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700"
                       >
-                        Afkeuren referral
+                        Tip afkeuren
                       </button>
                       <button
                         type="button"
@@ -204,7 +204,7 @@ export default function AdminPage() {
                         }
                         className="rounded-lg bg-fk-primary px-3 py-2 text-xs font-semibold text-white"
                       >
-                        Ken intakebonus toe (€25)
+                        Ken intakebonus toe
                       </button>
                       <button
                         type="button"
@@ -213,7 +213,7 @@ export default function AdminPage() {
                         }
                         className="rounded-lg bg-fk-primary px-3 py-2 text-xs font-semibold text-white"
                       >
-                        Ken plaatsingsbonus toe (€250)
+                        Ken matchbonus toe
                       </button>
                       <button
                         type="button"
@@ -242,7 +242,7 @@ export default function AdminPage() {
                         onClick={() => flash(candidate.id, () => revokeXp(candidate.id, 10))}
                         className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800"
                       >
-                        Trek 10 XP in
+                        Trek XP in
                       </button>
                       {nextStatus && (
                         <button

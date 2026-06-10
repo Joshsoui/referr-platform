@@ -23,7 +23,7 @@ export function EcosystemWidget({ xp, scoutScore, rewards }: EcosystemWidgetProp
       <div className="border-b border-fk-primary/10 bg-fk-primary/5 px-6 py-4 sm:px-8">
         <div className="flex items-center gap-2">
           <Shield size={20} className="text-fk-primary" />
-          <h2 className="text-xl font-extrabold text-fk-navy">Jouw Scout Profiel</h2>
+          <h2 className="text-xl font-extrabold text-fk-navy">Jouw Finder Profiel</h2>
         </div>
       </div>
 
@@ -50,7 +50,7 @@ export function EcosystemWidget({ xp, scoutScore, rewards }: EcosystemWidgetProp
             </div>
             <div className="rounded-xl border border-fk-primary/10 bg-fk-white p-4">
               <p className="text-xs font-semibold uppercase tracking-wider text-fk-secondary">
-                Scout Score
+                Finderz Score
               </p>
               <p className="mt-1 flex items-center gap-1.5 text-lg font-extrabold text-fk-navy tabular-nums">
                 <TrendingUp size={16} className="text-fk-secondary" />
@@ -96,15 +96,14 @@ export function EcosystemWidget({ xp, scoutScore, rewards }: EcosystemWidgetProp
         </div>
 
         <div className="flex flex-col justify-center rounded-xl border border-fk-primary/15 bg-fk-primary/5 p-5">
-          <p className="text-sm font-bold text-fk-navy">Het FK ecosysteem</p>
+          <p className="text-sm font-bold text-fk-navy">Het Finderz Network</p>
           <ul className="mt-3 space-y-2 text-sm text-fk-navy/70">
             <li>
-              <strong className="text-fk-primary">XP</strong> = activiteit en
-              progressie
+              <strong className="text-fk-primary">XP</strong> = activiteit
             </li>
             <li>
-              <strong className="text-fk-secondary">Scout Score</strong> =
-              kwaliteit en betrouwbaarheid
+              <strong className="text-fk-secondary">Finderz Score</strong> =
+              kwaliteit
             </li>
             <li>
               <strong className="text-fk-navy">Levels</strong> = privileges
@@ -114,13 +113,12 @@ export function EcosystemWidget({ xp, scoutScore, rewards }: EcosystemWidgetProp
               erkenning/specialisatie
             </li>
             <li>
-              <strong className="text-emerald-700">Cash</strong> = alleen resultaat
-              na controle
+              <strong className="text-emerald-700">Cash</strong> = resultaat
             </li>
           </ul>
           <p className="mt-4 text-sm leading-relaxed text-fk-navy/65">
-            XP laat zien hoe actief je bent. Scout Score laat zien hoe sterk je
-            referrals zijn. Cash verdien je alleen bij echte resultaten.
+            Finderz Score laat zien hoe sterk en betrouwbaar jouw talenttips
+            zijn. Cash verdien je alleen bij echte resultaten.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <Link

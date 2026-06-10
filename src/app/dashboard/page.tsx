@@ -50,13 +50,13 @@ export default function DashboardPage() {
   const statCards = [
     {
       icon: Users,
-      label: "Kandidaten aangedragen",
+      label: "Talenten getipt",
       value: animatedCandidates.toString(),
       delay: 200,
     },
     {
       icon: Target,
-      label: "Succesvol geplaatst",
+      label: "Succesvolle matches",
       value: animatedPlacements.toString(),
       delay: 280,
     },
@@ -103,7 +103,7 @@ export default function DashboardPage() {
           <FadeIn delay={200}>
             <Card className="mb-8">
               <h2 className="mb-4 text-xl font-bold text-fk-navy">
-                Recente referrals
+                Recente talenttips
               </h2>
               <div className="grid gap-3 sm:grid-cols-2">
                 {recentReferrals.map((c) => (
@@ -150,17 +150,17 @@ export default function DashboardPage() {
             <div className="mb-6 flex items-center justify-between gap-4">
               <div>
                 <h2 className="text-xl font-bold text-fk-navy">
-                  Actieve Challenges
+                  Finderz Missions
                 </h2>
                 <p className="text-sm text-fk-navy/55">
-                  ⚽ WK Scout League 2026
+                  ⚽ WK Finderz Mission 2026
                 </p>
               </div>
               <Link
                 href="/challenges"
                 className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-fk-primary transition-colors hover:text-fk-navy"
               >
-                Bekijk alle challenges
+                Bekijk alle missions
                 <ArrowRight size={16} />
               </Link>
             </div>
@@ -186,10 +186,10 @@ export default function DashboardPage() {
           <Card>
             <div className="mb-6">
               <h2 className="text-xl font-bold text-fk-navy">
-                Scout Activiteiten
+                Finderz Activiteiten
               </h2>
               <p className="text-sm text-fk-navy/55">
-                Live updates van de community
+                Live updates uit het Finderz Network
               </p>
             </div>
             <ActivityFeed limit={5} />

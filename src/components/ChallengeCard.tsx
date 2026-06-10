@@ -59,7 +59,7 @@ export function ChallengeCard({ challenge, compact = false }: ChallengeCardProps
         )}
         {challenge.isCommunity && (
           <span className="text-xs font-medium text-fk-secondary">
-            Community challenge
+            Community mission
           </span>
         )}
       </div>

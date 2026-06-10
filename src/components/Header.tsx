@@ -9,9 +9,9 @@ import logo from "@/assets/finderz-keeperz-logo.png";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/aandragen", label: "Aandragen" },
-  { href: "/challenges", label: "Challenges" },
-  { href: "/leaderboard", label: "Leaderboard" },
+  { href: "/aandragen", label: "Tip Talent" },
+  { href: "/challenges", label: "Finderz Missions" },
+  { href: "/leaderboard", label: "Finderz League" },
   { href: "/levels", label: "Levels" },
   { href: "/rewards", label: "Rewards" },
   { href: "/admin", label: "Admin" },
@@ -58,7 +58,7 @@ export function Header() {
             className="header-cta group hidden items-center gap-2 sm:inline-flex"
           >
             <UserPlus size={16} className="shrink-0" />
-            <span>Draag aan</span>
+            <span>Tip Talent</span>
             <ArrowRight
               size={15}
               className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
@@ -102,7 +102,7 @@ export function Header() {
               className="header-cta mt-2 justify-center"
             >
               <UserPlus size={16} />
-              <span>Draag kandidaat aan</span>
+              <span>Tip Talent</span>
               <ArrowRight size={15} />
             </Link>
           </div>

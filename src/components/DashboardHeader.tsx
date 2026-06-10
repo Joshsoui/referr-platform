@@ -31,9 +31,9 @@ export function DashboardHeader({
 }: DashboardHeaderProps) {
   const level = getLevelForXp(xp);
   const { next, xpToNext, progress } = getLevelProgress(xp);
-  const wkChallenge = CHALLENGES.find((c) => c.id === "wk-scout-league");
-  const wkRemaining = wkChallenge
-    ? wkChallenge.target - wkChallenge.current
+  const wkMission = CHALLENGES.find((c) => c.id === "wk-scout-league");
+  const missionRemaining = wkMission
+    ? wkMission.target - wkMission.current
     : 0;
 
   const progressTitle = next
@@ -41,31 +41,25 @@ export function DashboardHeader({
     : "Maximaal level bereikt";
 
   const progressSubtitle =
-    wkRemaining > 0
-      ? `Nog ${wkRemaining} kandidaat${wkRemaining === 1 ? "" : "en"} nodig voor de WK Scout League Challenge`
+    missionRemaining > 0
+      ? `Nog ${missionRemaining} talent${missionRemaining === 1 ? "" : "en"} nodig voor jouw volgende Finderz Mission`
       : undefined;
 
   return (
     <div className="mb-8">
       <FadeIn delay={100}>
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-medium text-fk-navy/50">Welkom terug</p>
-            <h1 className="mt-1 text-3xl font-extrabold text-fk-navy sm:text-4xl">
-              {userName}
-            </h1>
-            <p className="mt-1 text-sm font-semibold text-fk-primary">
-              {level.name}
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Button href="/aandragen">
-              Kandidaat aandragen
-            </Button>
-            <Button href="/challenges" variant="secondary">
-              Bekijk challenges
-            </Button>
-          </div>
+        <div className="mb-6">
+          <p className="text-sm font-medium text-fk-navy/50">Welkom terug</p>
+          <h1 className="mt-1 text-3xl font-extrabold text-fk-navy sm:text-4xl">
+            Iedereen kent talent.
+          </h1>
+          <p className="mt-3 max-w-2xl text-fk-navy/65">
+            Met het Finderz Network tip je talent uit jouw netwerk, bouw je
+            reputatie op en verdien je beloningen voor succesvolle matches.
+          </p>
+          <p className="mt-2 text-sm font-semibold text-fk-primary">
+            {userName} · {level.name}
+          </p>
         </div>
       </FadeIn>
 
@@ -85,7 +79,7 @@ export function DashboardHeader({
           </Card>
           <Card className="p-4">
             <TrendingUp size={16} className="mb-1 text-fk-primary" />
-            <p className="text-xs text-fk-navy/50">Scout Score</p>
+            <p className="text-xs text-fk-navy/50">Finderz Score</p>
             <p className="font-bold tabular-nums text-fk-navy">
               {scoutScore}/100
             </p>
@@ -94,9 +88,21 @@ export function DashboardHeader({
             <Trophy size={16} className="mb-1 text-fk-primary" />
             <p className="text-xs text-fk-navy/50">Ranking</p>
             <p className="font-bold text-fk-navy">
-              #{regionRank} {region}
+              #{regionRank} in de {region}
             </p>
           </Card>
+        </div>
+      </FadeIn>
+
+      <FadeIn delay={160}>
+        <div className="mb-4 flex flex-wrap gap-3">
+          <Button href="/aandragen">Tip Talent</Button>
+          <Button href="/challenges" variant="secondary">
+            Bekijk Finderz Missions
+          </Button>
+          <Button href="/why-finder" variant="outline">
+            Waarom Finder worden?
+          </Button>
         </div>
       </FadeIn>
 

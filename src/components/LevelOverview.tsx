@@ -169,12 +169,12 @@ export function LevelOverview({ currentLevel, currentXp }: LevelOverviewProps) {
                   <div className="mt-4 flex flex-wrap gap-2">
                     {level.xpChallengeBonusPercent > 0 && (
                       <span className="rounded-lg bg-fk-primary-muted px-2.5 py-1 text-xs font-semibold text-fk-primary">
-                        +{level.xpChallengeBonusPercent}% challenge XP
+                        +{level.xpChallengeBonusPercent}% mission XP
                       </span>
                     )}
                     {level.cashBonusPercent > 0 && (
                       <span className="rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-                        +{level.cashBonusPercent}% plaatsingsbonus
+                        +{level.cashBonusPercent}% matchbonus
                       </span>
                     )}
                   </div>

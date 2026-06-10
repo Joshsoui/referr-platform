@@ -59,10 +59,10 @@ export default function ReferralPage() {
         <div className="mx-auto max-w-lg text-center">
           <Card>
             <h1 className="text-2xl font-extrabold text-fk-navy">
-              Scout niet gevonden
+              Finder niet gevonden
             </h1>
             <p className="mt-3 text-fk-navy/60">
-              Deze referral-link is ongeldig of niet meer actief.
+              Deze Finderz Link is ongeldig of niet meer actief.
             </p>
             <div className="mt-6">
               <Button href="/">Terug naar home</Button>
@@ -86,10 +86,10 @@ export default function ReferralPage() {
               +10 XP voor {scout.name.split(" ")[0]}
             </div>
             <h1 className="text-2xl font-extrabold text-fk-navy">
-              Kandidaat aangedragen!
+              Talent succesvol getipt!
             </h1>
             <p className="mt-3 text-fk-navy/65">
-              Kandidaat aangedragen via{" "}
+              Talent getipt via{" "}
               <strong className="text-fk-navy">{scout.name}</strong>.{" "}
               {scout.name.split(" ")[0]} ontvangt{" "}
               <span className="font-bold text-fk-primary">+10 XP</span>.
@@ -126,15 +126,15 @@ export default function ReferralPage() {
               </div>
               <div>
                 <p className="text-sm font-semibold uppercase tracking-wider text-fk-secondary">
-                  Persoonlijke Scout-link
+                  Jouw Finderz Link
                 </p>
                 <p className="mt-1 text-lg font-bold text-fk-navy">
-                  Je draagt een kandidaat aan via Scout{" "}
+                  Je tipt talent via Finder{" "}
                   <span className="text-fk-primary">{scout.name}</span>.
                 </p>
                 <p className="mt-2 text-sm text-fk-navy/60">
-                  Vul het formulier in. De kandidaat wordt direct gekoppeld aan{" "}
-                  {scout.name.split(" ")[0]} voor XP en ranking.
+                  Vul het formulier in. Het talent wordt direct gekoppeld aan{" "}
+                  {scout.name.split(" ")[0]} voor XP en Finderz League ranking.
                 </p>
               </div>
             </div>
@@ -147,10 +147,10 @@ export default function ReferralPage() {
               <UserPlus size={22} />
             </div>
             <h1 className="text-3xl font-extrabold text-fk-navy">
-              Kandidaat aandragen
+              Tip Talent
             </h1>
             <p className="mt-2 text-fk-navy/60">
-              Ken jij iemand met talent? Draag hem of haar aan via de link van{" "}
+              Ken jij iemand met talent? Tip hem of haar via de Finderz Link van{" "}
               <span className="font-bold text-fk-primary">{scout.name}</span> en
               help verborgen talent zichtbaar maken{" "}
               <span className="inline-flex items-center gap-1 font-bold text-fk-primary">
@@ -169,7 +169,7 @@ export default function ReferralPage() {
                 [
                   {
                     id: "name",
-                    label: "Naam kandidaat",
+                    label: "Naam talent",
                     type: "text",
                     required: true,
                     placeholder: "Bijv. Jan de Vries",
@@ -183,7 +183,7 @@ export default function ReferralPage() {
                   },
                   {
                     id: "linkedin",
-                    label: "LinkedIn profiel",
+                    label: "LinkedIn-profiel",
                     type: "url",
                     required: false,
                     placeholder: "https://linkedin.com/in/...",
@@ -230,18 +230,18 @@ export default function ReferralPage() {
                   rows={4}
                   value={form.description}
                   onChange={handleChange}
-                  placeholder="Waarom is deze persoon geschikt? Wat zoekt hij/zij?"
+                  placeholder="Waarom is dit talent geschikt? Wat zoekt hij/zij?"
                   className="w-full resize-none rounded-xl border border-fk-primary/20 bg-fk-light px-4 py-3 text-sm text-fk-navy outline-none transition-all duration-200 focus:border-fk-primary focus:bg-fk-white focus:ring-2 focus:ring-fk-primary/20 focus:shadow-sm"
                 />
               </div>
 
               <div className="rounded-xl border border-fk-primary/10 bg-fk-primary-muted px-4 py-3 text-sm text-fk-navy/70">
-                Deze kandidaat wordt gekoppeld aan{" "}
+                Dit talent wordt gekoppeld aan{" "}
                 <strong className="text-fk-primary">{scout.name}</strong>.
               </div>
 
               <Button type="submit" loading={loading} className="w-full sm:w-auto">
-                Kandidaat aandragen via {scout.name.split(" ")[0]}
+                Tip Talent via {scout.name.split(" ")[0]}
               </Button>
             </form>
           </Card>
@@ -250,7 +250,7 @@ export default function ReferralPage() {
         <p className="mt-6 text-center text-xs text-fk-navy/45">
           Powered by{" "}
           <Link href="/" className="font-semibold text-fk-primary hover:underline">
-            Finderz Keeperz Scout Engine
+            Finderz Keeperz · Finderz Network
           </Link>
         </p>
       </div>

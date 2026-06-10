@@ -10,9 +10,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Finderz Keeperz Scout Engine",
+  title: "Finderz Keeperz · Finderz Network",
   description:
-    "Gamified recruitment platform — draag kandidaten aan, verdien XP en stijg op de ranking.",
+    "Tip talent uit je netwerk, verdien XP en stijg in de Finderz League.",
 };
 
 export default function RootLayout({

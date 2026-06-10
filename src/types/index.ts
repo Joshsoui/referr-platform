@@ -47,6 +47,7 @@ export interface Scout {
   name: string;
   xp: number;
   placements: number;
+  keepers?: number;
   reward: number;
   isCurrentUser?: boolean;
 }

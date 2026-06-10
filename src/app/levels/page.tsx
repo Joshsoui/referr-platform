@@ -71,7 +71,7 @@ export default function LevelsPage() {
                     <p className="text-xl font-extrabold tabular-nums">
                       {scoutScore}
                     </p>
-                    <p className="text-xs text-fk-white/70">Scout Score</p>
+                    <p className="text-xs text-fk-white/70">Finderz Score</p>
                   </div>
                 </div>
               </div>
@@ -148,7 +148,7 @@ export default function LevelsPage() {
                 <p className="mt-2 text-sm leading-relaxed text-fk-navy/65">
                   Hogere levels ontgrendelen meer privileges, status en
                   verdienpotentie. XP is geen geld — het opent deuren binnen het
-                  Scout-ecosysteem. Elke level heeft een unieke badge die je
+                  Finderz Network. Elke level heeft een unieke badge die je
                   voortgang zichtbaar maakt.
                 </p>
               </div>

@@ -36,7 +36,7 @@ export function WkBonusBanner() {
                 </p>
                 <p className="mt-1 flex items-center gap-1 text-lg font-extrabold">
                   <Zap size={16} className="text-fk-white/80" />
-                  Iedere Scout ontvangt {bonus.reward}
+                  Iedere Finder ontvangt {bonus.reward}
                 </p>
               </div>
             ))}

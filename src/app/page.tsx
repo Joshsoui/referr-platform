@@ -20,28 +20,28 @@ import { Card } from "@/components/ui/Card";
 const steps = [
   {
     icon: Network,
-    title: "Jij kent iemand",
+    title: "Jij kent talent",
     description:
-      "Iedereen in jouw netwerk kent talent. Van collega's tot vrienden — jij weet wie er klaar is voor de volgende stap.",
+      "Iedereen in jouw netwerk kent iemand die beter op zijn plek zou zitten. Jij weet wie klaar is voor de volgende stap.",
     stagger: "stagger-1",
   },
   {
     icon: UserPlus,
-    title: "Draag hem/haar aan",
+    title: "Tip het talent",
     description:
-      "Met één klik draag je een kandidaat aan via de Scout Engine. Simpel, snel en zonder gedoe.",
+      "Met één klik tip je talent via het Finderz Network. Simpel, snel en zonder gedoe.",
     stagger: "stagger-2",
   },
   {
     icon: Search,
     title: "Wij doen de rest",
     description:
-      "Ons recruitmentteam neemt het over: intake, matching, voordracht en plaatsing bij de juiste klant.",
+      "Finderz Keeperz neemt het over: intake, matching, voordracht en plaatsing bij de juiste klant.",
     stagger: "stagger-3",
   },
   {
     icon: Gift,
-    title: "Jij verdient XP en beloning",
+    title: "Jij verdient beloning",
     description:
       "Bij elke mijlpaal verdien je XP, stijg je in level en ontvang je beloningen bij succesvolle matches.",
     stagger: "stagger-4",
@@ -49,19 +49,17 @@ const steps = [
 ];
 
 const xpMilestones = [
-  { action: "Aangedragen", xp: 10 },
+  { action: "Talent getipt", xp: 10 },
   { action: "Intake gepland", xp: 50 },
   { action: "Voorgesteld", xp: 100 },
-  { action: "Geplaatst", xp: 500 },
-  { action: "Proeftijd gehaald", xp: 1000 },
+  { action: "Succesvolle match", xp: 500 },
+  { action: "Keeper-status", xp: 1000 },
 ];
 
 export default function LandingPage() {
   return (
     <div>
-      {/* Hero */}
       <section className="relative overflow-hidden px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-        {/* Achtergrondafbeelding */}
         <div className="absolute inset-0" aria-hidden>
           <Image
             src={heroBg}
@@ -72,20 +70,17 @@ export default function LandingPage() {
             sizes="100vw"
           />
         </div>
-
-        {/* Blauwe overlay — afbeelding blijft zichtbaar */}
         <div className="absolute inset-0 bg-fk-navy/55" aria-hidden />
         <div
           className="absolute inset-0 bg-gradient-to-r from-fk-navy/80 via-fk-primary/50 to-fk-navy/65"
           aria-hidden
         />
-
         <FloatingOrbs />
 
         <div className="relative z-10 mx-auto max-w-4xl text-center">
           <div className="animate-fade-in-up mb-6 inline-flex items-center gap-2 rounded-full border border-fk-white/20 bg-fk-navy/40 px-4 py-1.5 text-sm font-medium text-fk-white backdrop-blur-sm">
             <Sparkles size={16} className="animate-float" />
-            Scout Engine MVP
+            Finderz Network
           </div>
 
           <h1 className="animate-fade-in-up stagger-1 text-3xl font-extrabold leading-tight tracking-tight text-fk-white drop-shadow-lg sm:text-5xl lg:text-6xl">
@@ -93,27 +88,27 @@ export default function LandingPage() {
           </h1>
 
           <p className="animate-fade-in-up stagger-2 mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-fk-white/90 drop-shadow-md sm:text-xl">
-            Bouw jouw reputatie als Scout, help mensen aan een nieuwe uitdaging
-            en verdien beloningen voor succesvolle matches.
+            Met het Finderz Network tip je talent uit jouw netwerk, bouw je
+            reputatie op en verdien je beloningen voor succesvolle matches.
           </p>
 
           <div className="animate-fade-in-up stagger-3 mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
-            <Button href="/why-scout" variant="primary">
+            <Button href="/why-finder" variant="primary">
               <HelpCircle size={18} />
-              Waarom Scout worden?
+              Waarom Finder worden?
             </Button>
             <Button href="/aandragen" variant="on-dark">
-              Draag kandidaat aan
+              Tip Talent
             </Button>
             <Button href="/challenges" variant="on-dark-outline">
-              Bekijk challenges
+              Bekijk Finderz Missions
             </Button>
           </div>
 
           <p className="animate-fade-in-up stagger-3 mt-6 text-sm text-fk-white/70">
-            Nieuw bij Scout Engine?{" "}
+            Nieuw bij het Finderz Network?{" "}
             <Link
-              href="/why-scout"
+              href="/why-finder"
               className="inline-flex items-center gap-1 font-semibold text-fk-white hover:text-fk-secondary"
             >
               Ontdek hoe het werkt
@@ -121,7 +116,6 @@ export default function LandingPage() {
             </Link>
           </p>
 
-          {/* XP milestones strip */}
           <div className="animate-fade-in-up stagger-4 mt-14 flex flex-wrap justify-center gap-3">
             {xpMilestones.map((m) => (
               <span
@@ -139,7 +133,6 @@ export default function LandingPage() {
 
       <LiveTicker />
 
-      {/* Steps */}
       <section className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="animate-fade-in-up mb-12 text-center">
@@ -147,7 +140,7 @@ export default function LandingPage() {
               Hoe werkt het?
             </h2>
             <p className="mt-3 text-fk-navy/60">
-              Vier stappen van signaal naar beloning
+              Van verborgen talent naar succesvolle match
             </p>
           </div>
 
@@ -178,20 +171,19 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Onboarding CTA */}
       <section className="bg-fk-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl animate-scale-in">
           <PageHero
             heading="h2"
             title="Klaar om jouw netwerk in te zetten?"
-            subtitle="Ontdek waarom Scout worden de moeite waard is — van XP en levels tot beloningen bij succesvolle matches."
+            subtitle="Ontdek waarom Finder worden de moeite waard is — van XP en levels tot beloningen bij succesvolle matches."
           >
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button href="/why-scout" variant="on-dark">
-                Waarom Scout worden?
+              <Button href="/why-finder" variant="on-dark">
+                Waarom Finder worden?
               </Button>
               <Button href="/dashboard" variant="inverse">
-                Bekijk dashboard
+                Word Finder
               </Button>
             </div>
           </PageHero>

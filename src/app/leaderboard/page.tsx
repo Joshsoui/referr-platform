@@ -10,14 +10,14 @@ import {
   LEADERBOARD_MONTHLY,
   LEADERBOARD_WK_LEAGUE,
 } from "@/lib/mock-data";
-import { formatCurrency } from "@/lib/xp";
+import { formatCurrency, getLevelForXp } from "@/lib/xp";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 import type { LeaderboardTab } from "@/types/gamification";
 import type { Scout } from "@/types";
 
 const TABS: { id: LeaderboardTab; label: string }[] = [
   { id: "month", label: "Deze maand" },
-  { id: "wk-league", label: "WK Scout League" },
+  { id: "wk-league", label: "WK Finderz League" },
   { id: "all-time", label: "All-time" },
 ];
 
@@ -95,6 +95,7 @@ function ScoutRow({
           </div>
           <div>
             <span className="text-fk-navy">{scout.name}</span>
+            <p className="text-xs text-fk-primary">{getLevelForXp(scout.xp).name}</p>
             {scout.isCurrentUser && (
               <span className="ml-2 rounded-full bg-fk-primary px-2 py-0.5 text-xs font-bold text-fk-white">
                 Jij
@@ -113,6 +114,7 @@ function ScoutRow({
         </div>
       </td>
       <td className="px-6 py-4 text-fk-navy/70">{scout.placements}</td>
+      <td className="px-6 py-4 text-fk-navy/70">{scout.keepers ?? 0}</td>
       <td className="px-6 py-4 text-fk-navy/70">
         {formatCurrency(scout.reward)}
       </td>
@@ -222,16 +224,18 @@ export default function LeaderboardPage() {
             </div>
             <div>
               <h1 className="text-3xl font-extrabold text-fk-navy">
-                Leaderboard
+                🏆 Finderz League
               </h1>
-              <p className="text-fk-navy/60">Top scouts van Finderz Keeperz</p>
+              <p className="text-fk-navy/60">
+                Zie welke Finders de meeste impact maken binnen het Finderz Network
+              </p>
             </div>
           </div>
         </FadeIn>
 
         <FadeIn delay={50}>
           <p className="mb-6 rounded-xl border border-fk-primary/10 bg-fk-primary-muted px-4 py-3 text-sm font-medium text-fk-navy/70">
-            Seizoenrankings geven iedere Scout opnieuw kans om bovenaan te
+            Seizoenrankings geven iedere Finder opnieuw kans om bovenaan te
             eindigen.
           </p>
         </FadeIn>
@@ -310,9 +314,10 @@ export default function LeaderboardPage() {
                   <thead>
                     <tr className="border-b border-fk-primary/10 bg-fk-light">
                       <th className="px-6 py-4 font-semibold text-fk-navy/60">#</th>
-                      <th className="px-6 py-4 font-semibold text-fk-navy/60">Scout</th>
+                      <th className="px-6 py-4 font-semibold text-fk-navy/60">Finder</th>
                       <th className="px-6 py-4 font-semibold text-fk-navy/60">XP</th>
-                      <th className="px-6 py-4 font-semibold text-fk-navy/60">Plaatsingen</th>
+                      <th className="px-6 py-4 font-semibold text-fk-navy/60">Matches</th>
+                      <th className="px-6 py-4 font-semibold text-fk-navy/60">Keeperz gemaakt</th>
                       <th className="px-6 py-4 font-semibold text-fk-navy/60">Beloning</th>
                     </tr>
                   </thead>
@@ -358,7 +363,8 @@ export default function LeaderboardPage() {
                       animated={false}
                     />
                     <div className="mt-2 flex gap-4 text-sm text-fk-navy/60">
-                      <span>{scout.placements} plaatsingen</span>
+                      <span>{scout.placements} matches</span>
+                      <span>{scout.keepers ?? 0} Keeperz</span>
                       <span>{formatCurrency(scout.reward)}</span>
                     </div>
                   </div>

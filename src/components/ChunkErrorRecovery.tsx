@@ -24,7 +24,7 @@ export function ChunkErrorRecovery() {
     function tryReload(reason: string) {
       if (sessionStorage.getItem(storageKey)) return;
       sessionStorage.setItem(storageKey, "1");
-      console.warn("[Scout Engine] Stale chunk detected, reloading:", reason);
+      console.warn("[Finderz Network] Stale chunk detected, reloading:", reason);
       window.location.reload();
     }
 

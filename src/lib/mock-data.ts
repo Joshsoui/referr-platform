@@ -113,7 +113,7 @@ export const INITIAL_CANDIDATES: Candidate[] = [
 export const INITIAL_ACTIVITIES: Activity[] = [
   {
     id: "a1",
-    text: "Kevin de Vries aangedragen",
+    text: "Kevin de Vries getipt",
     xp: 35,
     timestamp: "2026-06-09T10:30:00",
   },
@@ -125,24 +125,25 @@ export const INITIAL_ACTIVITIES: Activity[] = [
   },
   {
     id: "a3",
-    text: "Mike van Dijk succesvol geplaatst",
+    text: "Mike van Dijk succesvolle match",
     xp: 500,
     timestamp: "2026-06-01T09:00:00",
   },
 ];
 
 export const INITIAL_LEADERBOARD: Scout[] = [
-  { rank: 1, name: "Lennart Lakeman", xp: 7250, placements: 8, reward: 2000 },
-  { rank: 2, name: "Emma Bakker", xp: 6180, placements: 6, reward: 1500 },
-  { rank: 3, name: "Peter Jansen", xp: 5430, placements: 5, reward: 1250 },
-  { rank: 4, name: "Mike de Groot", xp: 4980, placements: 4, reward: 1000 },
-  { rank: 5, name: "Sophie van der Meer", xp: 4750, placements: 4, reward: 1000 },
-  { rank: 6, name: "Kevin de Vries", xp: 4310, placements: 3, reward: 750 },
+  { rank: 1, name: "Lennart Lakeman", xp: 7250, placements: 8, keepers: 5, reward: 2000 },
+  { rank: 2, name: "Emma Bakker", xp: 6180, placements: 6, keepers: 4, reward: 1500 },
+  { rank: 3, name: "Peter Jansen", xp: 5430, placements: 5, keepers: 3, reward: 1250 },
+  { rank: 4, name: "Mike de Groot", xp: 4980, placements: 4, keepers: 2, reward: 1000 },
+  { rank: 5, name: "Sophie van der Meer", xp: 4750, placements: 4, keepers: 2, reward: 1000 },
+  { rank: 6, name: "Kevin de Vries", xp: 4310, placements: 3, keepers: 2, reward: 750 },
   {
     rank: 7,
     name: CURRENT_USER,
     xp: 4250,
     placements: 4,
+    keepers: 2,
     reward: 1250,
     isCurrentUser: true,
   },
@@ -153,7 +154,7 @@ export const DASHBOARD_STATS = {
   successfulPlacements: 4,
   totalReward: 1250,
   regionRank: 7,
-  region: "Noord-Holland",
+  region: "Finderz League",
 };
 
 export const LEADERBOARD_MONTHLY: Scout[] = [

@@ -15,7 +15,7 @@ export function RewardRules() {
         <h3 className="mb-4 text-lg font-bold text-fk-navy">XP-beloningen</h3>
         <p className="mb-4 text-sm text-fk-navy/60">
           XP verdien je met activiteit. Het is geen geld — het meet je progressie
-          als Scout.
+          als Finder.
         </p>
         <div className="space-y-2">
           {XP_REWARDS.map((item) => (
@@ -33,7 +33,7 @@ export function RewardRules() {
       <Card>
         <h3 className="mb-4 text-lg font-bold text-fk-navy">Cash-beloningen</h3>
         <p className="mb-4 text-sm text-fk-navy/60">
-          Cash verdien je alleen met resultaat. Geen cash voor alleen aandragen.
+          Cash verdien je alleen met resultaat. Geen geld voor alleen een naam.
         </p>
         <div className="space-y-2">
           {CASH_REWARDS.map((item) => (
@@ -54,7 +54,7 @@ export function RewardRules() {
           ))}
         </div>
         <p className="mt-4 text-sm font-semibold text-fk-primary">
-          Maximaal {formatCurrency(MAX_CASH_PER_CANDIDATE)} per kandidaat
+          Maximaal {formatCurrency(MAX_CASH_PER_CANDIDATE)} per talent
         </p>
       </Card>
 

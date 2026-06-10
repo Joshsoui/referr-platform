@@ -31,11 +31,11 @@ import { calculateConfidenceScore } from "@/lib/scoring";
 import type { CandidateFormData } from "@/types";
 
 const STEPS = [
-  "Kandidaat",
+  "Wie",
   "Sector",
-  "Interesse",
+  "Waarom",
   "Relatie",
-  "Aanbeveling",
+  "Keeper",
 ];
 
 const emptyForm: CandidateFormData = {
@@ -115,10 +115,13 @@ export default function AandragenPage() {
                 +10 XP{confidenceScore >= 70 ? " +25 bonus XP" : ""} verdiend!
               </div>
               <h1 className="animate-fade-in-up stagger-2 text-2xl font-extrabold text-fk-navy">
-                Kandidaat aangedragen!
+                Talent succesvol getipt!
               </h1>
               <p className="animate-fade-in-up stagger-3 mt-3 text-fk-navy/65">
-                <strong>{lastName}</strong> is succesvol geregistreerd.
+                <strong>{lastName}</strong> is getipt. Je hebt <strong>10 XP</strong> verdiend voor jouw tip.
+                {confidenceScore >= 70 && (
+                  <> Inclusief <strong>25 XP</strong> bonus voor een sterke tip.</>
+                )}
               </p>
               <div className="animate-fade-in-up stagger-3 mx-auto mt-6 max-w-sm text-left">
                 <ScoutConfidenceScore score={confidenceScore} size="lg" />
@@ -129,10 +132,10 @@ export default function AandragenPage() {
               <div className="animate-fade-in-up stagger-4 mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <Button href="/dashboard">Naar dashboard</Button>
                 <Button href="/leaderboard" variant="outline">
-                  Bekijk ranking
+                  Bekijk Finderz League
                 </Button>
                 <Button variant="secondary" onClick={() => setSubmitted(false)}>
-                  Nog een kandidaat
+                  Nieuw talent
                 </Button>
               </div>
             </div>
@@ -151,18 +154,18 @@ export default function AandragenPage() {
               <div>
                 <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-fk-white/20 bg-fk-white/10 px-3 py-1 text-xs font-semibold text-fk-white/90">
                   <Sparkles size={14} />
-                  Kwaliteit = hogere Scout Score
+                  Kwaliteit = hogere Finderz Score
                 </div>
                 <h1 className="text-3xl font-extrabold text-fk-white sm:text-4xl">
-                  Kandidaat aandragen
+                  Tip Talent
                 </h1>
                 <p className="mt-2 max-w-xl text-fk-white/85">
-                  Meer context = hogere Scout Confidence Score = sterkere
-                  referral en meer XP.
+                  Ken jij iemand die beter op zijn plek zou zitten? Tip dit
+                  talent bij Finderz Keeperz.
                 </p>
               </div>
               <div className="rounded-2xl border border-fk-white/20 bg-fk-white/10 px-5 py-3 backdrop-blur-sm">
-                <p className="text-xs text-fk-white/70">Live confidence preview</p>
+                <p className="text-xs text-fk-white/70">Talent Confidence Score</p>
                 <p className="text-2xl font-extrabold text-fk-white">{previewScore}/100</p>
               </div>
             </div>
@@ -203,11 +206,11 @@ export default function AandragenPage() {
                     <div className="animate-fade-in-up space-y-4">
                       <h2 className="flex items-center gap-2 text-lg font-bold text-fk-navy">
                         <User size={20} className="text-fk-primary" />
-                        Stap 1: Kandidaat
+                        Stap 1: Wie wil je tippen?
                       </h2>
                       <div>
                         <label htmlFor="name" className="mb-1.5 block text-sm font-semibold text-fk-navy">
-                          Naam kandidaat *
+                          Naam talent *
                         </label>
                         <input
                           id="name"
@@ -221,7 +224,7 @@ export default function AandragenPage() {
                       </div>
                       <div>
                         <label htmlFor="linkedin" className="mb-1.5 block text-sm font-semibold text-fk-navy">
-                          LinkedIn profiel URL *
+                          LinkedIn-profiel *
                         </label>
                         <input
                           id="linkedin"
@@ -270,7 +273,7 @@ export default function AandragenPage() {
                     <div className="animate-fade-in-up space-y-4">
                       <h2 className="flex items-center gap-2 text-lg font-bold text-fk-navy">
                         <Briefcase size={20} className="text-fk-primary" />
-                        Stap 2: Sector
+                        Stap 2: Waar past dit talent?
                       </h2>
                       <select
                         required
@@ -297,7 +300,7 @@ export default function AandragenPage() {
                   {step === 3 && (
                     <div className="animate-fade-in-up space-y-4">
                       <h2 className="text-lg font-bold text-fk-navy">
-                        Stap 3: Waarom interessant?
+                        Stap 3: Waarom tip je dit talent?
                       </h2>
                       <div className="grid gap-2 sm:grid-cols-2">
                         {INTEREST_REASONS.map((reason) => (
@@ -325,7 +328,7 @@ export default function AandragenPage() {
                   {step === 4 && (
                     <div className="animate-fade-in-up space-y-3">
                       <h2 className="text-lg font-bold text-fk-navy">
-                        Stap 4: Hoe goed ken je deze kandidaat?
+                        Stap 4: Hoe goed ken je dit talent?
                       </h2>
                       {RELATIONSHIP_OPTIONS.map((opt) => (
                         <label
@@ -353,7 +356,7 @@ export default function AandragenPage() {
                   {step === 5 && (
                     <div className="animate-fade-in-up space-y-4">
                       <h2 className="text-lg font-bold text-fk-navy">
-                        Stap 5: Korte aanbeveling
+                        Stap 5: Waarom denk je dat dit talent een Keeper kan worden?
                       </h2>
                       <textarea
                         required
@@ -400,7 +403,7 @@ export default function AandragenPage() {
                     ) : (
                       <Button type="submit" loading={loading} disabled={!canProceed()}>
                         <UserPlus size={18} />
-                        Kandidaat aandragen
+                        Tip Talent
                       </Button>
                     )}
                   </div>
@@ -415,13 +418,13 @@ export default function AandragenPage() {
               <Card variant="glass" className="border-fk-primary/20">
                 <h3 className="mb-2 flex items-center gap-2 font-bold text-fk-navy">
                   <Link2 size={18} className="text-fk-primary" />
-                  Scout-link
+                  Jouw Finderz Link
                 </h3>
                 <p className="mb-3 break-all text-xs font-semibold text-fk-primary">
                   {referralLink}
                 </p>
-                <Link href="/dashboard#scout-referral-link" className="text-sm font-semibold text-fk-primary hover:underline">
-                  Volledige referral card →
+                <Link href="/dashboard#finderz-link" className="text-sm font-semibold text-fk-primary hover:underline">
+                  Volledige Finderz Link card →
                 </Link>
               </Card>
             </div>

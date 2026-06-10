@@ -189,8 +189,8 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         }));
         addActivity(
           viaReferralLink
-            ? `${data.name} aangedragen via referral link (+${candidate.confidenceScore} confidence)`
-            : `${data.name} aangedragen (confidence ${candidate.confidenceScore})`,
+            ? `${data.name} getipt via Finderz Link`
+            : `${data.name} getipt`,
           xpGain
         );
         updateLeaderboardXp(xpGain);

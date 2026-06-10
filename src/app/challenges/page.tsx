@@ -12,13 +12,13 @@ export default function ChallengesPage() {
   const stats = [
     {
       icon: Users,
-      label: "Actieve scouts",
-      value: WK_LEAGUE_STATS.activeScouts.toLocaleString("nl-NL"),
+      label: "Actieve Finders",
+      value: WK_LEAGUE_STATS.activeFinders.toLocaleString("nl-NL"),
     },
     {
       icon: Target,
-      label: "Aangedragen kandidaten",
-      value: WK_LEAGUE_STATS.candidatesReferred.toString(),
+      label: "Talenten getipt",
+      value: WK_LEAGUE_STATS.talentsTipped.toString(),
     },
     {
       icon: Zap,
@@ -31,24 +31,20 @@ export default function ChallengesPage() {
     <div className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <FadeIn>
-          <Card
-            variant="highlight"
-            className="mb-8 overflow-hidden border-0 p-0"
-          >
+          <Card variant="highlight" className="mb-8 overflow-hidden border-0 p-0">
             <div className="relative p-8 sm:p-10">
               <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-fk-white/10 blur-3xl" />
               <div className="absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-fk-white/5 blur-2xl" />
 
               <div className="relative">
                 <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-fk-white/70">
-                  ⚽ Seizoenscompetitie
+                  🎯 Finderz Missions
                 </p>
                 <h1 className="text-3xl font-extrabold sm:text-4xl lg:text-5xl">
-                  WK SCOUT LEAGUE 2026
+                  Finderz Missions
                 </h1>
                 <p className="mt-4 max-w-2xl text-base text-fk-white/90 sm:text-lg">
-                  Iedereen kent talent. Word Scout tijdens het WK en help
-                  verborgen talent zichtbaar maken.
+                  Voltooi missies, verdien XP en stijg in de Finderz League.
                 </p>
 
                 <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-fk-white/25 bg-fk-white/10 px-4 py-2 text-sm font-medium backdrop-blur-sm">
@@ -62,10 +58,7 @@ export default function ChallengesPage() {
                       key={stat.label}
                       className="rounded-xl border border-fk-white/20 bg-fk-white/10 px-4 py-4 backdrop-blur-sm"
                     >
-                      <stat.icon
-                        size={20}
-                        className="mb-2 text-fk-white/70"
-                      />
+                      <stat.icon size={20} className="mb-2 text-fk-white/70" />
                       <p className="text-2xl font-extrabold tabular-nums">
                         {stat.value}
                       </p>
@@ -79,7 +72,7 @@ export default function ChallengesPage() {
                 <div className="mt-8">
                   <Button href="/leaderboard" variant="inverse">
                     <Trophy size={18} />
-                    Bekijk Ranking
+                    Bekijk Finderz League
                   </Button>
                 </div>
               </div>
@@ -94,10 +87,10 @@ export default function ChallengesPage() {
             </div>
             <div>
               <h2 className="text-2xl font-extrabold text-fk-navy">
-                Actieve Challenges
+                Actieve Finderz Missions
               </h2>
               <p className="text-sm text-fk-navy/60">
-                Verdien XP, badges en klim omhoog in de ranking
+                Tip talent. Maak impact. Verdien XP.
               </p>
             </div>
           </div>
@@ -117,7 +110,7 @@ export default function ChallengesPage() {
               href="/aandragen"
               className="btn-press inline-flex items-center gap-2 rounded-xl bg-fk-primary px-6 py-3 text-sm font-semibold text-fk-white shadow-md"
             >
-              Draag kandidaat aan en verdien XP
+              Tip Talent en verdien XP
             </Link>
           </div>
         </FadeIn>
