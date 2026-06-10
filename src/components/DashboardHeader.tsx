@@ -101,13 +101,17 @@ export function DashboardHeader({
       </FadeIn>
 
       <FadeIn delay={180}>
-        <Card variant="highlight" className="mb-4 border-0">
-          <div className="flex items-start gap-3">
+        <div className="relative mb-4 overflow-hidden rounded-2xl bg-gradient-to-r from-fk-navy via-fk-primary to-fk-secondary p-5 text-fk-white shadow-md">
+          <div
+            className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-fk-white/10 blur-2xl"
+            aria-hidden
+          />
+          <div className="relative flex items-start gap-3">
             <Target size={20} className="mt-0.5 shrink-0 text-fk-white/80" />
             <div className="flex-1">
-              <p className="font-bold text-fk-white">{progressTitle}</p>
+              <p className="font-bold">{progressTitle}</p>
               {next && (
-                <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-fk-white/20">
+                <div className="relative mt-3 h-2.5 overflow-hidden rounded-full bg-fk-white/20">
                   <div
                     className="progress-shine h-full rounded-full bg-gradient-to-r from-fk-white/90 to-fk-white/50 transition-all duration-1000"
                     style={{ width: `${progress}%` }}
@@ -122,7 +126,7 @@ export function DashboardHeader({
               )}
             </div>
           </div>
-        </Card>
+        </div>
       </FadeIn>
     </div>
   );

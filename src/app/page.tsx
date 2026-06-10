@@ -13,6 +13,7 @@ import Image from "next/image";
 import heroBg from "@/assets/hero-bg.png";
 import { FloatingOrbs } from "@/components/animations/FloatingOrbs";
 import { LiveTicker } from "@/components/animations/LiveTicker";
+import { PageHero } from "@/components/PageHero";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
@@ -179,27 +180,21 @@ export default function LandingPage() {
 
       {/* Onboarding CTA */}
       <section className="bg-fk-white px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-5xl">
-          <Card variant="highlight" hover className="animate-scale-in relative overflow-hidden text-center">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.12),transparent_60%)]" />
-            <div className="relative">
-              <h2 className="text-2xl font-extrabold sm:text-3xl">
-                Klaar om jouw netwerk in te zetten?
-              </h2>
-              <p className="mx-auto mt-4 max-w-xl text-fk-white/80">
-                Ontdek waarom Scout worden de moeite waard is — van XP en levels
-                tot beloningen bij succesvolle matches.
-              </p>
-              <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Button href="/why-scout" variant="on-dark">
-                  Waarom Scout worden?
-                </Button>
-                <Button href="/dashboard" variant="inverse">
-                  Bekijk dashboard
-                </Button>
-              </div>
+        <div className="mx-auto max-w-5xl animate-scale-in">
+          <PageHero
+            heading="h2"
+            title="Klaar om jouw netwerk in te zetten?"
+            subtitle="Ontdek waarom Scout worden de moeite waard is — van XP en levels tot beloningen bij succesvolle matches."
+          >
+            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Button href="/why-scout" variant="on-dark">
+                Waarom Scout worden?
+              </Button>
+              <Button href="/dashboard" variant="inverse">
+                Bekijk dashboard
+              </Button>
             </div>
-          </Card>
+          </PageHero>
         </div>
       </section>
     </div>

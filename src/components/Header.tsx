@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
+import { ArrowRight, Menu, UserPlus, X } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/finderz-keeperz-logo.png";
 
@@ -23,13 +23,13 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-fk-primary/10 bg-fk-white/95 shadow-sm backdrop-blur-md transition-shadow duration-300">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
-        <Link href="/" className="shrink-0">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-3.5 lg:px-8">
+        <Link href="/" className="group shrink-0 transition-opacity hover:opacity-90">
           <Image
             src={logo}
             alt="Finderz Keeperz"
             priority
-            className="h-12 w-auto sm:h-14"
+            className="h-[3.25rem] w-auto sm:h-[3.75rem] lg:h-[4.25rem]"
           />
         </Link>
 
@@ -55,9 +55,14 @@ export function Header() {
         <div className="flex shrink-0 items-center gap-2">
           <Link
             href="/aandragen"
-            className="btn-press hidden rounded-xl bg-fk-primary px-3 py-2 text-xs font-semibold text-fk-white shadow-sm sm:inline-flex sm:px-4 sm:py-2.5 sm:text-sm"
+            className="header-cta group hidden items-center gap-2 sm:inline-flex"
           >
-            Draag aan
+            <UserPlus size={16} className="shrink-0" />
+            <span>Draag aan</span>
+            <ArrowRight
+              size={15}
+              className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
+            />
           </Link>
 
           <button
@@ -94,9 +99,11 @@ export function Header() {
             <Link
               href="/aandragen"
               onClick={() => setMobileOpen(false)}
-              className="mt-2 rounded-xl bg-fk-primary px-4 py-2.5 text-center text-sm font-semibold text-fk-white"
+              className="header-cta mt-2 justify-center"
             >
-              Draag kandidaat aan
+              <UserPlus size={16} />
+              <span>Draag kandidaat aan</span>
+              <ArrowRight size={15} />
             </Link>
           </div>
         </nav>

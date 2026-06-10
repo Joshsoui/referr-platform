@@ -6,13 +6,13 @@ import {
   Award,
   Briefcase,
   Coins,
-  Sparkles,
   Star,
   TrendingUp,
   Users,
   Zap,
 } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
+import { PageHero } from "@/components/PageHero";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import {
@@ -47,24 +47,12 @@ export default function WhyScoutPage() {
       <div className="mx-auto max-w-5xl">
         {/* Hero */}
         <FadeIn>
-          <Card variant="highlight" className="mb-16 overflow-hidden border-0 p-0">
-            <div className="relative px-6 py-14 text-center sm:px-10 sm:py-16">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.12),transparent_60%)]" />
-              <div className="relative">
-                <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-fk-white/70">
-                  Finderz Keeperz Scout Engine
-                </p>
-                <h1 className="text-4xl font-extrabold sm:text-5xl">
-                  Waarom Scout worden?
-                </h1>
-                <p className="mx-auto mt-5 max-w-2xl text-lg text-fk-white/90">
-                  Iedereen kent wel iemand die beter op zijn plek zou zitten.
-                  Met Scout Engine help je talent vooruit én bouw je aan je
-                  eigen reputatie.
-                </p>
-              </div>
-            </div>
-          </Card>
+          <PageHero
+            className="mb-16"
+            overline="Finderz Keeperz Scout Engine"
+            title="Waarom Scout worden?"
+            subtitle="Iedereen kent wel iemand die beter op zijn plek zou zitten. Met Scout Engine help je talent vooruit én bouw je aan je eigen reputatie."
+          />
         </FadeIn>
 
         {/* Section 1 */}
@@ -281,11 +269,11 @@ export default function WhyScoutPage() {
 
         {/* Section 8 CTA */}
         <FadeIn>
-          <Card variant="highlight" className="border-0 text-center">
-            <Sparkles size={28} className="mx-auto mb-4 text-fk-white/80" />
-            <h2 className="text-2xl font-extrabold sm:text-3xl">
-              Klaar om jouw eerste kandidaat aan te dragen?
-            </h2>
+          <PageHero
+            heading="h2"
+            title="Klaar om jouw eerste kandidaat aan te dragen?"
+            className="text-center"
+          >
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button href="/dashboard" variant="inverse">
                 Word Scout
@@ -297,7 +285,7 @@ export default function WhyScoutPage() {
                 Bekijk WK Scout League
               </Button>
             </div>
-          </Card>
+          </PageHero>
         </FadeIn>
       </div>
     </div>
