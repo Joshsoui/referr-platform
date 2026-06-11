@@ -4,6 +4,7 @@ import { Crown, Medal, Sparkles, Trophy, Zap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { Card } from "@/components/ui/Card";
+import { GradientText } from "@/components/ui/GradientText";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { useScout } from "@/context/ScoutContext";
 import { LEADERBOARD_MONTHLY } from "@/lib/mock-data";
@@ -217,6 +218,9 @@ export default function LeaderboardPage() {
             <div>
               <h1 className="text-3xl font-extrabold text-fk-navy">
                 🏆 Finderz League
+                <GradientText as="span" className="mt-1 block text-xl sm:text-2xl">
+                  Wie maakt de meeste impact?
+                </GradientText>
               </h1>
               <p className="text-fk-navy/60">
                 Zie welke Finders de meeste impact maken binnen het Finderz Network

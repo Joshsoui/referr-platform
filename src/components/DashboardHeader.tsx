@@ -14,6 +14,7 @@ import {
 import { FadeIn } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { GradientText } from "@/components/ui/GradientText";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 import { useScout } from "@/context/ScoutContext";
 import { LEVEL_DEFINITIONS } from "@/lib/mockLevels";
@@ -119,6 +120,13 @@ export function DashboardHeader({
                   </p>
                   <h1 className="mt-1 text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
                     Iedereen kent talent.
+                    <GradientText
+                      variant="flame-light"
+                      as="span"
+                      className="mt-1 block text-2xl sm:text-3xl lg:text-4xl"
+                    >
+                      Jij maakt het zichtbaar.
+                    </GradientText>
                   </h1>
                   <p className="mt-4 max-w-2xl text-base leading-relaxed text-fk-white/90 sm:text-lg">
                     Met het Finderz Network tip je talent uit jouw netwerk, bouw

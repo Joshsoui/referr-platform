@@ -4,6 +4,7 @@ import { Briefcase } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { VacancyCard } from "@/components/VacancyCard";
 import { Card } from "@/components/ui/Card";
+import { GradientText } from "@/components/ui/GradientText";
 import { useScout } from "@/context/ScoutContext";
 
 export default function VacaturesPage() {
@@ -19,7 +20,15 @@ export default function VacaturesPage() {
               <Briefcase size={22} />
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold text-fk-navy">Vacatures</h1>
+              <h1 className="text-3xl font-extrabold text-fk-navy">
+                Vacatures
+                <GradientText
+                  as="span"
+                  className="mt-1 block text-xl sm:text-2xl"
+                >
+                  Hoe hoger de difficulty, hoe hoger de beloning.
+                </GradientText>
+              </h1>
               <p className="text-fk-navy/60">
                 Openstaande rollen — beloning hangt af van difficulty
               </p>

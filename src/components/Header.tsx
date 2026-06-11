@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ArrowRight, Menu, UserPlus, X } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/finderz-keeperz-logo.png";
+import { useDeckTheme } from "@/context/DeckThemeContext";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
@@ -21,11 +22,18 @@ const navLinks = [
 export function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { enabled: deckTheme } = useDeckTheme();
 
   if (pathname === "/founders-deck") return null;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-fk-primary/10 bg-fk-white/95 shadow-sm backdrop-blur-md transition-shadow duration-300">
+    <header
+      className={`sticky top-0 z-50 shadow-sm backdrop-blur-md transition-shadow duration-300 ${
+        deckTheme
+          ? "fk-deck-header border-b border-fk-primary/15 bg-fk-white/80"
+          : "border-b border-fk-primary/10 bg-fk-white/95"
+      }`}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-3.5 lg:px-8">
         <Link href="/" className="group shrink-0 transition-opacity hover:opacity-90">
           <Image
@@ -43,9 +51,13 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`shrink-0 rounded-lg px-2 py-2 text-xs font-medium transition-all duration-200 sm:px-2.5 sm:text-sm ${
+                className={`shrink-0 px-2 py-2 text-xs font-medium transition-all duration-200 sm:px-2.5 sm:text-sm ${
+                  deckTheme ? "rounded-full" : "rounded-lg"
+                } ${
                   active
-                    ? "bg-fk-primary-muted text-fk-primary shadow-sm"
+                    ? deckTheme
+                      ? "bg-gradient-to-r from-fk-primary/12 to-fk-secondary/10 text-fk-primary shadow-sm ring-1 ring-fk-primary/15"
+                      : "bg-fk-primary-muted text-fk-primary shadow-sm"
                     : "text-fk-navy/70 hover:bg-fk-light hover:text-fk-navy"
                 }`}
               >

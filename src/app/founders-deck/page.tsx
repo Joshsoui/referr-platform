@@ -40,6 +40,7 @@ import {
 import { ScrollReveal } from "@/components/founders-deck/ScrollReveal";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { GradientText } from "@/components/ui/GradientText";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 
 const RECRUITMENT_FLOW = [
@@ -431,8 +432,10 @@ export default function FoundersDeckPage() {
           <SectionLabel>De realiteit</SectionLabel>
           <h2 className="max-w-3xl text-3xl font-extrabold text-fk-navy sm:text-4xl lg:text-5xl">
             We spenderen duizenden euro&apos;s om kandidaten te vinden.
-            <span className="mt-2 block bg-gradient-to-r from-rose-600 via-orange-500 to-amber-500 bg-clip-text text-transparent">
-              En het wordt alleen maar duurder.
+            <span className="mt-2 block">
+              <GradientText as="span" className="text-3xl sm:text-4xl lg:text-5xl">
+                En het wordt alleen maar duurder.
+              </GradientText>
             </span>
           </h2>
         </ScrollReveal>
@@ -554,9 +557,9 @@ export default function FoundersDeckPage() {
           <SectionLabel>Gamification</SectionLabel>
           <h2 className="text-3xl font-extrabold text-fk-navy sm:text-4xl">
             Mensen houden van progressie.
-            <span className="mt-2 block bg-gradient-to-r from-amber-500 via-fk-primary to-violet-500 bg-clip-text text-transparent">
+            <GradientText variant="cool" as="span" className="mt-2 block text-3xl sm:text-4xl">
               En van zichtbare beloning.
-            </span>
+            </GradientText>
           </h2>
         </ScrollReveal>
 

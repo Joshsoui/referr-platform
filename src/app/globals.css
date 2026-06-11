@@ -411,6 +411,71 @@ body {
   animation: progress-shine 2.5s ease-in-out infinite;
 }
 
+/* ── Founders-deck theme preview (toggle lokaal) ── */
+html.fk-deck-theme body {
+  background: linear-gradient(
+    180deg,
+    var(--color-fk-light) 0%,
+    #eef5f9 45%,
+    var(--color-fk-light) 100%
+  );
+}
+
+html.fk-deck-theme main h1,
+html.fk-deck-theme main h2 {
+  letter-spacing: -0.02em;
+}
+
+html.fk-deck-theme main h1 {
+  font-weight: 800;
+}
+
+html.fk-deck-theme main h2 {
+  font-weight: 800;
+}
+
+html.fk-deck-theme .fk-deck-card {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease,
+    border-color 0.35s ease;
+}
+
+html.fk-deck-theme .fk-deck-card:hover {
+  border-color: rgba(0, 97, 146, 0.22);
+  box-shadow: 0 16px 40px -12px rgba(0, 43, 69, 0.14);
+}
+
+html.fk-deck-theme .fk-deck-header {
+  box-shadow: 0 8px 32px -12px rgba(0, 43, 69, 0.1);
+}
+
+html.fk-deck-theme main .grid > div[class*="rounded"] {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+html.fk-deck-theme main section {
+  position: relative;
+}
+
+html.fk-deck-theme main [class*="border-fk-primary"] {
+  border-color: rgba(0, 97, 146, 0.14);
+}
+
+html.fk-deck-theme main .text-fk-primary {
+  text-shadow: 0 0 0 transparent;
+}
+
+html.fk-deck-theme main a.rounded-xl,
+html.fk-deck-theme main button.rounded-xl {
+  transition: transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+html.fk-deck-theme main a.rounded-xl:hover,
+html.fk-deck-theme main button.rounded-xl:hover {
+  transform: translateY(-1px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

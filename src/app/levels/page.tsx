@@ -4,6 +4,7 @@ import { Crown, Layers, TrendingUp, Zap } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { LevelOverview } from "@/components/LevelOverview";
 import { Card } from "@/components/ui/Card";
+import { GradientText } from "@/components/ui/GradientText";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { useScout } from "@/context/ScoutContext";
 import { LEVEL_DEFINITIONS } from "@/lib/mockLevels";
@@ -28,7 +29,12 @@ export default function LevelsPage() {
               <Layers size={22} />
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold text-fk-navy">Levels</h1>
+              <h1 className="text-3xl font-extrabold text-fk-navy">
+                Levels
+                <GradientText as="span" className="mt-1 block text-xl sm:text-2xl">
+                  Stijg op. Ontgrendel meer.
+                </GradientText>
+              </h1>
               <p className="text-fk-navy/60">
                 Progressieladder met privileges per level
               </p>

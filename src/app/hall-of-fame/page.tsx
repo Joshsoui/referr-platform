@@ -4,6 +4,7 @@ import { ArrowRight, Crown, Medal, Sparkles, Star, Trophy } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { GradientText } from "@/components/ui/GradientText";
 import {
   BEST_FINDER_ALL_TIME,
   BEST_FINDER_MONTH,
@@ -102,6 +103,13 @@ export default function HallOfFamePage() {
                 </div>
                 <h1 className="text-4xl font-extrabold sm:text-5xl lg:text-6xl">
                   Hall of Fame
+                  <GradientText
+                    variant="flame-light"
+                    as="span"
+                    className="mt-2 block text-2xl sm:text-3xl lg:text-4xl"
+                  >
+                    Legends van het Finderz Network.
+                  </GradientText>
                 </h1>
                 <p className="mx-auto mt-4 max-w-2xl text-base text-fk-white/90 sm:text-lg">
                   De beste Finders binnen het Finderz Network. Legends die

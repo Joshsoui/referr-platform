@@ -19,6 +19,7 @@ import { FadeIn } from "@/components/animations/FadeIn";
 import { ScoutConfidenceScore } from "@/components/ScoutConfidenceScore";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { GradientText } from "@/components/ui/GradientText";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { useScout } from "@/context/ScoutContext";
 import {
@@ -158,6 +159,13 @@ export default function AandragenPage() {
                 </div>
                 <h1 className="text-3xl font-extrabold text-fk-white sm:text-4xl">
                   Tip Talent
+                  <GradientText
+                    variant="flame-light"
+                    as="span"
+                    className="mt-2 block text-2xl sm:text-3xl"
+                  >
+                    Eén tip kan alles veranderen.
+                  </GradientText>
                 </h1>
                 <p className="mt-2 max-w-xl text-fk-white/85">
                   Ken jij iemand die beter op zijn plek zou zitten? Tip dit

@@ -6,6 +6,7 @@ import { FadeIn } from "@/components/animations/FadeIn";
 import { ChallengeCard } from "@/components/ChallengeCard";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { GradientText } from "@/components/ui/GradientText";
 import { useScout } from "@/context/ScoutContext";
 import { getActiveMissions, getCompletedMissions } from "@/lib/missions";
 import { DifficultyBadge } from "@/components/DifficultyBadge";
@@ -54,6 +55,13 @@ export default function ChallengesPage() {
                 </p>
                 <h1 className="text-3xl font-extrabold sm:text-4xl">
                   Finderz Missions
+                  <GradientText
+                    variant="flame-light"
+                    as="span"
+                    className="mt-2 block text-2xl sm:text-3xl"
+                  >
+                    Voltooi missies. Verdien XP.
+                  </GradientText>
                 </h1>
                 <p className="mt-4 max-w-2xl text-base text-fk-white/90">
                   Voltooi Missions automatisch door talent te tippen en

@@ -18,6 +18,7 @@ import { ReferralLinkCard } from "@/components/ReferralLinkCard";
 import { RewardsWidget } from "@/components/RewardsWidget";
 import { ScoutConfidenceScore } from "@/components/ScoutConfidenceScore";
 import { Card } from "@/components/ui/Card";
+import { GradientText } from "@/components/ui/GradientText";
 import { useScout } from "@/context/ScoutContext";
 import { CURRENT_USER } from "@/lib/mock-data";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
@@ -122,9 +123,9 @@ export default function DashboardPage() {
         <FadeIn delay={140}>
           <Card className="mb-8 overflow-hidden border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-fk-white to-amber-100/40 shadow-md shadow-amber-100/50">
             <div className="p-6 sm:p-8">
-              <p className="text-2xl font-extrabold text-amber-900 sm:text-3xl">
+              <GradientText variant="gold" as="p" className="text-2xl font-extrabold sm:text-3xl">
                 {KEEPER_BONUS.title}
-              </p>
+              </GradientText>
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-fk-navy/70">
                 {KEEPER_BONUS.description}
               </p>

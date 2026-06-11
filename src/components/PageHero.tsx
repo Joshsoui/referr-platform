@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
+import { GradientText } from "@/components/ui/GradientText";
 
 interface PageHeroProps {
   overline?: string;
   title: string;
+  accent?: string;
   subtitle?: string;
   children?: ReactNode;
   className?: string;
@@ -12,6 +14,7 @@ interface PageHeroProps {
 export function PageHero({
   overline,
   title,
+  accent,
   subtitle,
   children,
   className = "",
@@ -41,6 +44,15 @@ export function PageHero({
         <Heading className="text-4xl font-extrabold tracking-tight sm:text-5xl">
           {title}
         </Heading>
+        {accent && (
+          <GradientText
+            variant="flame-light"
+            as="p"
+            className="mt-3 text-2xl font-extrabold sm:text-3xl"
+          >
+            {accent}
+          </GradientText>
+        )}
         {subtitle && (
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-fk-white/90 sm:text-lg">
             {subtitle}

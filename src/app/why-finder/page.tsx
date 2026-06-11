@@ -13,6 +13,7 @@ import { FadeIn } from "@/components/animations/FadeIn";
 import { PageHero } from "@/components/PageHero";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { GradientText } from "@/components/ui/GradientText";
 import {
   WHY_FINDER_LEVEL_LADDER,
   WHY_FINDER_SPECIALIST_BADGES,
@@ -20,15 +21,22 @@ import {
 
 function SectionTitle({
   title,
+  accent,
   subtitle,
 }: {
   title: string;
+  accent?: string;
   subtitle?: string;
 }) {
   return (
     <div className="mb-8 text-center">
       <h2 className="text-2xl font-extrabold text-fk-navy sm:text-3xl">
         {title}
+        {accent && (
+          <GradientText as="span" className="mt-2 block text-xl sm:text-2xl">
+            {accent}
+          </GradientText>
+        )}
       </h2>
       {subtitle && (
         <p className="mx-auto mt-3 max-w-2xl text-fk-navy/60">{subtitle}</p>
@@ -46,6 +54,7 @@ export default function WhyFinderPage() {
             className="mb-16"
             overline="Finderz Keeperz · Finderz Network"
             title="Waarom Finder worden?"
+            accent="Zichtbaar maken loont."
             subtitle="Iedereen kent talent. Niet iedereen doet er iets mee. Het Finderz Network helpt jou om talent uit je netwerk zichtbaar te maken."
           />
         </FadeIn>

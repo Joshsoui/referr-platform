@@ -28,7 +28,9 @@ export default function RootLayout({
       >
         <Providers>
           <Header />
-          <main>{children}</main>
+          <main className="relative z-[1] min-h-[calc(100vh-4rem)]">
+            {children}
+          </main>
         </Providers>
       </body>
     </html>

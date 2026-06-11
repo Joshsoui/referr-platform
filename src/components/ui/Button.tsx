@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { useDeckTheme } from "@/context/DeckThemeContext";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
@@ -37,7 +40,10 @@ export function Button({
   type = "button",
   ...props
 }: ButtonProps) {
-  const classes = `btn-press inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-colors disabled:opacity-60 disabled:pointer-events-none ${variants[variant]} ${className}`;
+  const { enabled: deckTheme } = useDeckTheme();
+  const primaryClass =
+    deckTheme && variant === "primary" ? "header-cta border-0" : variants[variant];
+  const classes = `btn-press inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-colors disabled:opacity-60 disabled:pointer-events-none ${primaryClass} ${className}`;
 
   const content = loading ? (
     <>

@@ -13,6 +13,7 @@ import { RewardRules } from "@/components/RewardRules";
 import { VacatureRewardsSection } from "@/components/VacatureRewardsSection";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { GradientText } from "@/components/ui/GradientText";
 import { useScout } from "@/context/ScoutContext";
 import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 import { formatCurrency } from "@/lib/xp";
@@ -65,6 +66,13 @@ export default function RewardsPage() {
                 </div>
                 <h1 className="text-3xl font-extrabold sm:text-4xl lg:text-5xl">
                   Verdienen binnen het Finderz Network
+                  <GradientText
+                    variant="flame-light"
+                    as="span"
+                    className="mt-2 block text-2xl sm:text-3xl"
+                  >
+                    Activiteit én kwaliteit.
+                  </GradientText>
                 </h1>
                 <p className="mt-4 max-w-2xl text-base text-fk-white/90 sm:text-lg">
                   XP, Finderz Score en cash zijn bewust gescheiden. Zo beloon je
