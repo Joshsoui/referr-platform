@@ -1,24 +1,30 @@
 "use client";
 
-import { Clock, Euro, Sparkles, Zap } from "lucide-react";
+import { Clock, Euro, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
+import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 import { formatCurrency } from "@/lib/xp";
 import type { RewardSummary } from "@/types/incentives";
-import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
 
 interface RewardsWidgetProps {
   xp: number;
   rewards: RewardSummary;
 }
 
-export function RewardsWidget({ xp, rewards }: RewardsWidgetProps) {
-  const animatedXp = useAnimatedNumber(xp);
+export function RewardsWidget({ rewards }: RewardsWidgetProps) {
+  const earned = useAnimatedNumber(rewards.cashEarned);
+  const pending = useAnimatedNumber(rewards.cashPending);
 
   return (
     <Card className="mb-8 border-fk-primary/15" hover>
       <div className="mb-4 flex items-center justify-between gap-4">
-        <h2 className="text-xl font-bold text-fk-navy">Jouw beloningen</h2>
+        <div>
+          <h2 className="text-xl font-bold text-fk-navy">Jouw beloningen</h2>
+          <p className="mt-0.5 text-sm text-fk-navy/55">
+            Wat al binnen is — en wat nog onderweg is
+          </p>
+        </div>
         <Link
           href="/rewards"
           className="text-sm font-semibold text-fk-primary hover:underline"
@@ -27,32 +33,23 @@ export function RewardsWidget({ xp, rewards }: RewardsWidgetProps) {
         </Link>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
-        <div className="rounded-xl border border-fk-primary/10 bg-fk-primary/5 p-4">
-          <Zap size={18} className="mb-2 text-fk-primary" />
-          <p className="text-xs font-semibold uppercase tracking-wider text-fk-navy/50">
-            XP verdiend
-          </p>
-          <p className="text-2xl font-extrabold tabular-nums text-fk-primary">
-            {animatedXp.toLocaleString("nl-NL")}
-          </p>
-        </div>
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 transition-transform duration-300 hover:scale-[1.01]">
           <Euro size={18} className="mb-2 text-emerald-600" />
           <p className="text-xs font-semibold uppercase tracking-wider text-fk-navy/50">
-            Cash verdiend
+            Totaal verdiend
           </p>
-          <p className="text-2xl font-extrabold text-emerald-800">
-            {formatCurrency(rewards.cashEarned)}
+          <p className="text-2xl font-extrabold tabular-nums text-emerald-800">
+            {formatCurrency(earned)}
           </p>
         </div>
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 transition-transform duration-300 hover:scale-[1.01]">
           <Clock size={18} className="mb-2 text-amber-600" />
           <p className="text-xs font-semibold uppercase tracking-wider text-fk-navy/50">
             In behandeling
           </p>
-          <p className="text-2xl font-extrabold text-amber-800">
-            {formatCurrency(rewards.cashPending)}
+          <p className="text-2xl font-extrabold tabular-nums text-amber-800">
+            {formatCurrency(pending)}
           </p>
         </div>
       </div>

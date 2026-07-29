@@ -19,12 +19,17 @@ import {
 import { CURRENT_SCOUT_REFERRAL, type ReferralProfile } from "@/lib/mockReferrals";
 import { syncMissions } from "@/lib/missions";
 import {
+  getCashNotification,
+  getStatusChangeNotification,
+} from "@/lib/recommendationStatus";
+import {
   CONFIDENCE_BONUS_THRESHOLD,
   CONFIDENCE_BONUS_XP,
   INITIAL_REWARD_SUMMARY,
 } from "@/lib/mockRewards";
 import { INITIAL_VACANCIES } from "@/lib/mockVacancies";
 import type { Challenge } from "@/types/gamification";
+import type { AppNotification } from "@/types/notifications";
 import {
   getIntakeReward,
   getKeeperBonusReward,
@@ -62,6 +67,7 @@ interface ScoutContextValue {
   xp: number;
   xpPulse: number;
   xpEvents: XpEvent[];
+  notifications: AppNotification[];
   candidates: Candidate[];
   activities: Activity[];
   leaderboard: Scout[];
@@ -92,6 +98,16 @@ interface ScoutContextValue {
 }
 
 const ScoutContext = createContext<ScoutContextValue | null>(null);
+
+function sortLeaderboardByImpact(leaderboard: Scout[]): Scout[] {
+  return [...leaderboard]
+    .sort((a, b) => {
+      if (b.placements !== a.placements) return b.placements - a.placements;
+      if (b.reward !== a.reward) return b.reward - a.reward;
+      return b.xp - a.xp;
+    })
+    .map((scout, index) => ({ ...scout, rank: index + 1 }));
+}
 
 function buildCandidate(
   data: CandidateFormData,
@@ -126,6 +142,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
   const [xp, setXp] = useState(4250);
   const [xpPulse, setXpPulse] = useState(0);
   const [xpEvents, setXpEvents] = useState<XpEvent[]>([]);
+  const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [candidates, setCandidates] = useState<Candidate[]>(INITIAL_CANDIDATES);
   const [activities, setActivities] = useState<Activity[]>(INITIAL_ACTIVITIES);
   const [leaderboard, setLeaderboard] = useState<Scout[]>(INITIAL_LEADERBOARD);
@@ -182,16 +199,58 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     setActivities((prev) => [activity, ...prev]);
   }, [nextId]);
 
+  const pushNotification = useCallback(
+    (notification: Omit<AppNotification, "id">) => {
+      idCounter.current += 1;
+      setNotifications((prev) => [
+        ...prev,
+        { ...notification, id: idCounter.current },
+      ]);
+    },
+    []
+  );
+
+  const updateLeaderboardCurrentUser = useCallback(
+    (updater: (scout: Scout) => Scout) => {
+      setLeaderboard((prev) =>
+        sortLeaderboardByImpact(
+          prev.map((scout) => (scout.isCurrentUser ? updater(scout) : scout))
+        )
+      );
+    },
+    []
+  );
+
   const updateLeaderboardXp = useCallback((xpGain: number) => {
     setLeaderboard((prev) => {
       const updated = prev.map((scout) =>
         scout.isCurrentUser ? { ...scout, xp: scout.xp + xpGain } : scout
       );
-      return updated
-        .sort((a, b) => b.xp - a.xp)
-        .map((scout, index) => ({ ...scout, rank: index + 1 }));
+      return sortLeaderboardByImpact(updated);
     });
   }, []);
+
+  const updateLeaderboardPlacements = useCallback(
+    (placementGain: number) => {
+      if (placementGain === 0) return;
+      updateLeaderboardCurrentUser((scout) => ({
+        ...scout,
+        placements: scout.placements + placementGain,
+      }));
+    },
+    [updateLeaderboardCurrentUser]
+  );
+
+  const updateLeaderboardReward = useCallback(
+    (rewardGain: number) => {
+      if (rewardGain === 0) return;
+      updateLeaderboardCurrentUser((scout) => ({
+        ...scout,
+        reward: scout.reward + rewardGain,
+      }));
+    },
+    [updateLeaderboardCurrentUser]
+  );
 
   const submitReferralCandidate = useCallback(
     (
@@ -217,10 +276,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         }));
         addActivity(
           viaReferralLink
-            ? `${data.name} getipt via Finderz Link`
-            : `${data.name} getipt`,
+            ? `${data.name} aangedragen via introductielink`
+            : `${data.name} aangedragen`,
           xpGain
         );
+        pushNotification({
+          kind: "submitted",
+          title: "Introductie verstuurd",
+          message: `Je introductie voor ${data.name} is ontvangen. We houden je op de hoogte.`,
+        });
         updateLeaderboardXp(xpGain);
         if (viaReferralLink) {
           setReferralProfile((prev) => ({
@@ -236,7 +300,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
 
       return candidate.confidenceScore;
     },
-    [addActivity, awardXp, nextId, updateLeaderboardXp]
+    [addActivity, awardXp, nextId, pushNotification, updateLeaderboardXp]
   );
 
   const submitCandidate = useCallback(
@@ -272,20 +336,31 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
               ...s,
               successfulPlacements: s.successfulPlacements + 1,
             }));
+            updateLeaderboardPlacements(1);
           }
 
           const actionLabel =
             newStatus === "intake_gepland"
-              ? "intake gepland"
+              ? "eerste gesprek gepland"
               : newStatus === "voorgesteld"
-                ? "voorgesteld bij klant"
+                ? "voorstel gedaan"
                 : newStatus === "geplaatst"
-                  ? "succesvol geplaatst"
+                  ? "kandidaat aangenomen"
                   : newStatus === "proeftijd_gehaald"
-                    ? "Keeper Status behaald"
+                    ? "succesvol geplaatst"
                     : STATUS_LABELS[newStatus].toLowerCase();
 
           addActivity(`${candidate.name} ${actionLabel}`, xpGain);
+
+          const statusNotice = getStatusChangeNotification(
+            candidate.name,
+            newStatus
+          );
+          pushNotification({
+            kind: statusNotice.kind,
+            title: statusNotice.title,
+            message: statusNotice.message,
+          });
         }
 
         return prev.map((c) =>
@@ -299,28 +374,52 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         );
       });
     },
-    [addActivity, awardXp, updateLeaderboardXp]
+    [
+      addActivity,
+      awardXp,
+      pushNotification,
+      updateLeaderboardPlacements,
+      updateLeaderboardXp,
+    ]
   );
 
   const approveReferral = useCallback(
     (id: string) => {
+      const candidate = candidates.find((c) => c.id === id);
       updateCandidateInState(id, (c) => ({
         ...c,
         referralApproval: "goedgekeurd" as ReferralApproval,
       }));
+
+      if (candidate?.referredBy === CURRENT_USER) {
+        pushNotification({
+          kind: "viewed",
+          title: "Introductie bekeken",
+          message: `Je introductie voor ${candidate.name} is bekeken.`,
+        });
+      }
     },
-    [updateCandidateInState]
+    [candidates, pushNotification, updateCandidateInState]
   );
 
   const rejectReferral = useCallback(
     (id: string) => {
+      const candidate = candidates.find((c) => c.id === id);
       updateCandidateInState(id, (c) => ({
         ...c,
         referralApproval: "afgekeurd" as ReferralApproval,
         cashStatus: "afgekeurd",
       }));
+
+      if (candidate?.referredBy === CURRENT_USER) {
+        pushNotification({
+          kind: "rejected",
+          title: "Introductie niet geaccepteerd",
+          message: `De introductie van ${candidate.name} past helaas niet bij de vacature.`,
+        });
+      }
     },
-    [updateCandidateInState]
+    [candidates, pushNotification, updateCandidateInState]
   );
 
   const markDuplicate = useCallback(
@@ -335,9 +434,28 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
 
   const setCashStatus = useCallback(
     (id: string, status: CashStatus) => {
+      const candidate = candidates.find((c) => c.id === id);
+      if (!candidate || candidate.cashStatus === status) return;
+
       updateCandidateInState(id, (c) => ({ ...c, cashStatus: status }));
+
+      if (
+        candidate.referredBy === CURRENT_USER &&
+        (status === "intake_in_behandeling" ||
+          status === "plaatsing_in_behandeling" ||
+          status === "afgekeurd")
+      ) {
+        const cashNotice = getCashNotification(candidate.name, status);
+        if (cashNotice) {
+          pushNotification({
+            kind: cashNotice.kind,
+            title: cashNotice.title,
+            message: cashNotice.message,
+          });
+        }
+      }
     },
-    [updateCandidateInState]
+    [candidates, pushNotification, updateCandidateInState]
   );
 
   const addVacancy = useCallback(
@@ -401,8 +519,32 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         cashPending: Math.max(0, r.cashPending - amount),
       }));
       setStats((s) => ({ ...s, totalReward: s.totalReward + amount }));
+      if (candidate.referredBy === CURRENT_USER) {
+        updateLeaderboardReward(amount);
+      }
+
+      if (candidate.referredBy === CURRENT_USER) {
+        const cashNotice = getCashNotification(
+          candidate.name,
+          "intake_goedgekeurd",
+          amount
+        );
+        if (cashNotice) {
+          pushNotification({
+            kind: cashNotice.kind,
+            title: cashNotice.title,
+            message: cashNotice.message,
+          });
+        }
+      }
     },
-    [candidates, getCandidateDifficulty, setCashStatus]
+    [
+      candidates,
+      getCandidateDifficulty,
+      pushNotification,
+      setCashStatus,
+      updateLeaderboardReward,
+    ]
   );
 
   const grantPlacementBonus = useCallback(
@@ -421,8 +563,33 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         cashPending: Math.max(0, r.cashPending - amount),
       }));
       setStats((s) => ({ ...s, totalReward: s.totalReward + amount }));
+      if (candidate.referredBy === CURRENT_USER) {
+        updateLeaderboardReward(amount);
+      }
+
+      if (candidate.referredBy === CURRENT_USER) {
+        const cashNotice = getCashNotification(
+          candidate.name,
+          "plaatsing_goedgekeurd",
+          amount
+        );
+        if (cashNotice) {
+          pushNotification({
+            kind: cashNotice.kind,
+            title: cashNotice.title,
+            message: cashNotice.message,
+          });
+        }
+      }
     },
-    [candidates, getCandidateDifficulty, setCashStatus, xp]
+    [
+      candidates,
+      getCandidateDifficulty,
+      pushNotification,
+      setCashStatus,
+      updateLeaderboardReward,
+      xp,
+    ]
   );
 
   const grantRetentionBonus = useCallback(
@@ -440,8 +607,33 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         cashEarned: r.cashEarned + amount,
       }));
       setStats((s) => ({ ...s, totalReward: s.totalReward + amount }));
+      if (candidate.referredBy === CURRENT_USER) {
+        updateLeaderboardReward(amount);
+      }
+
+      if (candidate.referredBy === CURRENT_USER) {
+        const cashNotice = getCashNotification(
+          candidate.name,
+          "retentie_goedgekeurd",
+          amount
+        );
+        if (cashNotice) {
+          pushNotification({
+            kind: cashNotice.kind,
+            title: cashNotice.title,
+            message: cashNotice.message,
+          });
+        }
+      }
     },
-    [candidates, getCandidateDifficulty, setCashStatus, xp]
+    [
+      candidates,
+      getCandidateDifficulty,
+      pushNotification,
+      setCashStatus,
+      updateLeaderboardReward,
+      xp,
+    ]
   );
 
   const revokeXp = useCallback(
@@ -473,6 +665,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       xp,
       xpPulse,
       xpEvents,
+      notifications,
       candidates,
       activities,
       leaderboard,
@@ -501,6 +694,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       xp,
       xpPulse,
       xpEvents,
+      notifications,
       candidates,
       activities,
       leaderboard,

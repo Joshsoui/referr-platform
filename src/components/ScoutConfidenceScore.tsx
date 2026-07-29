@@ -30,7 +30,7 @@ export function ScoutConfidenceScore({
       className={`rounded-xl border border-fk-primary/15 bg-fk-white ${sizeClasses.wrap}`}
     >
       <p className="text-xs font-semibold uppercase tracking-wider text-fk-secondary">
-        Talent Confidence Score
+        Kwaliteit introductie
       </p>
       <div className="mt-2 flex flex-wrap items-center gap-3">
         <p className={`font-extrabold tabular-nums text-fk-primary ${sizeClasses.score}`}>

@@ -1,0 +1,42 @@
+<section class="usp-bar" aria-label="Voordelen">
+  <div class="container">
+    <div class="usp-bar__grid">
+      {%- for i in (1..4) -%}
+        {%- liquid
+          case i
+            when 1
+              assign icon_name = 'shipping'
+              assign title = settings.usp_1_title
+              assign text = settings.usp_1_text
+            when 2
+              assign icon_name = 'return'
+              assign title = settings.usp_2_title
+              assign text = settings.usp_2_text
+            when 3
+              assign icon_name = 'shield'
+              assign title = settings.usp_3_title
+              assign text = settings.usp_3_text
+            when 4
+              assign icon_name = 'support'
+              assign title = settings.usp_4_title
+              assign text = settings.usp_4_text
+          endcase
+        -%}
+        <div class="usp-bar__item">
+          <span class="usp-bar__icon">{%- render 'icon', icon: icon_name -%}</span>
+          <div>
+            <div class="usp-bar__title">{{ title }}</div>
+            <div class="usp-bar__text">{{ text }}</div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "USP Balk",
+  "presets": [{ "name": "USP Balk" }]
+}
+{% endschema %}

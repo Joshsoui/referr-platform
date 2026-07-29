@@ -1,0 +1,43 @@
+{%- if product -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "description": {{ product.description | strip_html | truncate: 500 | json }},
+  "image": [
+    {%- for image in product.images limit: 5 -%}
+      {{ image | image_url: width: 1200 | prepend: "https:" | json }}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ],
+  "sku": {{ product.selected_or_first_available_variant.sku | json }},
+  "brand": {
+    "@type": "Brand",
+    "name": {{ product.vendor | default: settings.brand_name | json }}
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": {{ shop.url | append: product.url | json }},
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
+    "availability": "https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}",
+    "seller": {
+      "@type": "Organization",
+      "name": {{ shop.name | json }}
+    }
+  }
+  {%- assign rating = product.metafields.reviews.rating -%}
+  {%- assign count = product.metafields.reviews.rating_count -%}
+  {%- if rating != blank and count != blank -%}
+  ,
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": {{ rating | json }},
+    "reviewCount": {{ count | json }},
+    "bestRating": "5",
+    "worstRating": "1"
+  }
+  {%- endif -%}
+}
+</script>
+{%- endif -%}

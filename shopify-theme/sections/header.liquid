@@ -1,0 +1,70 @@
+<header class="site-header" role="banner">
+  <div class="container site-header__inner">
+    <button class="icon-btn menu-toggle" data-menu-toggle aria-label="{{ 'general.menu' | t }}" aria-expanded="false">
+      {%- render 'icon', icon: 'menu' -%}
+    </button>
+
+    <a href="{{ routes.root_url }}" class="site-header__logo">
+      {%- if settings.logo != blank -%}
+        <img
+          src="{{ settings.logo | image_url: width: settings.logo_width }}"
+          alt="{{ settings.brand_name | escape }}"
+          width="{{ settings.logo_width }}"
+          height="auto"
+          loading="eager"
+        >
+      {%- else -%}
+        <span class="site-header__logo-text">{{ settings.brand_name }}</span>
+      {%- endif -%}
+    </a>
+
+    <nav class="site-header__nav" aria-label="Hoofdnavigatie">
+      <ul class="site-header__nav-list">
+        {%- for link in linklists[section.settings.menu].links -%}
+          <li>
+            <a href="{{ link.url }}" class="site-header__nav-link">{{ link.title }}</a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="site-header__actions">
+      <a href="{{ routes.search_url }}" class="icon-btn" aria-label="{{ 'general.search' | t }}">
+        {%- render 'icon', icon: 'search' -%}
+      </a>
+      <a href="{{ routes.cart_url }}" class="icon-btn" aria-label="{{ 'general.cart' | t }}">
+        {%- render 'icon', icon: 'cart' -%}
+        <span class="cart-count" data-cart-count style="display:none;">0</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-nav" data-mobile-nav aria-hidden="true">
+  <div class="mobile-nav__panel">
+    <button class="icon-btn" data-menu-close aria-label="{{ 'general.close' | t }}">
+      {%- render 'icon', icon: 'close' -%}
+    </button>
+    <ul class="mobile-nav__list">
+      {%- for link in linklists[section.settings.menu].links -%}
+        <li>
+          <a href="{{ link.url }}" class="mobile-nav__link">{{ link.title }}</a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Navigatiemenu",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

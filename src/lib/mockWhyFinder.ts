@@ -1,15 +1,15 @@
 export const WHY_FINDER_SPECIALIST_BADGES = [
-  { icon: "🏭", name: "Production Finder" },
-  { icon: "⚙️", name: "Technical Finder" },
-  { icon: "🏗", name: "Construction Finder" },
-  { icon: "🧤", name: "Keeper Maker" },
-  { icon: "👑", name: "Finderz Legend" },
+  { icon: "🏭", name: "Productiekenner" },
+  { icon: "⚙️", name: "Technische kenner" },
+  { icon: "🏗", name: "Bouwkenner" },
+  { icon: "🧤", name: "Eerste plaatsing" },
+  { icon: "👑", name: "Netwerkleider" },
 ];
 
 export const WHY_FINDER_LEVEL_LADDER = [
-  "Finder",
-  "Senior Finder",
-  "Elite Finder",
-  "Master Finder",
-  "Finderz Legend",
+  "Nieuwe verbinder",
+  "Betrouwbare verbinder",
+  "Talentkenner",
+  "Topverbinder",
+  "Netwerkleider",
 ];

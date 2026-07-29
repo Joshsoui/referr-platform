@@ -1,0 +1,69 @@
+{%- assign collection = collections[section.settings.collection] -%}
+
+<section class="section section--gray" aria-labelledby="bestsellers-heading">
+  <div class="container">
+    <div class="section__header text-center">
+      <p class="section__subtitle">{{ section.settings.subtitle | default: 'Bestsellers' }}</p>
+      <h2 id="bestsellers-heading">{{ section.settings.title | default: 'Onze bestsellers' }}</h2>
+    </div>
+
+    {%- if collection != blank and collection.products_count > 0 -%}
+      <div class="product-grid">
+        {%- for product in collection.products limit: section.settings.products_to_show -%}
+          {%- render 'product-card', product: product -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="product-grid">
+        {%- for i in (1..4) -%}
+          <article class="product-card">
+            <div class="product-card__media">
+              <div class="product-card__badge"><span class="badge badge--popular">Populair product</span></div>
+              {{ 'product-' | append: i | placeholder_svg_tag }}
+            </div>
+            <div class="product-card__info">
+              <h3 class="product-card__title">Bestseller {{ i }}</h3>
+              <div class="price"><span class="price__current">€39,95</span><span class="price__compare">€59,95</span></div>
+              {%- render 'star-rating', rating: 5, count: 342 -%}
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bestsellers",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitel",
+      "default": "Bestsellers"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Onze bestsellers"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collectie"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "label": "Aantal producten"
+    }
+  ],
+  "presets": [{ "name": "Bestsellers" }]
+}
+{% endschema %}

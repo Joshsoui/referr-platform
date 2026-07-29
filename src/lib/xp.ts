@@ -17,16 +17,16 @@ export const STATUS_ORDER: CandidateStatus[] = [
 ];
 
 export const STATUS_LABELS: Record<CandidateStatus, string> = {
-  nieuw: "Talent getipt",
-  intake_gepland: "Intake gepland",
-  voorgesteld: "Voorgesteld",
-  geplaatst: "Succesvolle match",
-  proeftijd_gehaald: "Keeper Status behaald",
+  nieuw: "Introductie verstuurd",
+  intake_gepland: "Eerste gesprek gepland",
+  voorgesteld: "Voorstel gedaan",
+  geplaatst: "Kandidaat aangenomen",
+  proeftijd_gehaald: "Kandidaat aangenomen",
 };
 
 export const KEEPER_STATUS = {
-  title: "Keeper Status behaald",
-  description: "+1000 XP wanneer jouw talent Keeper Status behaalt.",
+  title: "Succesvolle plaatsing",
+  description: "Extra beloning wanneer de plaatsing standhoudt.",
   xpReward: 1000,
 };
 
@@ -37,11 +37,11 @@ export interface Level {
 }
 
 export const LEVELS: Level[] = [
-  { name: "Finder", minXp: 0, maxXp: 499 },
-  { name: "Senior Finder", minXp: 500, maxXp: 1499 },
-  { name: "Elite Finder", minXp: 1500, maxXp: 4999 },
-  { name: "Master Finder", minXp: 5000, maxXp: 9999 },
-  { name: "Finderz Legend", minXp: 10000, maxXp: Infinity },
+  { name: "Nieuwe verbinder", minXp: 0, maxXp: 499 },
+  { name: "Betrouwbare verbinder", minXp: 500, maxXp: 1499 },
+  { name: "Talentkenner", minXp: 1500, maxXp: 4999 },
+  { name: "Topverbinder", minXp: 5000, maxXp: 9999 },
+  { name: "Netwerkleider", minXp: 10000, maxXp: Infinity },
 ];
 
 export function getLevelForXp(xp: number): Level {

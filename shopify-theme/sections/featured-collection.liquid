@@ -1,0 +1,87 @@
+{%- assign collection = collections[section.settings.collection] -%}
+
+<section class="section" aria-labelledby="featured-heading-{{ section.id }}">
+  <div class="container">
+    <div class="section__header text-center">
+      {%- if section.settings.subtitle != blank -%}
+        <p class="section__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+      <h2 id="featured-heading-{{ section.id }}">{{ section.settings.title | default: 'Uitgelichte producten' }}</h2>
+      {%- if section.settings.description != blank -%}
+        <p class="text-muted">{{ section.settings.description }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- if collection != blank and collection.products_count > 0 -%}
+      <div class="product-grid">
+        {%- for product in collection.products limit: section.settings.products_to_show -%}
+          {%- render 'product-card', product: product -%}
+        {%- endfor -%}
+      </div>
+      {%- if section.settings.show_view_all -%}
+        <div class="text-center" style="margin-top:2.5rem;">
+          <a href="{{ collection.url }}" class="btn btn--secondary">{{ 'general.view_all' | t }}</a>
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <div class="product-grid">
+        {%- for i in (1..4) -%}
+          <article class="product-card">
+            <div class="product-card__media">{{ 'product-' | append: i | placeholder_svg_tag }}</div>
+            <div class="product-card__info">
+              <h3 class="product-card__title">Voorbeeldproduct {{ i }}</h3>
+              <div class="price"><span class="price__current">€29,95</span></div>
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Uitgelichte collectie",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitel",
+      "default": "Onze selectie"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Uitgelichte producten"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Beschrijving",
+      "default": "Ontdek onze meest populaire producten, zorgvuldig geselecteerd voor kwaliteit en stijl."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collectie"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4,
+      "label": "Aantal producten"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Toon 'Bekijk alles' knop",
+      "default": true
+    }
+  ],
+  "presets": [{ "name": "Uitgelichte collectie" }]
+}
+{% endschema %}

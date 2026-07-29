@@ -1,8 +1,13 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { Header } from "@/components/Header";
+import type { Metadata, Viewport } from "next";
+import { Inter, Manrope } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import "./globals.css";
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+  weight: ["400", "500", "600", "700"],
+});
 
 const inter = Inter({
   subsets: ["latin"],
@@ -10,9 +15,49 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Finderz Keeperz · Finderz Network",
+  title: {
+    default: "referr – Ken iemand. Maak het verschil.",
+    template: "%s · referr",
+  },
   description:
-    "Tip talent uit je netwerk, verdien XP en stijg in de Finderz League.",
+    "Ontdek challenges, introduceer iemand uit je netwerk en volg iedere stap. Bij een succesvolle plaatsing speel je een echte beloning vrij.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+  ),
+  applicationName: "referr",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/brand/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/brand/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  manifest: "/brand/manifest.webmanifest",
+  openGraph: {
+    title: "referr – Ken iemand. Maak het verschil.",
+    description:
+      "Ontdek challenges, introduceer iemand uit je netwerk en volg iedere stap.",
+    locale: "nl_NL",
+    type: "website",
+    siteName: "referr",
+    images: [
+      {
+        url: "/brand/og.png",
+        width: 1200,
+        height: 630,
+        alt: "referr",
+      },
+    ],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#ff4d59",
+  colorScheme: "light",
 };
 
 export default function RootLayout({
@@ -22,16 +67,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="nl" suppressHydrationWarning>
+      <head>
+        <link
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body
-        className={`${inter.variable} antialiased`}
+        className={`${manrope.variable} ${inter.variable} antialiased`}
         suppressHydrationWarning
       >
-        <Providers>
-          <Header />
-          <main className="relative z-[1] min-h-[calc(100vh-4rem)]">
-            {children}
-          </main>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

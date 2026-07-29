@@ -12,7 +12,7 @@ export interface HallOfFameEntry {
 export const HALL_OF_FAME_LEGENDS: HallOfFameEntry[] = [
   {
     name: "Lennart Lakeman",
-    level: "Finderz Legend",
+    level: "Netwerkleider",
     xp: 10250,
     placements: 8,
     keepers: 5,
@@ -22,7 +22,7 @@ export const HALL_OF_FAME_LEGENDS: HallOfFameEntry[] = [
   },
   {
     name: "Emma Bakker",
-    level: "Master Finder",
+    level: "Topverbinder",
     xp: 6180,
     placements: 6,
     keepers: 4,
@@ -31,7 +31,7 @@ export const HALL_OF_FAME_LEGENDS: HallOfFameEntry[] = [
   },
   {
     name: "Peter Jansen",
-    level: "Master Finder",
+    level: "Topverbinder",
     xp: 5430,
     placements: 5,
     keepers: 3,
@@ -42,7 +42,7 @@ export const HALL_OF_FAME_LEGENDS: HallOfFameEntry[] = [
 
 export const BEST_FINDER_MONTH = {
   name: "Emma Bakker",
-  level: "Elite Finder",
+  level: "Talentkenner",
   xp: 2180,
   placements: 2,
   keepers: 1,
@@ -52,7 +52,7 @@ export const BEST_FINDER_MONTH = {
 
 export const BEST_FINDER_ALL_TIME = {
   name: "Lennart Lakeman",
-  level: "Finderz Legend",
+  level: "Netwerkleider",
   xp: 10250,
   placements: 8,
   keepers: 5,

@@ -1,23 +1,23 @@
 export const FAIR_USE_RULES = [
-  "Alleen unieke talenten tellen mee.",
-  "Duplicates worden samengevoegd.",
-  "Het talent moet toestemming geven om benaderd te worden.",
+  "Alleen unieke kandidaten tellen mee.",
+  "Dubbele introducties worden samengevoegd.",
+  "De kandidaat moet toestemming geven om benaderd te worden.",
   "Geen nepgegevens.",
   "Geen onbereikbare personen.",
-  "XP kan worden ingetrokken.",
-  "Eerste geldige tip krijgt prioriteit.",
-  "Finderz Keeperz bepaalt of een tip geldig is.",
+  "Beloningen kunnen worden ingetrokken bij misbruik.",
+  "De eerste geldige introductie krijgt prioriteit.",
+  "referr bepaalt of een introductie geldig is.",
   "Cash wordt pas uitgekeerd na controle.",
 ];
 
 export const CASH_STATUS_LABELS: Record<string, string> = {
-  geen_cash: "Geen cash",
-  intake_in_behandeling: "Intake bonus in behandeling",
-  intake_goedgekeurd: "Intake bonus goedgekeurd",
-  plaatsing_in_behandeling: "Matchbonus in behandeling",
-  plaatsing_goedgekeurd: "Matchbonus goedgekeurd",
-  retentie_goedgekeurd: "🏆 Keeper Bonus goedgekeurd",
-  afgekeurd: "Afgekeurd",
+  geen_cash: "Geen beloning",
+  intake_in_behandeling: "Beloning wordt verwerkt",
+  intake_goedgekeurd: "Beloning goedgekeurd",
+  plaatsing_in_behandeling: "Beloning wordt verwerkt",
+  plaatsing_goedgekeurd: "Beloning goedgekeurd",
+  retentie_goedgekeurd: "Beloning uitbetaald",
+  afgekeurd: "Beloning niet toegekend",
 };
 
 export const SECTORS = [
@@ -39,7 +39,7 @@ export const INTEREST_REASONS = [
   "Zoekt werk dichter bij huis",
   "Zoekt groeimogelijkheden",
   "Past goed bij een openstaande vacature",
-  "Kan een echte Keeper worden",
+  "Kan een echte aanwinst worden",
 ] as const;
 
 export const RELATIONSHIP_OPTIONS = [

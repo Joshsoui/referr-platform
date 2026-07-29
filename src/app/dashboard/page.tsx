@@ -1,225 +1,239 @@
 "use client";
 
-import {
-  ArrowRight,
-  Euro,
-  Target,
-  Trophy,
-  Users,
-} from "lucide-react";
+import { useEffect } from "react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { FadeIn } from "@/components/animations/FadeIn";
-import { ActivityFeed } from "@/components/ActivityFeed";
-import { BadgeGrid } from "@/components/BadgeGrid";
-import { ChallengeCard } from "@/components/ChallengeCard";
+import { ActivityTimeline } from "@/components/ActivityTimeline";
 import { DashboardHeader } from "@/components/DashboardHeader";
-import { EcosystemWidget } from "@/components/EcosystemWidget";
-import { ReferralLinkCard } from "@/components/ReferralLinkCard";
-import { RewardsWidget } from "@/components/RewardsWidget";
-import { ScoutConfidenceScore } from "@/components/ScoutConfidenceScore";
+import { ReferralPipeline } from "@/components/ReferralPipeline";
+import { ChallengeCard } from "@/components/VacancyCard";
 import { Card } from "@/components/ui/Card";
-import { GradientText } from "@/components/ui/GradientText";
 import { useScout } from "@/context/ScoutContext";
+import {
+  buildPersonalMoments,
+} from "@/lib/activityMoments";
 import { CURRENT_USER } from "@/lib/mock-data";
-import { useAnimatedNumber } from "@/hooks/useAnimatedNumber";
-import { getActiveMissions } from "@/lib/missions";
-import { DIFFICULTY_CASH_REWARDS, KEEPER_BONUS } from "@/lib/vacancyRewards";
-import { formatCurrency, KEEPER_STATUS } from "@/lib/xp";
+import {
+  getNextStepLabel,
+  getUserJourneyIndex,
+  getUserStatusLabel,
+  USER_JOURNEY_STEPS,
+} from "@/lib/recommendationStatus";
+import { formatCurrency } from "@/lib/xp";
+
+const LAST_VISIT_KEY = "referr-last-visit";
 
 export default function DashboardPage() {
-  const {
-    currentUser,
-    xp,
-    xpPulse,
-    stats,
-    referralProfile,
-    rewards,
-    scoutScore,
-    candidates,
-    challenges,
-  } = useScout();
-  const animatedCandidates = useAnimatedNumber(stats.candidatesReferred);
-  const animatedPlacements = useAnimatedNumber(stats.successfulPlacements);
-  const activeChallenges = getActiveMissions(challenges).slice(0, 3);
-  const recentReferrals = candidates
-    .filter((c) => c.referredBy === CURRENT_USER)
-    .slice(0, 4);
+  const { data: session } = useSession();
+  const { currentUser, rewards, candidates, vacancies } = useScout();
 
-  const statCards = [
+  const displayName = session?.user?.firstName
+    ? `${session.user.firstName} ${session.user.lastName ?? ""}`.trim()
+    : currentUser;
+
+  useEffect(() => {
+    window.localStorage.setItem(LAST_VISIT_KEY, new Date().toISOString());
+  }, []);
+
+  const myReferrals = candidates.filter((c) => c.referredBy === CURRENT_USER);
+  const activeReferrals = myReferrals.filter(
+    (candidate) =>
+      candidate.referralApproval !== "afgekeurd" &&
+      candidate.status !== "proeftijd_gehaald"
+  );
+  const nearlyDone = activeReferrals.filter(
+    (c) => c.status === "geplaatst" || c.status === "voorgesteld"
+  );
+  const nextActionCandidate =
+    [...activeReferrals].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )[0] ?? myReferrals[0];
+
+  const openVacancies = vacancies.filter((v) => v.status === "open");
+  const moments = buildPersonalMoments(myReferrals).slice(0, 5);
+
+  const activeVacancy = nextActionCandidate?.vacancyId
+    ? vacancies.find((v) => v.id === nextActionCandidate.vacancyId)
+    : openVacancies[0];
+
+  const summary = [
+    { label: "Actieve challenges", value: String(openVacancies.length) },
     {
-      icon: Users,
-      label: "Talenten getipt",
-      value: animatedCandidates.toString(),
-      delay: 200,
+      label: "Introducties in behandeling",
+      value: String(activeReferrals.length),
     },
+    { label: "Bijna voltooid", value: String(nearlyDone.length) },
     {
-      icon: Target,
-      label: "Succesvolle matches",
-      value: animatedPlacements.toString(),
-      delay: 280,
-    },
-    {
-      icon: Euro,
-      label: "Verdiende beloning",
-      value: formatCurrency(stats.totalReward),
-      delay: 360,
-    },
-    {
-      icon: Trophy,
-      label: `Ranking ${stats.region}`,
-      value: `#${stats.regionRank}`,
-      delay: 440,
+      label: "Beschikbare beloningen",
+      value: formatCurrency(rewards.cashEarned),
     },
   ];
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <DashboardHeader
-          userName={currentUser}
-          xp={xp}
-          scoutScore={scoutScore}
-          regionRank={stats.regionRank}
-          region={stats.region}
-          xpPulse={xpPulse}
-        />
+      <div className="mx-auto max-w-5xl">
+        <DashboardHeader userName={displayName} />
 
-        <FadeIn delay={120}>
-          <EcosystemWidget xp={xp} scoutScore={scoutScore} rewards={rewards} />
+        {session?.user && !session.user.emailVerifiedAt && (
+          <Card className="mb-6 border-amber-200 bg-amber-50/50 p-4">
+            <p className="text-sm text-amber-950">
+              Bevestig je e-mailadres om alle accountfuncties te gebruiken.{" "}
+              <Link
+                href="/email-bevestigen"
+                className="font-semibold text-fk-primary underline"
+              >
+                Naar bevestiging
+              </Link>
+            </p>
+          </Card>
+        )}
+
+        <FadeIn delay={40}>
+          <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {summary.map((item) => (
+              <Card
+                key={item.label}
+                className="border-fk-primary/10 px-4 py-3.5"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-fk-navy/45">
+                  {item.label}
+                </p>
+                <p className="mt-1 text-xl font-bold tracking-tight text-fk-navy">
+                  {item.value}
+                </p>
+              </Card>
+            ))}
+          </div>
         </FadeIn>
 
-        <FadeIn delay={140}>
-          <RewardsWidget xp={xp} rewards={rewards} />
-        </FadeIn>
-
-        <ReferralLinkCard profile={referralProfile} />
-
-        {recentReferrals.length > 0 && (
-          <FadeIn delay={200}>
-            <Card className="mb-8">
-              <h2 className="mb-4 text-xl font-bold text-fk-navy">
-                Recente talenttips
+        {nextActionCandidate && (
+          <FadeIn delay={80}>
+            <Card className="mb-8 border-fk-primary/15 bg-gradient-to-br from-fk-white via-fk-white to-fk-primary/5">
+              <p className="text-xs font-bold uppercase tracking-wider text-fk-secondary">
+                Actieve challenge
+              </p>
+              <h2 className="mt-2 text-xl font-bold text-fk-navy sm:text-2xl">
+                {activeVacancy?.title ?? "Jouw introductie"}
               </h2>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {recentReferrals.map((c) => (
-                  <div
-                    key={c.id}
-                    className="flex flex-col gap-3 rounded-xl border border-fk-primary/10 bg-fk-light/50 p-4 sm:flex-row sm:items-center sm:justify-between"
-                  >
-                    <div>
-                      <p className="font-bold text-fk-navy">{c.name}</p>
-                      <p className="text-sm text-fk-navy/55">
-                        {c.sector} · {c.xpAwarded} XP
-                      </p>
+              <p className="mt-1 text-sm font-medium text-fk-navy/60">
+                {nextActionCandidate.name} ·{" "}
+                {getUserStatusLabel(nextActionCandidate)}
+              </p>
+              {(() => {
+                const journeyIndex = getUserJourneyIndex(nextActionCandidate);
+                if (journeyIndex < 0) return null;
+                return (
+                  <div className="mt-4">
+                    <div className="flex gap-1">
+                      {USER_JOURNEY_STEPS.map((step, index) => (
+                        <div
+                          key={step}
+                          className={`h-1.5 flex-1 rounded-full ${
+                            index <= journeyIndex
+                              ? "bg-fk-primary"
+                              : "bg-fk-primary/15"
+                          }`}
+                          title={step}
+                        />
+                      ))}
                     </div>
-                    <ScoutConfidenceScore score={c.confidenceScore} size="sm" showBar={false} />
+                    <p className="mt-2 text-xs text-fk-navy/45">
+                      {journeyIndex + 1} van {USER_JOURNEY_STEPS.length} stappen
+                      · {USER_JOURNEY_STEPS[journeyIndex]}
+                    </p>
                   </div>
-                ))}
-              </div>
+                );
+              })()}
+              <p className="mt-3 text-sm text-fk-navy/55">
+                {getNextStepLabel(nextActionCandidate)
+                  ? `Volgende update: ${getNextStepLabel(nextActionCandidate)}`
+                  : "Er zit beweging in je introductie."}
+              </p>
+              <Link
+                href="/aandragen"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-fk-primary hover:text-fk-navy"
+              >
+                Bekijk voortgang
+                <ArrowRight size={14} />
+              </Link>
             </Card>
           </FadeIn>
         )}
 
-        <FadeIn delay={140}>
-          <Card className="mb-8 overflow-hidden border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-fk-white to-amber-100/40 shadow-md shadow-amber-100/50">
-            <div className="p-6 sm:p-8">
-              <GradientText variant="gold" as="p" className="text-2xl font-extrabold sm:text-3xl">
-                {KEEPER_BONUS.title}
-              </GradientText>
-              <p className="mt-2 max-w-2xl text-sm leading-relaxed text-fk-navy/70">
-                {KEEPER_BONUS.description}
+        <FadeIn delay={100}>
+          <div className="mb-3 flex items-end justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-bold text-fk-navy">
+                Nieuwe challenges voor jou
+              </h2>
+              <p className="mt-1 text-sm text-fk-navy/50">
+                Misschien ken jij precies de persoon die hier past.
               </p>
-              <div className="mt-5 flex flex-wrap items-end gap-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase text-fk-navy/45">
-                    Keeper Bonus (Expert)
-                  </p>
-                  <p className="text-3xl font-extrabold text-amber-700">
-                    {formatCurrency(DIFFICULTY_CASH_REWARDS.expert.keeper)}
-                  </p>
-                </div>
-                <div className="rounded-xl bg-fk-light px-3 py-2">
-                  <p className="text-xs text-fk-navy/45">Match Reward (ter vergelijking)</p>
-                  <p className="text-lg font-bold text-emerald-700">
-                    {formatCurrency(DIFFICULTY_CASH_REWARDS.expert.match)}
-                  </p>
-                </div>
-                <span className="rounded-full bg-fk-primary px-3 py-1 text-sm font-bold text-fk-white">
-                  +{KEEPER_STATUS.xpReward} XP bij Keeper Status
-                </span>
-              </div>
             </div>
-          </Card>
+            <Link
+              href="/vacatures"
+              className="hidden text-sm font-semibold text-fk-primary sm:inline"
+            >
+              Alles bekijken
+            </Link>
+          </div>
+          <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {openVacancies.slice(0, 3).map((vacancy) => {
+              const intros = candidates.filter(
+                (c) => c.vacancyId === vacancy.id
+              ).length;
+              return (
+                <ChallengeCard
+                  key={vacancy.id}
+                  vacancy={vacancy}
+                  mission={vacancy.description}
+                  hours="32–40 uur"
+                  activeIntroductions={intros > 0 ? intros : undefined}
+                />
+              );
+            })}
+          </div>
         </FadeIn>
 
-        <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {statCards.map((stat) => (
-            <FadeIn key={stat.label} delay={stat.delay}>
-              <Card
-                hover
-                className="group h-full border-fk-primary/10 transition-all duration-300 hover:border-fk-primary/25 hover:shadow-lg"
-              >
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-fk-primary/15 to-fk-secondary/10 text-fk-primary transition-transform duration-300 group-hover:scale-110">
-                  <stat.icon size={20} />
-                </div>
-                <p className="text-2xl font-extrabold text-fk-navy tabular-nums">
-                  {stat.value}
+        <div className="mb-8 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+          <FadeIn delay={140}>
+            <ActivityTimeline
+              moments={moments}
+              title="Recente activiteit"
+              subtitle="Wat er bewoog rond jouw introducties"
+            />
+          </FadeIn>
+          <FadeIn delay={160}>
+            <Card className="border-fk-primary/15">
+              <p className="mb-2 text-xs font-bold uppercase tracking-wider text-fk-secondary">
+                Beloningen
+              </p>
+              <p className="text-2xl font-bold text-fk-navy">
+                {formatCurrency(rewards.cashEarned)}
+              </p>
+              <p className="mt-1 text-sm text-fk-navy/50">
+                Beschikbaar of recent vrijgespeeld
+              </p>
+              {rewards.cashPending > 0 && (
+                <p className="mt-3 rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                  In behandeling: {formatCurrency(rewards.cashPending)}
                 </p>
-                <p className="mt-1 text-sm text-fk-navy/55">{stat.label}</p>
-              </Card>
-            </FadeIn>
-          ))}
+              )}
+              <Link
+                href="/rewards"
+                className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-fk-primary"
+              >
+                Bekijk beloningen
+                <ArrowRight size={14} />
+              </Link>
+            </Card>
+          </FadeIn>
         </div>
 
-        <FadeIn delay={480}>
-          <Card className="mb-8">
-            <div className="mb-6 flex items-center justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-bold text-fk-navy">
-                  Finderz Missions
-                </h2>
-                <p className="text-sm text-fk-navy/55">
-                  ⚽ WK Finderz Mission 2026
-                </p>
-              </div>
-              <Link
-                href="/challenges"
-                className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-fk-primary transition-colors hover:text-fk-navy"
-              >
-                Bekijk alle missions
-                <ArrowRight size={16} />
-              </Link>
-            </div>
-            <div className="grid gap-4 lg:grid-cols-3">
-              {activeChallenges.map((challenge) => (
-                <ChallengeCard
-                  key={challenge.id}
-                  challenge={challenge}
-                  compact
-                />
-              ))}
-            </div>
-          </Card>
-        </FadeIn>
-
-        <FadeIn delay={520}>
-          <Card className="mb-8">
-            <BadgeGrid detailed />
-          </Card>
-        </FadeIn>
-
-        <FadeIn delay={560}>
-          <Card>
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-fk-navy">
-                Finderz Activiteiten
-              </h2>
-              <p className="text-sm text-fk-navy/55">
-                Live updates uit het Finderz Network
-              </p>
-            </div>
-            <ActivityFeed limit={5} />
-          </Card>
+        <FadeIn delay={180}>
+          <ReferralPipeline candidates={myReferrals} />
         </FadeIn>
       </div>
     </div>

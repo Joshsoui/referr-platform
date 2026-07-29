@@ -1,0 +1,26 @@
+User-agent: *
+Allow: /
+Allow: /vacatures
+Allow: /privacy
+Allow: /cookies
+Allow: /voorwaarden
+Allow: /beveiliging
+Allow: /toegankelijkheid
+
+Disallow: /dashboard
+Disallow: /aandragen
+Disallow: /levels
+Disallow: /challenges
+Disallow: /rewards
+Disallow: /leaderboard
+Disallow: /hall-of-fame
+Disallow: /admin
+Disallow: /account
+Disallow: /inloggen
+Disallow: /account-aanmaken
+Disallow: /wachtwoord-vergeten
+Disallow: /wachtwoord-herstellen
+Disallow: /email-bevestigen
+Disallow: /api/
+
+Sitemap: /sitemap.xml

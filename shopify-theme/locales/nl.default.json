@@ -1,0 +1,69 @@
+{
+  "general": {
+    "search": "Zoeken",
+    "cart": "Winkelwagen",
+    "menu": "Menu",
+    "close": "Sluiten",
+    "continue_shopping": "Verder winkelen",
+    "view_all": "Bekijk alles",
+    "add_to_cart": "In winkelwagen",
+    "sold_out": "Uitverkocht",
+    "checkout": "Afrekenen",
+    "subtotal": "Subtotaal",
+    "shipping_note": "Verzendkosten worden berekend bij het afrekenen",
+    "free_shipping": "Gratis verzending",
+    "products": "producten",
+    "product": "product"
+  },
+  "accessibility": {
+    "skip_to_content": "Ga naar inhoud"
+  },
+  "collections": {
+    "sort_by": "Sorteren op",
+    "sort_manual": "Uitgelicht",
+    "sort_best_selling": "Best verkocht",
+    "sort_title_ascending": "A-Z",
+    "sort_title_descending": "Z-A",
+    "sort_price_ascending": "Prijs: laag naar hoog",
+    "sort_price_descending": "Prijs: hoog naar laag",
+    "sort_created_descending": "Nieuwste",
+    "filter": "Filters",
+    "no_products": "Geen producten gevonden"
+  },
+  "products": {
+    "quantity": "Aantal",
+    "description": "Beschrijving",
+    "reviews": "Reviews",
+    "faq": "Veelgestelde vragen",
+    "shipping_returns": "Verzending & retourneren",
+    "in_stock": "Op voorraad",
+    "low_stock": "Beperkte voorraad",
+    "popular": "Populair product"
+  },
+  "cart": {
+    "title": "Winkelwagen",
+    "empty": "Je winkelwagen is leeg",
+    "remove": "Verwijderen",
+    "update": "Bijwerken"
+  },
+  "contact": {
+    "title": "Contact",
+    "name": "Naam",
+    "email": "E-mailadres",
+    "message": "Bericht",
+    "send": "Verstuur bericht",
+    "success": "Bedankt! We nemen zo snel mogelijk contact met je op."
+  },
+  "newsletter": {
+    "title": "Blijf op de hoogte",
+    "placeholder": "Je e-mailadres",
+    "submit": "Inschrijven",
+    "success": "Bedankt voor je inschrijving!"
+  },
+  "footer": {
+    "shop": "Shop",
+    "info": "Informatie",
+    "legal": "Juridisch",
+    "copyright": "Alle rechten voorbehouden."
+  }
+}

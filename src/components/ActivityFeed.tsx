@@ -63,18 +63,13 @@ export function ActivityFeed({
               <p className="mt-1 text-xs text-fk-navy/45">{activity.timeAgo}</p>
             </div>
 
-            <div className="shrink-0 text-right">
-              {activity.xp !== undefined && (
-                <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">
-                  +{activity.xp} XP
-                </span>
-              )}
-              {activity.badgeLabel && (
+            {activity.badgeLabel && (
+              <div className="shrink-0 text-right">
                 <span className="inline-flex rounded-full bg-fk-primary-muted px-3 py-1 text-xs font-bold text-fk-primary">
                   {activity.badgeLabel}
                 </span>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         );
       })}

@@ -1,0 +1,93 @@
+<section class="cart-page">
+  <div class="container">
+    <h1>{{ 'cart.title' | t }}</h1>
+
+    {%- if cart.item_count > 0 -%}
+      <div style="margin-top:2rem;">
+        {%- for item in cart.items -%}
+          <div class="cart-item">
+            <div class="cart-item__image">
+              {%- if item.image -%}
+                <img
+                  src="{{ item.image | image_url: width: 160 }}"
+                  alt="{{ item.image.alt | default: item.product.title | escape }}"
+                  loading="lazy"
+                  width="80"
+                  height="80"
+                >
+              {%- endif -%}
+            </div>
+            <div>
+              <div class="cart-item__title">
+                <a href="{{ item.url }}">{{ item.product.title }}</a>
+              </div>
+              {%- unless item.variant.title == 'Default Title' -%}
+                <div class="cart-item__variant">{{ item.variant.title }}</div>
+              {%- endunless -%}
+              <div class="price" style="margin:0.5rem 0;">
+                <span class="price__current">{{ item.final_line_price | money }}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:1rem;margin-top:0.75rem;">
+                <input
+                  type="number"
+                  class="form-input"
+                  style="width:70px;padding:0.5rem;"
+                  value="{{ item.quantity }}"
+                  min="0"
+                  data-cart-quantity="{{ item.key }}"
+                  aria-label="{{ 'products.quantity' | t }}"
+                >
+                <a href="#" data-cart-remove="{{ item.key }}" style="font-size:0.8125rem;color:var(--color-sale);">{{ 'cart.remove' | t }}</a>
+              </div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <div class="cart-summary" style="max-width:400px;margin-left:auto;">
+        <div class="cart-summary__row">
+          <span>{{ 'general.subtotal' | t }}</span>
+          <span>{{ cart.total_price | money }}</span>
+        </div>
+        <p class="text-muted" style="font-size:0.8125rem;margin-bottom:1rem;">{{ 'general.shipping_note' | t }}</p>
+
+        {%- assign threshold = settings.free_shipping_threshold | times: 100 -%}
+        {%- if cart.total_price < threshold -%}
+          {%- assign remaining = threshold | minus: cart.total_price | money -%}
+          <p style="font-size:0.875rem;margin-bottom:1rem;">Nog <strong>{{ remaining }}</strong> voor gratis verzending!</p>
+        {%- else -%}
+          <p style="font-size:0.875rem;color:var(--color-success);margin-bottom:1rem;">✓ Je profiteert van gratis verzending!</p>
+        {%- endif -%}
+
+        <div class="cart-summary__row cart-summary__total">
+          <span>Totaal</span>
+          <span>{{ cart.total_price | money }}</span>
+        </div>
+
+        <a href="/checkout" class="btn btn--primary btn--full btn--large" style="margin-top:1.25rem;">
+          {{ 'general.checkout' | t }} →
+        </a>
+
+        <div style="margin-top:1rem;text-align:center;">
+          {%- render 'payment-icons' -%}
+        </div>
+
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--secondary btn--full" style="margin-top:1rem;">
+          {{ 'general.continue_shopping' | t }}
+        </a>
+      </div>
+    {%- else -%}
+      <div class="cart-empty">
+        <p class="text-muted" style="font-size:1.125rem;margin-bottom:1.5rem;">{{ 'cart.empty' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">{{ 'general.continue_shopping' | t }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Winkelwagen",
+  "settings": []
+}
+{% endschema %}

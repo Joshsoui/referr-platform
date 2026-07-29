@@ -1,0 +1,75 @@
+<section class="section" aria-labelledby="reviews-heading">
+  <div class="container">
+    <div class="section__header text-center">
+      <p class="section__subtitle">{{ section.settings.subtitle | default: 'Reviews' }}</p>
+      <h2 id="reviews-heading">{{ section.settings.title | default: 'Wat onze klanten zeggen' }}</h2>
+      <div style="margin-top:0.75rem;">
+        {%- render 'star-rating', rating: 5, count: section.settings.total_reviews | default: 2500 -%}
+      </div>
+    </div>
+
+    <div class="reviews__grid">
+      {%- for block in section.blocks -%}
+        <div class="review-card" {{ block.shopify_attributes }}>
+          <div class="review-card__header">
+            <div class="review-card__avatar">{{ block.settings.name | slice: 0 }}</div>
+            <div>
+              <div class="review-card__name">{{ block.settings.name }}</div>
+              <div class="review-card__date">{{ block.settings.date }}</div>
+            </div>
+          </div>
+          {%- render 'star-rating', rating: block.settings.rating | default: 5 -%}
+          <p class="review-card__text" style="margin-top:0.75rem;">"{{ block.settings.text }}"</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Reviews",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitel",
+      "default": "Reviews"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Wat onze klanten zeggen"
+    },
+    {
+      "type": "text",
+      "id": "total_reviews",
+      "label": "Totaal aantal reviews",
+      "default": "2500"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Naam", "default": "Sophie V." },
+        { "type": "text", "id": "date", "label": "Datum", "default": "2 weken geleden" },
+        { "type": "range", "id": "rating", "min": 1, "max": 5, "step": 1, "default": 5, "label": "Sterren" },
+        { "type": "textarea", "id": "text", "label": "Review tekst", "default": "Super tevreden met mijn aankoop! Snelle levering en het product is precies zoals beschreven. Zeker een aanrader." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reviews",
+      "blocks": [
+        { "type": "review", "settings": { "name": "Sophie V.", "date": "2 weken geleden", "text": "Super tevreden met mijn aankoop! Snelle levering en het product is precies zoals beschreven." } },
+        { "type": "review", "settings": { "name": "Mark de B.", "date": "1 maand geleden", "text": "Eindelijk een webshop die doet wat ze beloven. Kwaliteit is top en de klantenservice reageert snel." } },
+        { "type": "review", "settings": { "name": "Lisa K.", "date": "3 weken geleden", "text": "Mooi verpakt en snel binnen. Het product overtreft mijn verwachtingen. Ik bestel hier zeker vaker!" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

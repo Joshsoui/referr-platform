@@ -1,15 +1,20 @@
-# FK Scout Engine
+# FK Scout Engine / referr
 
-Gamified recruitment MVP prototype voor Finderz Keeperz.
+Community-powered recruiting product. Visible brand: **referr**.
 
 ## Lokaal draaien
 
 ```bash
 npm install
-./start.sh
+cp .env.example .env.local
+# Set AUTH_SECRET (e.g. openssl rand -base64 32)
+npm run build && npm start
+# or: ./start.sh
 ```
 
-Open **http://localhost:5555** in Chrome of Safari.
+Open **http://localhost:3000** (or the port from `start.sh`).
+
+Auth & privacy docs: [docs/AUTHENTICATION.md](docs/AUTHENTICATION.md) · [docs/PRIVACY_DATA_MAP.md](docs/PRIVACY_DATA_MAP.md) · [docs/COOKIE_INVENTORY.md](docs/COOKIE_INVENTORY.md) · [docs/SECURITY_CHECKLIST.md](docs/SECURITY_CHECKLIST.md)
 
 ## Naar GitHub pushen
 
@@ -92,14 +97,16 @@ server {
 
 | Route | Beschrijving |
 |-------|-------------|
-| `/` | Landingpage met hero-afbeelding |
-| `/dashboard` | Scout dashboard |
-| `/aandragen` | Kandidaat aandragen |
-| `/leaderboard` | Ranking |
-| `/admin` | Statusbeheer |
+| `/` | Publieke landing |
+| `/inloggen` · `/account-aanmaken` | Auth |
+| `/vacatures` | Vacatures |
+| `/dashboard` | Home (ingelogd) |
+| `/aandragen` | Introducties |
+| `/account` | Privacycentrum |
+| `/privacy` · `/cookies` · `/voorwaarden` · `/beveiliging` | Legal |
 
 ## Tech stack
 
-- Next.js 15 + TypeScript + Tailwind CSS
-- Lokale state (geen backend nodig)
+- Next.js 15 + TypeScript + Tailwind CSS + Auth.js
+- Demo user store in `.data/` (geen productie-DB)
 - Lucide React icons

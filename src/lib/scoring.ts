@@ -3,9 +3,9 @@ import { CURRENT_USER } from "@/lib/mock-data";
 import type { ScoutScoreProfile } from "@/types/incentives";
 
 export function getConfidenceLabel(score: number): string {
-  if (score >= 70) return "Sterke tip";
+  if (score >= 70) return "Sterke introductie";
   if (score >= 40) return "Redelijke context";
-  return "Lage context";
+  return "Meer context nodig";
 }
 
 export function calculateConfidenceScore(data: CandidateFormData): number {

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle2, Target, Trophy, Users, Zap } from "lucide-react";
+import { CheckCircle2, Clock3, Target, Trophy, Wallet } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { ChallengeCard } from "@/components/ChallengeCard";
 import { Button } from "@/components/ui/Button";
@@ -9,7 +9,6 @@ import { Card } from "@/components/ui/Card";
 import { GradientText } from "@/components/ui/GradientText";
 import { useScout } from "@/context/ScoutContext";
 import { getActiveMissions, getCompletedMissions } from "@/lib/missions";
-import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { MISSION_STATS } from "@/lib/mockChallenges";
 
 export default function ChallengesPage() {
@@ -19,23 +18,23 @@ export default function ChallengesPage() {
 
   const stats = [
     {
-      icon: Users,
-      label: "Actieve Finders",
-      value: MISSION_STATS.activeFinders.toLocaleString("nl-NL"),
+      icon: Clock3,
+      label: "Bezig",
+      value: activeMissions.length.toString(),
     },
     {
       icon: Target,
-      label: "Talenten getipt",
+      label: "Introducties",
       value: MISSION_STATS.talentsTipped.toString(),
     },
     {
-      icon: Zap,
-      label: "Totaal verdiende XP",
-      value: MISSION_STATS.totalXpEarned.toLocaleString("nl-NL"),
+      icon: Wallet,
+      label: "Volgende focus",
+      value: "Beloning",
     },
     {
       icon: CheckCircle2,
-      label: "Voltooide Missions",
+      label: "Behaalde mijlpalen",
       value: completedMissions.length.toString(),
     },
   ];
@@ -51,21 +50,21 @@ export default function ChallengesPage() {
 
               <div className="relative">
                 <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-fk-white/70">
-                  Gamification
+                  Voortgang
                 </p>
                 <h1 className="text-3xl font-extrabold sm:text-4xl">
-                  Finderz Missions
+                  Jouw mijlpalen
                   <GradientText
                     variant="flame-light"
                     as="span"
                     className="mt-2 block text-2xl sm:text-3xl"
                   >
-                    Voltooi missies. Verdien XP.
+                    Echte voortgang. Echte erkenning.
                   </GradientText>
                 </h1>
                 <p className="mt-4 max-w-2xl text-base text-fk-white/90">
-                  Voltooi Missions automatisch door talent te tippen en
-                  resultaat te behalen. Elke Mission levert XP op.
+                  Deze mijlpalen volgen jouw echte reis: van eerste introductie
+                  tot gesprek, plaatsing en uitbetaalde beloning.
                 </p>
 
                 <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -87,34 +86,17 @@ export default function ChallengesPage() {
           </Card>
         </FadeIn>
 
-        <FadeIn delay={60}>
-          <Card className="mb-8 border-fk-primary/15 bg-fk-primary-muted/20 p-4">
-            <p className="mb-3 text-sm font-semibold text-fk-navy">
-              Vacature difficulty bepaalt cash beloningen
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <DifficultyBadge difficulty="easy" />
-              <DifficultyBadge difficulty="hard" />
-              <DifficultyBadge difficulty="expert" />
-            </div>
-          </Card>
-        </FadeIn>
-
         <FadeIn delay={80}>
           <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-extrabold text-fk-navy">
-              Actieve Missions
-            </h2>
+            <h2 className="text-xl font-extrabold text-fk-navy">Bezig</h2>
             <p className="text-sm text-fk-navy/55">
-              {activeMissions.length} actief · automatisch bijgewerkt
+              {activeMissions.length} open mijlpalen
             </p>
           </div>
           <div className="mb-10 grid gap-4 sm:grid-cols-2">
-            {challenges
-              .filter((c) => !c.isCommunity)
-              .map((challenge) => (
-                <ChallengeCard key={challenge.id} challenge={challenge} />
-              ))}
+            {activeMissions.map((challenge) => (
+              <ChallengeCard key={challenge.id} challenge={challenge} />
+            ))}
           </div>
         </FadeIn>
 
@@ -122,9 +104,7 @@ export default function ChallengesPage() {
           <FadeIn delay={120}>
             <div className="mb-6 flex items-center gap-2">
               <Trophy size={20} className="text-fk-primary" />
-              <h2 className="text-xl font-extrabold text-fk-navy">
-                Voltooide Missions
-              </h2>
+              <h2 className="text-xl font-extrabold text-fk-navy">Behaald</h2>
             </div>
             <div className="mb-10 grid gap-4 sm:grid-cols-2">
               {completedMissions.map((challenge) => (
@@ -137,26 +117,26 @@ export default function ChallengesPage() {
         <FadeIn delay={160}>
           <Card className="border-fk-primary/15 bg-fk-primary-muted/30 p-6 text-center">
             <p className="font-bold text-fk-navy">
-              Missions worden automatisch afgevinkt
+              Mijlpalen worden automatisch bijgewerkt
             </p>
             <p className="mt-2 text-sm text-fk-navy/60">
-              Tip talent, plan intakes, behaal matches en Keeper Status — het
-              platform volgt je voortgang.
+              Geen losse quests of seizoensacties. Alleen tastbare voortgang in
+              jouw echte introducties.
             </p>
             <Button href="/aandragen" className="mt-4">
-              Tip Talent
+              Draag iemand aan
             </Button>
           </Card>
         </FadeIn>
 
         <FadeIn delay={200}>
           <p className="mt-6 text-center text-sm text-fk-navy/55">
-            Bereik Finderz Legend en kom in de{" "}
+            Meer context over beloningen en reputatie vind je op{" "}
             <Link
-              href="/hall-of-fame"
+              href="/levels"
               className="font-semibold text-fk-primary hover:text-fk-navy"
             >
-              Hall of Fame
+              je profiel
             </Link>
           </p>
         </FadeIn>

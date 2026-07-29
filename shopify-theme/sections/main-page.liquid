@@ -1,0 +1,17 @@
+<div class="page-header">
+  <div class="container">
+    {%- render 'breadcrumb', page: page -%}
+    <h1>{{ page.title }}</h1>
+  </div>
+</div>
+
+<section class="page-content container rte">
+  {{ page.content }}
+</section>
+
+{% schema %}
+{
+  "name": "Pagina",
+  "settings": []
+}
+{% endschema %}

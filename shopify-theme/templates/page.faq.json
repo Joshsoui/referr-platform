@@ -1,0 +1,72 @@
+{
+  "sections": {
+    "header": {
+      "type": "page-title",
+      "settings": {
+        "subtitle": "Vind snel antwoord op de meest gestelde vragen over bestellen, verzending en retourneren."
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Hoe lang duurt de levering?",
+            "answer": "Bestellingen worden binnen 1-3 werkdagen geleverd in Nederland en België. Je ontvangt een track & trace code zodra je pakket is verzonden."
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Kan ik mijn bestelling retourneren?",
+            "answer": "Ja, je hebt 30 dagen bedenktijd. Retourneren is gratis en eenvoudig. Neem contact op met onze klantenservice om een retour aan te melden."
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Welke betaalmethodes accepteren jullie?",
+            "answer": "Wij accepteren iDEAL, creditcard (Visa, Mastercard), PayPal en Bancontact. Alle betalingen verlopen via een beveiligde verbinding."
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Hoe kan ik mijn bestelling volgen?",
+            "answer": "Na verzending ontvang je een e-mail met een track & trace link. Hiermee kun je je pakket realtime volgen."
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "Wat als mijn product beschadigd aankomt?",
+            "answer": "Neem binnen 48 uur contact met ons op met foto's van het beschadigde product. Wij sturen direct een vervanging of betalen je geld terug."
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "Leveren jullie ook in het buitenland?",
+            "answer": "Momenteel leveren wij in Nederland en België. Uitbreiding naar andere EU-landen is in voorbereiding."
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3", "q4", "q5", "q6"],
+      "settings": {
+        "subtitle": "FAQ",
+        "title": "Veelgestelde vragen",
+        "gray_bg": false
+      }
+    },
+    "cta": {
+      "type": "cta-banner",
+      "settings": {
+        "title": "Nog vragen?",
+        "text": "Ons team staat voor je klaar. Neem gerust contact met ons op.",
+        "button_label": "Contact opnemen"
+      }
+    }
+  },
+  "order": ["header", "faq", "cta"]
+}

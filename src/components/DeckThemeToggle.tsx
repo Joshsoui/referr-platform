@@ -2,6 +2,7 @@
 
 import { Palette, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { useDeckTheme } from "@/context/DeckThemeContext";
 
 function isLocalHost() {
@@ -11,6 +12,7 @@ function isLocalHost() {
 }
 
 export function DeckThemeToggle() {
+  const pathname = usePathname();
   const { enabled, toggle } = useDeckTheme();
   const [show, setShow] = useState(false);
 
@@ -18,7 +20,7 @@ export function DeckThemeToggle() {
     setShow(isLocalHost());
   }, []);
 
-  if (!show) return null;
+  if (!show || pathname === "/") return null;
 
   return (
     <button

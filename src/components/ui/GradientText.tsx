@@ -2,11 +2,11 @@ import type { ElementType, ReactNode } from "react";
 
 const VARIANTS = {
   flame:
-    "bg-gradient-to-r from-rose-600 via-orange-500 to-amber-500 bg-clip-text text-transparent",
-  cool: "bg-gradient-to-r from-amber-500 via-fk-primary to-violet-500 bg-clip-text text-transparent",
+    "bg-gradient-to-r from-[#ff4d59] to-[#ffaa20] bg-clip-text text-transparent",
+  cool: "bg-gradient-to-r from-[#ff4d59] to-[#ffaa20] bg-clip-text text-transparent",
   "flame-light":
-    "bg-gradient-to-r from-orange-300 via-amber-200 to-yellow-100 bg-clip-text text-transparent",
-  gold: "bg-gradient-to-r from-amber-600 via-orange-500 to-amber-400 bg-clip-text text-transparent",
+    "bg-gradient-to-r from-[#ffaa20] via-[#ff4d59] to-[#ffaa20] bg-clip-text text-transparent",
+  gold: "bg-gradient-to-r from-[#ff4d59] to-[#ffaa20] bg-clip-text text-transparent",
 } as const;
 
 export type GradientTextVariant = keyof typeof VARIANTS;

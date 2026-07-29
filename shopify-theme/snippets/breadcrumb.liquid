@@ -1,0 +1,18 @@
+<nav class="breadcrumb container" aria-label="Breadcrumb">
+  <a href="{{ routes.root_url }}">Home</a>
+  {%- if collection -%}
+    <span class="breadcrumb__sep">/</span>
+    <a href="{{ collection.url }}">{{ collection.title }}</a>
+  {%- endif -%}
+  {%- if product -%}
+  {%- unless collection -%}
+    <span class="breadcrumb__sep">/</span>
+    <a href="{{ routes.all_products_collection_url }}">Producten</a>
+  {%- endunless -%}
+    <span class="breadcrumb__sep">/</span>
+    <span aria-current="page">{{ product.title }}</span>
+  {%- elsif page -%}
+    <span class="breadcrumb__sep">/</span>
+    <span aria-current="page">{{ page.title }}</span>
+  {%- endif -%}
+</nav>

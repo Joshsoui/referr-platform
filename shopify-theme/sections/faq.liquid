@@ -1,0 +1,88 @@
+<section class="section{% if section.settings.gray_bg %} section--gray{% endif %}" aria-labelledby="faq-heading-{{ section.id }}">
+  <div class="container">
+    {%- if section.settings.title != blank -%}
+      <div class="section__header text-center">
+        {%- if section.settings.subtitle != blank -%}
+          <p class="section__subtitle">{{ section.settings.subtitle }}</p>
+        {%- endif -%}
+        <h2 id="faq-heading-{{ section.id }}">{{ section.settings.title }}</h2>
+      </div>
+    {%- endif -%}
+
+    <div class="faq__list" data-faq-list>
+      {%- for block in section.blocks -%}
+        <div class="faq__item" data-faq-item {{ block.shopify_attributes }}>
+          <button
+            class="faq__question"
+            data-faq-question
+            aria-expanded="false"
+            aria-controls="faq-answer-{{ section.id }}-{{ forloop.index }}"
+          >
+            {{ block.settings.question }}
+            <span class="faq__icon" aria-hidden="true">{%- render 'icon', icon: 'plus' -%}</span>
+          </button>
+          <div class="faq__answer" id="faq-answer-{{ section.id }}-{{ forloop.index }}" role="region">
+            {{ block.settings.answer }}
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitel",
+      "default": "FAQ"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Veelgestelde vragen"
+    },
+    {
+      "type": "checkbox",
+      "id": "gray_bg",
+      "label": "Grijze achtergrond",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Vraag",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Vraag",
+          "default": "Hoe lang duurt de levering?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Antwoord",
+          "default": "Bestellingen worden binnen 1-3 werkdagen geleverd in Nederland en België. Je ontvangt een track & trace code zodra je pakket is verzonden."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ",
+      "blocks": [
+        { "type": "question", "settings": { "question": "Hoe lang duurt de levering?", "answer": "Bestellingen worden binnen 1-3 werkdagen geleverd. Je ontvangt een track & trace code zodra je pakket is verzonden." } },
+        { "type": "question", "settings": { "question": "Kan ik mijn bestelling retourneren?", "answer": "Ja, je hebt 30 dagen bedenktijd. Retourneren is gratis en eenvoudig via ons retourportaal." } },
+        { "type": "question", "settings": { "question": "Welke betaalmethodes accepteren jullie?", "answer": "Wij accepteren iDEAL, creditcard (Visa, Mastercard), PayPal en Bancontact." } },
+        { "type": "question", "settings": { "question": "Hoe kan ik contact opnemen?", "answer": "Stuur een e-mail naar ons klantenservice-adres of gebruik het contactformulier. We reageren binnen 24 uur." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

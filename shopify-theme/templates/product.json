@@ -1,0 +1,28 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "benefit-1": {
+          "type": "benefit",
+          "settings": { "text": "Premium kwaliteit materiaal" }
+        },
+        "benefit-2": {
+          "type": "benefit",
+          "settings": { "text": "Snelle levering binnen 1-3 werkdagen" }
+        },
+        "benefit-3": {
+          "type": "benefit",
+          "settings": { "text": "30 dagen gratis retourneren" }
+        },
+        "benefit-4": {
+          "type": "benefit",
+          "settings": { "text": "Veilig betalen met iDEAL & creditcard" }
+        }
+      },
+      "block_order": ["benefit-1", "benefit-2", "benefit-3", "benefit-4"],
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}

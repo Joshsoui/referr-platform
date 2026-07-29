@@ -10,7 +10,6 @@ import {
   MousePointerClick,
   Percent,
   UserPlus,
-  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -30,14 +29,13 @@ export function ReferralLinkCard({ profile }: ReferralLinkCardProps) {
 
   const animatedClicks = useAnimatedNumber(profile.stats.clicks);
   const animatedCandidates = useAnimatedNumber(profile.stats.candidatesViaLink);
-  const animatedXp = useAnimatedNumber(profile.stats.xpViaReferralLink);
 
   useEffect(() => {
     setReferralLink(getReferralLink(profile.slug));
   }, [profile.slug]);
 
   const shareText =
-    "Ken jij talent? Tip talent via mijn Finderz Link en help verborgen talent zichtbaar maken. ";
+    "Ken jij iemand die past? Draag iemand aan via mijn introductielink. ";
 
   async function handleCopy() {
     try {
@@ -57,18 +55,13 @@ export function ReferralLinkCard({ profile }: ReferralLinkCardProps) {
     },
     {
       icon: UserPlus,
-      label: "Talenten getipt",
+      label: "Introducties via link",
       value: animatedCandidates.toString(),
     },
     {
       icon: Percent,
       label: "Conversie",
       value: `${profile.stats.conversionRate.toLocaleString("nl-NL")}%`,
-    },
-    {
-      icon: Zap,
-      label: "XP via Finderz Link",
-      value: animatedXp.toLocaleString("nl-NL"),
     },
   ];
 
@@ -85,10 +78,10 @@ export function ReferralLinkCard({ profile }: ReferralLinkCardProps) {
           </div>
           <div>
             <h2 className="text-xl font-extrabold text-fk-white sm:text-2xl">
-              Jouw Finderz Link
+              Jouw introductielink
             </h2>
             <p className="text-sm text-fk-white/80">
-              Deel je netwerk · Verdien XP · Stijg in de Finderz League
+              Deel je netwerk · Volg introducties · Ontvang beloningen
             </p>
           </div>
         </div>
@@ -98,14 +91,14 @@ export function ReferralLinkCard({ profile }: ReferralLinkCardProps) {
         <div className="p-6 sm:p-8">
           <p className="mb-5 text-sm leading-relaxed text-fk-navy/70">
             Deel je link met je netwerk. Iedere kandidaat die via jouw link
-            wordt aangedragen, telt mee voor jouw XP, ranking en beloningen.
+            wordt aangedragen, telt mee voor jouw ranglijst en beloningen.
           </p>
 
           <label
             htmlFor="referral-url"
             className="mb-2 block text-xs font-bold uppercase tracking-wider text-fk-secondary"
           >
-            Jouw Finderz Link
+            Jouw introductielink
           </label>
           <div className="mb-5 overflow-hidden rounded-xl border-2 border-fk-primary/25 bg-fk-white shadow-inner">
             <div className="flex items-start gap-2 px-4 py-3.5">
@@ -176,9 +169,9 @@ export function ReferralLinkCard({ profile }: ReferralLinkCardProps) {
 
         <div className="flex flex-col items-center justify-center border-t border-fk-primary/10 bg-gradient-to-br from-fk-light to-fk-white px-6 py-8 lg:border-l lg:border-t-0">
           <p className="mb-4 text-center text-sm font-bold text-fk-navy">
-            Jouw Finderz QR
+            Jouw QR-code
           </p>
-          <QrCodePlaceholder label="FK" />
+          <QrCodePlaceholder label="R" />
           <p className="mt-4 max-w-[200px] text-center text-xs leading-relaxed text-fk-navy/55">
             Gebruik deze QR-code op flyers, events of bij sportclubs.
           </p>

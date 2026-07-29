@@ -25,16 +25,16 @@ import { KEEPER_BONUS } from "@/lib/vacancyRewards";
 import { formatCurrency, KEEPER_STATUS } from "@/lib/xp";
 
 const TABS = [
-  { id: "xp", label: "XP", icon: Zap },
-  { id: "cash", label: "Cash", icon: Banknote },
-  { id: "levels", label: "Levels", icon: Star },
+  { id: "xp", label: "Voortgang", icon: TrendingUp },
+  { id: "cash", label: "Beloningen", icon: Banknote },
+  { id: "levels", label: "Reputatie", icon: Star },
   { id: "rules", label: "Regels", icon: Shield },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
 
 export function RewardRules() {
-  const [activeTab, setActiveTab] = useState<TabId>("xp");
+  const [activeTab, setActiveTab] = useState<TabId>("cash");
 
   return (
     <div>
@@ -67,9 +67,9 @@ export function RewardRules() {
                   <Zap size={22} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-fk-navy">XP-tijdlijn</h3>
+                  <h3 className="text-xl font-bold text-fk-navy">Voortgangstijdlijn</h3>
                   <p className="text-sm text-fk-navy/55">
-                    XP is de enige progressiemeter binnen het Finderz Network
+                    Zo groeit je impact van introductie tot plaatsing
                   </p>
                 </div>
               </div>
@@ -109,13 +109,13 @@ export function RewardRules() {
                             </p>
                             {item.isBonus && (
                               <span className="mt-1 inline-block rounded-full bg-fk-secondary/15 px-2 py-0.5 text-xs font-bold text-fk-secondary">
-                                Bonus bij Talent Confidence 70+
+                                Bonus bij sterke introductie
                               </span>
                             )}
                             {item.highlight && (
                               <p className="mt-1 text-xs text-fk-navy/55">
                                 {KEEPER_STATUS.description} Cash via{" "}
-                                {KEEPER_BONUS.title} — afhankelijk van vacature-difficulty.
+                                {KEEPER_BONUS.title} — afhankelijk van de vacature.
                               </p>
                             )}
                           </div>
@@ -123,7 +123,7 @@ export function RewardRules() {
                             <span
                               className={`font-extrabold ${item.highlight ? "text-amber-700" : "text-fk-primary"}`}
                             >
-                              +{item.xp} XP
+                              Stap {i + 1}
                             </span>
                             {item.highlight && (
                               <p className="mt-0.5 text-sm font-bold text-amber-700">
@@ -146,11 +146,8 @@ export function RewardRules() {
                   {KEEPER_BONUS.description}
                 </p>
                 <div className="mt-4 flex flex-wrap gap-3">
-                  <span className="rounded-full bg-fk-primary px-3 py-1 text-sm font-bold text-fk-white">
-                    +{KEEPER_STATUS.xpReward} XP
-                  </span>
                   <span className="rounded-full bg-amber-500 px-3 py-1 text-sm font-bold text-fk-white">
-                    Cash afhankelijk van difficulty
+                    Cash afhankelijk van vacature
                   </span>
                 </div>
               </div>
@@ -168,7 +165,7 @@ export function RewardRules() {
                 <div>
                   <h3 className="text-xl font-bold text-fk-navy">Cash-beloningen</h3>
                   <p className="text-sm text-fk-navy/55">
-                    Alleen bij echt resultaat — geen geld voor alleen een tip
+                    Alleen bij echt resultaat — geen geld voor alleen een introductie
                   </p>
                 </div>
               </div>
@@ -197,7 +194,7 @@ export function RewardRules() {
                       }`}
                     >
                       {item.cash === null
-                        ? "Per difficulty"
+                        ? "Per vacature"
                         : item.cash === 0
                           ? "€0"
                           : formatCurrency(item.cash)}
@@ -207,7 +204,7 @@ export function RewardRules() {
               </div>
               <div className="mt-6 rounded-2xl bg-gradient-to-r from-fk-primary/10 to-emerald-50 px-5 py-4 text-center">
                 <p className="text-xs font-semibold uppercase tracking-wider text-fk-secondary">
-                  Maximaal per talent (Expert)
+                  Maximaal per kandidaat (Specialist)
                 </p>
                 <p className="mt-1 text-3xl font-extrabold text-fk-navy">
                   {formatCurrency(MAX_CASH_PER_CANDIDATE)}
@@ -226,9 +223,9 @@ export function RewardRules() {
                   <TrendingUp size={22} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-fk-navy">Level cash bonus</h3>
+                  <h3 className="text-xl font-bold text-fk-navy">Reputatiebonus</h3>
                   <p className="text-sm text-fk-navy/55">
-                    Hogere levels = hogere cash-multipliers
+                    Hogere reputatie = hogere cash-multipliers
                   </p>
                 </div>
               </div>
@@ -262,9 +259,9 @@ export function RewardRules() {
                   <Star size={22} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-fk-navy">Level voordelen</h3>
+                  <h3 className="text-xl font-bold text-fk-navy">Reputatievoordelen</h3>
                   <p className="text-sm text-fk-navy/55">
-                    Wat je ontgrendelt per level
+                    Wat je ontgrendelt per reputatiestap
                   </p>
                 </div>
               </div>
@@ -278,7 +275,7 @@ export function RewardRules() {
                       <span className="text-2xl">{level.icon}</span>
                       <div>
                         <p className="font-bold text-fk-navy">
-                          Level {level.level} — {level.name}
+                          {level.name}
                         </p>
                         <p className="text-xs text-fk-navy/50">{level.tagline}</p>
                       </div>
@@ -298,12 +295,12 @@ export function RewardRules() {
                 ))}
               </div>
               <p className="mt-6 text-center text-sm text-fk-navy/55">
-                Finderz Legend? Bekijk de{" "}
+                Netwerkleider? Bekijk de{" "}
                 <Link
                   href="/hall-of-fame"
                   className="font-semibold text-fk-primary hover:text-fk-navy"
                 >
-                  Hall of Fame
+                  Community Champions
                 </Link>
               </p>
             </Card>
@@ -320,7 +317,7 @@ export function RewardRules() {
                 <div>
                   <h3 className="text-xl font-bold text-fk-navy">Eerlijk gebruik</h3>
                   <p className="text-sm text-fk-navy/55">
-                    Zo houden we het Finderz Network betrouwbaar
+                    Zo houden we referr betrouwbaar
                   </p>
                 </div>
               </div>

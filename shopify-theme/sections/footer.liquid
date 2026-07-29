@@ -1,0 +1,79 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div>
+        <h3>{{ settings.brand_name }}</h3>
+        <p style="font-size:0.875rem;margin-bottom:1rem;">{{ settings.brand_tagline }}</p>
+        <p style="font-size:0.8125rem;">{{ settings.contact_email }}<br>{{ settings.contact_phone }}</p>
+        {%- if settings.social_instagram != blank or settings.social_tiktok != blank -%}
+          <div style="margin-top:1rem;display:flex;gap:1rem;">
+            {%- if settings.social_instagram != blank -%}
+              <a href="{{ settings.social_instagram }}" aria-label="Instagram">Instagram</a>
+            {%- endif -%}
+            {%- if settings.social_tiktok != blank -%}
+              <a href="{{ settings.social_tiktok }}" aria-label="TikTok">TikTok</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div>
+        <h4>{{ 'footer.shop' | t }}</h4>
+        <ul class="site-footer__links">
+          {%- for link in linklists[section.settings.shop_menu].links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      <div>
+        <h4>{{ 'footer.info' | t }}</h4>
+        <ul class="site-footer__links">
+          {%- for link in linklists[section.settings.info_menu].links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      <div>
+        <h4>{{ 'footer.legal' | t }}</h4>
+        <ul class="site-footer__links">
+          {%- for link in linklists[section.settings.legal_menu].links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ settings.brand_name }}. {{ 'footer.copyright' | t }}</p>
+      {%- render 'payment-icons' -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "shop_menu",
+      "label": "Shop menu",
+      "default": "footer-shop"
+    },
+    {
+      "type": "link_list",
+      "id": "info_menu",
+      "label": "Info menu",
+      "default": "footer-info"
+    },
+    {
+      "type": "link_list",
+      "id": "legal_menu",
+      "label": "Juridisch menu",
+      "default": "footer-legal"
+    }
+  ]
+}
+{% endschema %}

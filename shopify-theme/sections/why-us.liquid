@@ -1,0 +1,93 @@
+<section class="section section--gray" aria-labelledby="why-us-heading">
+  <div class="container">
+    <div class="section__header text-center">
+      <p class="section__subtitle">{{ section.settings.subtitle | default: 'Waarom wij' }}</p>
+      <h2 id="why-us-heading">{{ section.settings.title | default: 'Waarom kiezen voor ons?' }}</h2>
+      <p class="text-muted">{{ section.settings.description | default: 'Wij geloven in kwaliteit, transparantie en een uitstekende klantervaring.' }}</p>
+    </div>
+
+    <div class="why-us__grid">
+      {%- for block in section.blocks -%}
+        <div class="why-us__item" {{ block.shopify_attributes }}>
+          <div class="why-us__icon">
+            {%- case block.settings.icon -%}
+              {%- when 'quality' -%}{%- render 'icon', icon: 'shield' -%}
+              {%- when 'shipping' -%}{%- render 'icon', icon: 'shipping' -%}
+              {%- when 'support' -%}{%- render 'icon', icon: 'support' -%}
+              {%- else -%}{%- render 'icon', icon: 'check' -%}
+            {%- endcase -%}
+          </div>
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.text }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Waarom kiezen voor ons",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitel",
+      "default": "Waarom wij"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Waarom kiezen voor ons?"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Beschrijving",
+      "default": "Wij geloven in kwaliteit, transparantie en een uitstekende klantervaring."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Voordeel",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icoon",
+          "options": [
+            { "value": "quality", "label": "Kwaliteit" },
+            { "value": "shipping", "label": "Verzending" },
+            { "value": "support", "label": "Support" }
+          ],
+          "default": "quality"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titel",
+          "default": "Premium kwaliteit"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Tekst",
+          "default": "Elk product wordt zorgvuldig getest en geselecteerd op kwaliteit en duurzaamheid."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Waarom kiezen voor ons",
+      "blocks": [
+        { "type": "feature", "settings": { "icon": "quality", "title": "Premium kwaliteit", "text": "Elk product wordt zorgvuldig getest en geselecteerd op kwaliteit en duurzaamheid." } },
+        { "type": "feature", "settings": { "icon": "shipping", "title": "Snelle levering", "text": "Besteld voor 16:00? Dan versturen wij dezelfde dag nog. Gratis verzending vanaf €50." } },
+        { "type": "feature", "settings": { "icon": "support", "title": "Persoonlijke service", "text": "Ons team staat klaar om je te helpen. Gemiddelde reactietijd: minder dan 24 uur." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

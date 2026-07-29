@@ -1,0 +1,54 @@
+<section class="section newsletter" aria-labelledby="newsletter-heading">
+  <div class="container">
+    <div class="text-center" style="max-width:560px;margin:0 auto;">
+      <h2 id="newsletter-heading">{{ section.settings.title }}</h2>
+      <p class="text-muted" style="margin-bottom:1.5rem;">{{ section.settings.text | default: 'Schrijf je in en ontvang exclusieve aanbiedingen, nieuwe producten en 10% korting op je eerste bestelling.' }}</p>
+
+      {% form 'customer', class: 'newsletter__form' %}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <label for="newsletter-email" class="visually-hidden">{{ 'newsletter.placeholder' | t }}</label>
+        <input
+          type="email"
+          id="newsletter-email"
+          name="contact[email]"
+          class="newsletter__input"
+          placeholder="{{ 'newsletter.placeholder' | t }}"
+          required
+          autocomplete="email"
+        >
+        <button type="submit" class="btn btn--primary">{{ section.settings.button_label }}</button>
+      {% endform %}
+
+      {%- if form.posted_successfully? -%}
+        <p style="margin-top:1rem;color:var(--color-success);">{{ 'newsletter.success' | t }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Nieuwsbrief sectie",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Blijf op de hoogte"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Tekst",
+      "default": "Schrijf je in en ontvang exclusieve aanbiedingen, nieuwe producten en 10% korting op je eerste bestelling."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Knop tekst",
+      "default": "Inschrijven"
+    }
+  ],
+  "presets": [{ "name": "Nieuwsbrief sectie" }]
+}
+{% endschema %}

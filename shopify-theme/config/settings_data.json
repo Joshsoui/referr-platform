@@ -1,0 +1,43 @@
+{
+  "current": {
+    "brand_name": "Jouw Merk",
+    "brand_tagline": "Premium producten, zorgvuldig geselecteerd",
+    "color_primary": "#1a1a2e",
+    "color_secondary": "#c9a96e",
+    "color_accent": "#1a1a2e",
+    "color_background": "#ffffff",
+    "color_text": "#2d2d2d",
+    "color_text_muted": "#6b6b6b",
+    "logo_width": 140,
+    "contact_email": "hallo@jouwmerk.nl",
+    "contact_phone": "+31 20 123 4567",
+    "contact_address": "Voorbeeldstraat 1, 1012 AB Amsterdam",
+    "business_hours": "Ma–Vr 09:00–17:00",
+    "usp_1_title": "Gratis verzending",
+    "usp_1_text": "Bij bestellingen vanaf €50",
+    "usp_2_title": "30 dagen retourneren",
+    "usp_2_text": "Zonder gedoe, snel je geld terug",
+    "usp_3_title": "Veilig betalen",
+    "usp_3_text": "iDEAL, creditcard & PayPal",
+    "usp_4_title": "Klantenservice",
+    "usp_4_text": "Bereikbaar binnen 24 uur",
+    "show_urgency_badges": true,
+    "show_newsletter_popup": true,
+    "newsletter_popup_title": "Ontvang 10% korting",
+    "newsletter_popup_text": "Schrijf je in voor exclusieve aanbiedingen en nieuwe producten.",
+    "free_shipping_threshold": "50",
+    "seo_default_title": "Jouw Merk | Premium producten online",
+    "seo_default_description": "Ontdek zorgvuldig geselecteerde premium producten. Gratis verzending, 30 dagen retourneren en uitstekende klantenservice.",
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {}
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {}
+      }
+    },
+    "content_for_index": []
+  }
+}

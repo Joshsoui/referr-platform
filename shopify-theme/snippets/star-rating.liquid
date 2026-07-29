@@ -1,0 +1,20 @@
+{%- liquid
+  assign rating = rating | default: 5
+  assign count = count | default: 0
+  assign full_stars = rating | floor
+-%}
+
+<div class="star-rating" aria-label="{{ rating }} van 5 sterren">
+  <span class="star-rating__stars">
+    {%- for i in (1..5) -%}
+      {%- if i <= full_stars -%}
+        {%- render 'icon', icon: 'star' -%}
+      {%- else -%}
+        {%- render 'icon', icon: 'star-empty' -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </span>
+  {%- if count > 0 -%}
+    <span class="star-rating__count">({{ count }})</span>
+  {%- endif -%}
+</div>

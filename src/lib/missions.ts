@@ -55,3 +55,17 @@ export function getActiveMissions(challenges: Challenge[]): Challenge[] {
 export function getCompletedMissions(challenges: Challenge[]): Challenge[] {
   return challenges.filter((c) => c.status === "completed");
 }
+
+/** Up to 2 missions for dashboard: active first, then highest-value completed. */
+export function getDashboardMissions(challenges: Challenge[]): Challenge[] {
+  const pool = challenges.filter((c) => !c.isCommunity);
+  const active = pool.filter((c) => c.status === "active");
+
+  if (active.length >= 2) return active.slice(0, 2);
+
+  const completed = pool
+    .filter((c) => c.status === "completed")
+    .sort((a, b) => (b.xpReward ?? 0) - (a.xpReward ?? 0));
+
+  return [...active, ...completed].slice(0, 2);
+}

@@ -1,0 +1,35 @@
+<div class="page-header">
+  <div class="container">
+    {%- if page -%}
+      {%- render 'breadcrumb', page: page -%}
+      <h1>{{ page.title }}</h1>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="text-muted" style="max-width:600px;margin:0.75rem auto 0;">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    {%- else -%}
+      <h1>{{ section.settings.title }}</h1>
+      {%- if section.settings.subtitle != blank -%}
+        <p class="text-muted" style="max-width:600px;margin:0.75rem auto 0;">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Pagina titel",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel (alleen zonder pagina)"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitel"
+    }
+  ],
+  "presets": [{ "name": "Pagina titel" }]
+}
+{% endschema %}

@@ -1,0 +1,41 @@
+<section class="cta-banner" aria-labelledby="cta-heading">
+  <div class="container">
+    <h2 id="cta-heading">{{ section.settings.title | default: 'Klaar om te ontdekken?' }}</h2>
+    <p>{{ section.settings.text | default: 'Bekijk onze volledige collectie en vind het perfecte product voor jou.' }}</p>
+    <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="btn btn--primary btn--large" style="background:var(--color-secondary);border-color:var(--color-secondary);">
+      {{ section.settings.button_label | default: 'Shop de collectie' }}
+    </a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "CTA Banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Klaar om te ontdekken?"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Tekst",
+      "default": "Bekijk onze volledige collectie en vind het perfecte product voor jou."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Knop tekst",
+      "default": "Shop de collectie"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Knop link"
+    }
+  ],
+  "presets": [{ "name": "CTA Banner" }]
+}
+{% endschema %}

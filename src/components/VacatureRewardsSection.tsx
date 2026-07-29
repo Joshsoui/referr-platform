@@ -19,9 +19,9 @@ export function VacatureRewardsSection() {
           <Banknote size={22} />
         </div>
         <div>
-          <h3 className="text-xl font-bold text-fk-navy">Vacature Beloningen</h3>
+          <h3 className="text-xl font-bold text-fk-navy">Vacaturebeloningen</h3>
           <p className="text-sm text-fk-navy/55">
-            Hoe moeilijker de vacature, hoe hoger de beloning.
+            Hoe uitdagender de vacature, hoe hoger de beloning.
           </p>
         </div>
       </div>
@@ -45,13 +45,13 @@ export function VacatureRewardsSection() {
 
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between text-fk-navy/70">
-                  <span>Intake</span>
+                  <span>Gesprek bereikt</span>
                   <span className="font-semibold text-fk-navy">
                     {formatCurrency(rewards.intake)}
                   </span>
                 </div>
                 <div className="flex justify-between text-fk-navy/70">
-                  <span>Match Reward</span>
+                  <span>Plaatsingsbeloning</span>
                   <span className="font-semibold text-emerald-700">
                     {formatCurrency(rewards.match)}
                   </span>
@@ -80,8 +80,9 @@ export function VacatureRewardsSection() {
       </div>
 
       <p className="rounded-xl border border-fk-primary/15 bg-fk-primary-muted px-4 py-3 text-sm text-fk-navy/70">
-        Intake Reward is altijd {formatCurrency(25)} — ongeacht difficulty of
-        level. Level bonus geldt alleen op Match Reward en Keeper Bonus.
+        Beloning voor een eerste gesprek is altijd {formatCurrency(25)} —
+        ongeacht vacature of reputatie. Reputatiebonus geldt alleen op
+        plaatsings- en retentiebeloning.
       </p>
     </Card>
   );

@@ -12,10 +12,9 @@ import {
 } from "@/lib/mockHallOfFame";
 import { formatCurrency } from "@/lib/xp";
 
-function FinderCard({
+function ChampionCard({
   name,
   level,
-  xp,
   placements,
   keepers,
   earned,
@@ -59,24 +58,22 @@ function FinderCard({
       </div>
       <div className="grid grid-cols-2 gap-3 text-sm">
         <div className="rounded-lg bg-fk-light px-3 py-2">
-          <p className="text-xs text-fk-navy/50">XP</p>
-          <p className="font-bold tabular-nums text-fk-navy">
-            {xp.toLocaleString("nl-NL")}
-          </p>
-        </div>
-        <div className="rounded-lg bg-fk-light px-3 py-2">
           <p className="text-xs text-fk-navy/50">Verdiend</p>
           <p className="font-bold text-emerald-700">
             {formatCurrency(earned)}
           </p>
         </div>
         <div className="rounded-lg bg-fk-light px-3 py-2">
-          <p className="text-xs text-fk-navy/50">Matches</p>
+          <p className="text-xs text-fk-navy/50">Plaatsingen</p>
           <p className="font-bold text-fk-navy">{placements}</p>
         </div>
         <div className="rounded-lg bg-fk-light px-3 py-2">
-          <p className="text-xs text-fk-navy/50">Keeper Status</p>
+          <p className="text-xs text-fk-navy/50">Retenties</p>
           <p className="font-bold text-fk-navy">{keepers}</p>
+        </div>
+        <div className="rounded-lg bg-fk-light px-3 py-2">
+          <p className="text-xs text-fk-navy/50">Impact</p>
+          <p className="font-bold text-fk-navy">{placements + keepers}</p>
         </div>
       </div>
     </Card>
@@ -99,21 +96,21 @@ export default function HallOfFamePage() {
               <div className="relative text-center">
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-fk-white/25 bg-fk-white/10 px-4 py-1.5 text-sm font-semibold text-fk-white/90">
                   <Crown size={16} className="text-amber-300" />
-                  Exclusief voor Finderz Legends
+                  Exclusief voor netwerkleiders
                 </div>
                 <h1 className="text-4xl font-extrabold sm:text-5xl lg:text-6xl">
-                  Hall of Fame
+                  Community Champions
                   <GradientText
                     variant="flame-light"
                     as="span"
                     className="mt-2 block text-2xl sm:text-3xl lg:text-4xl"
                   >
-                    Legends van het Finderz Network.
+                    De sterkste connecties binnen referr.
                   </GradientText>
                 </h1>
                 <p className="mx-auto mt-4 max-w-2xl text-base text-fk-white/90 sm:text-lg">
-                  De beste Finders binnen het Finderz Network. Legends die
-                  structureel impact maken via Finderz Keeperz.
+                  Mensen die structureel impact maken via succesvolle
+                  introducties en plaatsingen.
                 </p>
               </div>
             </div>
@@ -127,16 +124,16 @@ export default function HallOfFamePage() {
             </div>
             <div>
               <h2 className="text-2xl font-extrabold text-fk-navy">
-                Finderz Legends
+                Netwerkleiders
               </h2>
               <p className="text-sm text-fk-navy/55">
-                Level 5 — de absolute top van het Finderz Network
+                De absolute top van de community
               </p>
             </div>
           </div>
           <div className="mb-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {HALL_OF_FAME_LEGENDS.map((legend, i) => (
-              <FinderCard
+              <ChampionCard
                 key={legend.name}
                 {...legend}
                 variant={i === 0 ? "gold" : "default"}
@@ -154,14 +151,14 @@ export default function HallOfFamePage() {
                 </div>
                 <div>
                   <h2 className="text-xl font-extrabold text-fk-navy">
-                    Beste Finder van de maand
+                    Beste van de maand
                   </h2>
                   <p className="text-sm text-fk-navy/55">
                     {BEST_FINDER_MONTH.period}
                   </p>
                 </div>
               </div>
-              <FinderCard {...BEST_FINDER_MONTH} badge="🏆" variant="silver" />
+              <ChampionCard {...BEST_FINDER_MONTH} badge="🏆" variant="silver" />
             </div>
 
             <div>
@@ -171,14 +168,14 @@ export default function HallOfFamePage() {
                 </div>
                 <div>
                   <h2 className="text-xl font-extrabold text-fk-navy">
-                    Beste Finder all-time
+                    Beste all-time
                   </h2>
                   <p className="text-sm text-fk-navy/55">
-                    Hoogste impact ooit binnen het Finderz Network
+                    Hoogste impact ooit binnen referr
                   </p>
                 </div>
               </div>
-              <FinderCard
+              <ChampionCard
                 {...BEST_FINDER_ALL_TIME}
                 badge="👑"
                 variant="gold"
@@ -192,20 +189,20 @@ export default function HallOfFamePage() {
           <Card className="border-fk-primary/15 bg-gradient-to-r from-fk-primary-muted/50 to-fk-white p-6 text-center sm:p-8">
             <Sparkles size={24} className="mx-auto mb-3 text-fk-primary" />
             <p className="text-lg font-bold text-fk-navy">
-              Word jij de volgende Finderz Legend?
+              Word jij de volgende netwerkleider?
             </p>
             <p className="mt-2 text-sm text-fk-navy/60">
-              Tip talent, voltooi Missions en behaal Keeper Status om je weg
-              naar de Hall of Fame te bouwen.
+              Draag iemand aan, bouw een sterk track record op en realiseer
+              succesvolle plaatsingen om hier te komen.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Button href="/aandragen">Tip Talent</Button>
+              <Button href="/aandragen">Draag iemand aan</Button>
               <Button href="/leaderboard" variant="secondary">
                 <Star size={16} />
-                Finderz League
+                Ranglijst
               </Button>
               <Button href="/levels" variant="secondary">
-                Bekijk Levels
+                Bekijk profiel
                 <ArrowRight size={16} />
               </Button>
             </div>

@@ -1,28 +1,41 @@
 "use client";
 
-import { Crown, Layers, TrendingUp, Zap } from "lucide-react";
+import Link from "next/link";
+import { Award, Crown, Layers } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
-import { LevelOverview } from "@/components/LevelOverview";
+import { ActivityTimeline } from "@/components/ActivityTimeline";
+import { NetworkImpact } from "@/components/NetworkImpact";
 import { Card } from "@/components/ui/Card";
 import { GradientText } from "@/components/ui/GradientText";
-import { ProgressBar } from "@/components/ui/ProgressBar";
 import { useScout } from "@/context/ScoutContext";
+import {
+  buildPersonalMoments,
+  getNetworkImpact,
+} from "@/lib/activityMoments";
+import { CURRENT_USER } from "@/lib/mock-data";
 import { LEVEL_DEFINITIONS } from "@/lib/mockLevels";
-import Link from "next/link";
-import { formatLevelXpProgress, getLevelForXp, getLevelProgress } from "@/lib/xp";
+import { SCOUT_BADGES } from "@/lib/mockBadges";
+import { getLevelForXp } from "@/lib/xp";
 
 export default function LevelsPage() {
-  const { xp, scoutScore } = useScout();
-  const currentLevel = getLevelForXp(xp);
-  const { next, progress, xpToNext } = getLevelProgress(xp);
-  const currentDef = LEVEL_DEFINITIONS.find((l) => l.name === currentLevel.name);
-  const currentIndex = LEVEL_DEFINITIONS.findIndex(
-    (l) => l.name === currentLevel.name
+  const { xp, candidates, rewards } = useScout();
+  const myReferrals = candidates.filter(
+    (candidate) => candidate.referredBy === CURRENT_USER
   );
+  const successfulHires = myReferrals.filter(
+    (candidate) =>
+      candidate.status === "geplaatst" ||
+      candidate.status === "proeftijd_gehaald"
+  );
+  const earnedBadges = SCOUT_BADGES.filter((badge) => badge.earned);
+  const currentLevel = getLevelForXp(xp);
+  const currentDef = LEVEL_DEFINITIONS.find((l) => l.name === currentLevel.name);
+  const impact = getNetworkImpact(myReferrals, rewards.cashEarned);
+  const moments = buildPersonalMoments(myReferrals).slice(0, 6);
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-5xl">
         <FadeIn>
           <div className="mb-8 flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-fk-primary text-fk-white shadow-md">
@@ -30,19 +43,18 @@ export default function LevelsPage() {
             </div>
             <div>
               <h1 className="text-3xl font-extrabold text-fk-navy">
-                Levels
+                Profiel
                 <GradientText as="span" className="mt-1 block text-xl sm:text-2xl">
-                  Stijg op. Ontgrendel meer.
+                  Jouw reputatie en track record
                 </GradientText>
               </h1>
               <p className="text-fk-navy/60">
-                Progressieladder met privileges per level
+                Wat jouw introducties in beweging zetten — en wat je hebt bereikt
               </p>
             </div>
           </div>
         </FadeIn>
 
-        {/* Hero: current level badge */}
         <FadeIn delay={60}>
           <Card
             variant="highlight"
@@ -57,130 +69,151 @@ export default function LevelsPage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold uppercase tracking-widest text-fk-white/70">
-                      Huidig level
+                      Reputatie
                     </p>
                     <h2 className="text-2xl font-extrabold sm:text-3xl">
                       {currentLevel.name}
                     </h2>
-                    <p className="mt-1 font-medium tabular-nums text-fk-white/90">
-                      {formatLevelXpProgress(xp)}
-                    </p>
                     <p className="mt-0.5 text-fk-white/80">{currentDef?.tagline}</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 sm:text-right">
                   <div className="rounded-xl border border-fk-white/20 bg-fk-white/10 px-4 py-3 backdrop-blur-sm">
-                    <Zap size={16} className="mb-1 text-fk-white/70" />
+                    <Award size={16} className="mb-1 text-fk-white/70" />
                     <p className="text-xl font-extrabold tabular-nums">
-                      {xp.toLocaleString("nl-NL")}
+                      {earnedBadges.length}
                     </p>
-                    <p className="text-xs text-fk-white/70">XP</p>
+                    <p className="text-xs text-fk-white/70">Mijlpalen</p>
                   </div>
                   <div className="rounded-xl border border-fk-white/20 bg-fk-white/10 px-4 py-3 backdrop-blur-sm">
-                    <TrendingUp size={16} className="mb-1 text-fk-white/70" />
+                    <Crown size={16} className="mb-1 text-fk-white/70" />
                     <p className="text-xl font-extrabold tabular-nums">
-                      {scoutScore}
+                      {successfulHires.length}
                     </p>
-                    <p className="text-xs text-fk-white/70">Finderz Score</p>
+                    <p className="text-xs text-fk-white/70">Plaatsingen</p>
                   </div>
                 </div>
               </div>
-
-              {next && (
-                <div className="relative mt-6">
-                  <div className="mb-2 flex justify-between text-sm text-fk-white/80">
-                    <span>Level {currentIndex + 1} van {LEVEL_DEFINITIONS.length}</span>
-                    <span>Nog {xpToNext.toLocaleString("nl-NL")} XP → {next.name}</span>
-                  </div>
-                  <div className="h-3 overflow-hidden rounded-full bg-fk-white/20">
-                    <div
-                      className="progress-shine h-full rounded-full bg-gradient-to-r from-fk-white/90 to-fk-white/60 transition-all duration-1000"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                </div>
-              )}
             </div>
           </Card>
         </FadeIn>
 
-        {/* Mini level map */}
         <FadeIn delay={100}>
+          <NetworkImpact impact={impact} />
+        </FadeIn>
+
+        <div className="mb-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+          <FadeIn delay={140}>
+            <ActivityTimeline
+              moments={moments}
+              title="Recente momenten"
+              subtitle="Voortgang op jouw introducties"
+              emptyTitle="Nog geen track record"
+              emptyBody="Zodra je iemand aandragen, zie je hier gesprekken, plaatsingen en beloningen."
+            />
+          </FadeIn>
+
+          <FadeIn delay={180}>
+            <Card className="border-fk-primary/15">
+              <div className="mb-5 flex items-center gap-2">
+                <Award size={18} className="text-fk-primary" />
+                <div>
+                  <h2 className="text-xl font-bold text-fk-navy">Mijlpalen</h2>
+                  <p className="text-sm text-fk-navy/55">
+                    Erkenning voor echte voortgang
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                {earnedBadges.length === 0 ? (
+                  <p className="rounded-xl border border-fk-primary/10 bg-fk-light/40 p-4 text-sm text-fk-navy/60">
+                    Nog geen mijlpalen. Je eerste introductie is een goed begin.
+                  </p>
+                ) : (
+                  earnedBadges.map((badge) => (
+                    <div
+                      key={badge.id}
+                      className="rounded-xl border border-fk-primary/10 bg-fk-light/40 p-4 transition-colors duration-300 hover:bg-fk-white"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-fk-primary-muted text-xl">
+                          {badge.icon}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-bold text-fk-navy">{badge.name}</p>
+                          <p className="mt-1 text-sm text-fk-navy/60">
+                            {badge.description}
+                          </p>
+                          <p className="mt-2 text-sm text-fk-primary">
+                            {badge.meaning}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </Card>
+          </FadeIn>
+        </div>
+
+        <FadeIn delay={220}>
           <Card className="mb-8 border-fk-primary/15">
             <p className="mb-4 text-xs font-bold uppercase tracking-wider text-fk-secondary">
-              Jouw progressie
+              Reputatiepad
             </p>
-            <div className="flex items-center justify-between gap-1">
-              {LEVEL_DEFINITIONS.map((level, i) => {
-                const unlocked = xp >= level.minXp;
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {LEVEL_DEFINITIONS.map((level) => {
                 const active = level.name === currentLevel.name;
                 return (
                   <div
                     key={level.id}
-                    className="flex flex-1 flex-col items-center animate-fade-in-up"
-                    style={{ animationDelay: `${i * 60}ms` }}
+                    className={`rounded-xl border p-4 transition-all duration-300 ${
+                      active
+                        ? "border-fk-primary bg-fk-primary/5 shadow-sm"
+                        : "border-fk-primary/10 bg-fk-white hover:border-fk-primary/20"
+                    }`}
                   >
-                    <div
-                      className={`flex h-10 w-10 items-center justify-center rounded-xl text-lg transition-all duration-300 sm:h-12 sm:w-12 ${
-                        active
-                          ? "scale-110 bg-fk-primary text-fk-white shadow-lg ring-4 ring-fk-primary/20"
-                          : unlocked
-                            ? "bg-fk-primary/10"
-                            : "bg-fk-light opacity-50 grayscale"
-                      }`}
-                      title={level.name}
-                    >
-                      {level.icon}
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-fk-primary-muted text-lg">
+                        {level.icon}
+                      </div>
+                      <div>
+                        <p className="font-bold text-fk-navy">
+                          {level.name}
+                          {active && (
+                            <span className="ml-2 text-xs font-semibold text-fk-primary">
+                              Jij
+                            </span>
+                          )}
+                        </p>
+                        <p className="text-sm text-fk-navy/60">{level.tagline}</p>
+                      </div>
                     </div>
-                    <p
-                      className={`mt-1.5 hidden text-center text-[10px] font-semibold sm:block ${
-                        active ? "text-fk-primary" : "text-fk-navy/45"
-                      }`}
-                    >
-                      {level.badgeLabel}
-                    </p>
                   </div>
                 );
               })}
             </div>
-            <div className="mt-3 hidden h-1.5 overflow-hidden rounded-full bg-fk-primary/10 sm:block">
-              <ProgressBar progress={((currentIndex + progress / 100) / (LEVEL_DEFINITIONS.length - 1)) * 100} animated={false} />
-            </div>
           </Card>
         </FadeIn>
 
-        <FadeIn delay={120}>
-          <Card variant="glass" className="mb-8 border-fk-primary/20">
-            <div className="flex items-start gap-2">
-              <Crown size={18} className="mt-0.5 shrink-0 text-amber-500" />
-              <div>
-                <p className="font-bold text-fk-navy">Waarom levelen?</p>
-                <p className="mt-2 text-sm leading-relaxed text-fk-navy/65">
-                  Hogere levels ontgrendelen meer privileges, status en
-                  verdienpotentie. XP is geen geld — het opent deuren binnen het
-                  Finderz Network. Elke level heeft een unieke badge die je
-                  voortgang zichtbaar maakt.
-                </p>
-              </div>
-            </div>
-          </Card>
-        </FadeIn>
-
-        <FadeIn delay={160}>
-          <LevelOverview currentLevel={currentLevel} currentXp={xp} />
-        </FadeIn>
-
-        <FadeIn delay={200}>
-          <p className="mt-8 text-center text-sm text-fk-navy/55">
-            Bereik Finderz Legend en kom in de{" "}
-            <Link
-              href="/hall-of-fame"
-              className="font-semibold text-fk-primary hover:text-fk-navy"
-            >
-              Hall of Fame
-            </Link>
-          </p>
-        </FadeIn>
+        <p className="text-center text-sm text-fk-navy/55">
+          Bekijk ook de{" "}
+          <Link
+            href="/leaderboard"
+            className="font-semibold text-fk-primary hover:text-fk-navy"
+          >
+            ranglijst
+          </Link>{" "}
+          of leer meer over{" "}
+          <Link
+            href="/rewards"
+            className="font-semibold text-fk-primary hover:text-fk-navy"
+          >
+            beloningen
+          </Link>
+          .
+        </p>
       </div>
     </div>
   );

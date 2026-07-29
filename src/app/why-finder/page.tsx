@@ -7,7 +7,7 @@ import {
   Star,
   TrendingUp,
   Users,
-  Zap,
+  UserPlus,
 } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { PageHero } from "@/components/PageHero";
@@ -52,16 +52,16 @@ export default function WhyFinderPage() {
         <FadeIn>
           <PageHero
             className="mb-16"
-            overline="Finderz Keeperz · Finderz Network"
-            title="Waarom Finder worden?"
+            overline="referr"
+            title="Hoe werkt referr?"
             accent="Zichtbaar maken loont."
-            subtitle="Iedereen kent talent. Niet iedereen doet er iets mee. Het Finderz Network helpt jou om talent uit je netwerk zichtbaar te maken."
+            subtitle="Iedereen kent iemand. Niet iedereen doet er iets mee. referr helpt jou om goede mensen uit je netwerk zichtbaar te maken."
           />
         </FadeIn>
 
         <section className="mb-16">
           <SectionTitle
-            title="Help talent vooruit"
+            title="Help iemand vooruit"
             subtitle="Iemand uit jouw netwerk kan dankzij jou de volgende stap zetten."
           />
           <div className="flex flex-col items-center sm:flex-row sm:justify-center sm:gap-4">
@@ -84,13 +84,13 @@ export default function WhyFinderPage() {
         <section className="mb-16">
           <SectionTitle
             title="Verdien beloningen"
-            subtitle="Verdien XP, badges en geldelijke beloningen wanneer jouw tip leidt tot waardevolle matches."
+            subtitle="Jouw beloning groeit mee met echte voortgang: bekeken, gesprek, plaatsing en uiteindelijke uitbetaling."
           />
           <div className="flex flex-col items-center sm:flex-row sm:justify-center sm:gap-4">
             {[
-              { label: "XP", icon: Zap },
-              { label: "Level", icon: Star },
-              { label: "Bonus", icon: Banknote },
+              { label: "Voortgang", icon: UserPlus },
+              { label: "Reputatie", icon: Star },
+              { label: "Beloning", icon: Banknote },
             ].map((item, i) => (
               <FadeIn key={item.label} delay={i * 100}>
                 <div className="flex flex-col items-center sm:flex-row">
@@ -112,7 +112,7 @@ export default function WhyFinderPage() {
         <section className="mb-16">
           <SectionTitle
             title="Bouw reputatie op"
-            subtitle="Stijg van Finder naar Elite Finder en uiteindelijk Finderz Legend."
+            subtitle="Sterke introducties zorgen voor vertrouwen, zichtbaarheid en erkenning binnen de community."
           />
           <div className="mx-auto flex max-w-xs flex-col items-center">
             {WHY_FINDER_LEVEL_LADDER.map((level, i) => (
@@ -120,7 +120,7 @@ export default function WhyFinderPage() {
                 <FadeIn delay={i * 80}>
                   <div
                     className={`w-56 rounded-xl border px-4 py-3 text-center text-sm font-bold ${
-                      level === "Master Finder"
+                      level === "Topverbinder"
                         ? "border-fk-primary bg-fk-primary text-fk-white shadow-md"
                         : "border-fk-primary/15 bg-fk-white text-fk-navy"
                     }`}
@@ -137,7 +137,7 @@ export default function WhyFinderPage() {
         </section>
 
         <section className="mb-16">
-          <SectionTitle title="Word specialist" />
+          <SectionTitle title="Verdien erkenning" />
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {WHY_FINDER_SPECIALIST_BADGES.map((badge, i) => (
               <FadeIn key={badge.name} delay={i * 60}>
@@ -155,10 +155,10 @@ export default function WhyFinderPage() {
         <section className="mb-16">
           <SectionTitle
             title="Waarom werkt dit?"
-            subtitle="Iedereen kent talent. Maar bijna niemand wordt beloond voor het herkennen ervan."
+            subtitle="De app draait om een simpele loop: iemand aandragen, de voortgang volgen en een beloning ontvangen bij resultaat."
           />
           <div className="mx-auto flex max-w-xs flex-col items-center">
-            {["Jouw netwerk", "Talent", "Finderz Keeperz", "Nieuwe baan"].map(
+            {["Jouw netwerk", "Kandidaat", "referr", "Nieuwe baan"].map(
               (step, i) => (
                 <div key={step}>
                   <FadeIn delay={i * 80}>
@@ -179,10 +179,10 @@ export default function WhyFinderPage() {
           <SectionTitle title="Hoe verdien ik?" />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { hash: "XP", label: "Activiteit", icon: Zap },
-              { hash: "Finderz Score", label: "Kwaliteit", icon: TrendingUp },
-              { hash: "Levels", label: "Privileges", icon: Star },
-              { hash: "Cash", label: "Resultaat", icon: Banknote },
+              { hash: "Introductie", label: "Jij draagt iemand aan", icon: UserPlus },
+              { hash: "Reputatie", label: "Sterke introducties bouwen vertrouwen op", icon: TrendingUp },
+              { hash: "Profiel", label: "Je track record wordt zichtbaar", icon: Star },
+              { hash: "Beloning", label: "Je verdient bij echte plaatsingen", icon: Banknote },
             ].map((item, i) => (
               <FadeIn key={item.hash} delay={i * 80}>
                 <Card hover className="text-center">
@@ -206,12 +206,12 @@ export default function WhyFinderPage() {
                 Merkverhaal
               </p>
               <h2 className="mt-4 text-3xl font-extrabold text-fk-navy sm:text-4xl">
-                Finderz vinden talent.
+                Iedereen kent iemand.
                 <br />
-                Keeperz blijven.
+                referr maakt de introductie.
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-fk-navy/60">
-                Het beste talent wordt gevonden via mensen. Jouw netwerk heeft
+                De beste mensen worden gevonden via mensen. Jouw netwerk heeft
                 waarde.
               </p>
             </Card>
@@ -221,18 +221,18 @@ export default function WhyFinderPage() {
         <FadeIn>
           <PageHero
             heading="h2"
-            title="Klaar om jouw eerste talent te tippen?"
+            title="Klaar om je eerste introductie te versturen?"
             className="text-center"
           >
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button href="/aandragen" variant="inverse">
-                Tip Talent
+                Draag iemand aan
               </Button>
-              <Button href="/challenges" variant="on-dark">
-                Bekijk Finderz Missions
+              <Button href="/dashboard" variant="on-dark">
+                Naar overzicht
               </Button>
               <Button href="/leaderboard" variant="on-dark-outline">
-                Bekijk Finderz League
+                Bekijk ranglijst
               </Button>
             </div>
           </PageHero>

@@ -40,7 +40,7 @@ export function ChallengeCard({ challenge, compact = false }: ChallengeCardProps
           </div>
         </div>
         <Badge variant={challenge.status === "active" ? "info" : "success"}>
-          {challenge.status === "active" ? "Actief" : "Voltooid"}
+          {challenge.status === "active" ? "Bezig" : "Behaald"}
         </Badge>
       </div>
 
@@ -61,11 +61,6 @@ export function ChallengeCard({ challenge, compact = false }: ChallengeCardProps
         {challenge.badgeReward && (
           <span className="rounded-lg bg-amber-50 px-2.5 py-1 font-semibold text-amber-800">
             Badge: {challenge.badgeReward}
-          </span>
-        )}
-        {challenge.isCommunity && (
-          <span className="text-xs font-medium text-fk-secondary">
-            Community mission
           </span>
         )}
       </div>

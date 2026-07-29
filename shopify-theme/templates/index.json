@@ -1,0 +1,175 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "subheading": "Nieuw — Premium collectie",
+        "heading": "Ontdek premium producten voor jouw levensstijl",
+        "text": "Zorgvuldig geselecteerd, snel geleverd en met de zekerheid van 30 dagen retourneren.",
+        "button_label": "Shop nu",
+        "button_label_2": "Bekijk bestsellers"
+      }
+    },
+    "usp": {
+      "type": "usp-bar",
+      "settings": {}
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "subtitle": "Onze selectie",
+        "title": "Uitgelichte producten",
+        "description": "Ontdek onze meest populaire producten, zorgvuldig geselecteerd voor kwaliteit en stijl.",
+        "products_to_show": 4,
+        "show_view_all": true
+      }
+    },
+    "why-us": {
+      "type": "why-us",
+      "blocks": {
+        "feature-1": {
+          "type": "feature",
+          "settings": {
+            "icon": "quality",
+            "title": "Premium kwaliteit",
+            "text": "Elk product wordt zorgvuldig getest en geselecteerd op kwaliteit en duurzaamheid."
+          }
+        },
+        "feature-2": {
+          "type": "feature",
+          "settings": {
+            "icon": "shipping",
+            "title": "Snelle levering",
+            "text": "Besteld voor 16:00? Dan versturen wij dezelfde dag nog. Gratis verzending vanaf €50."
+          }
+        },
+        "feature-3": {
+          "type": "feature",
+          "settings": {
+            "icon": "support",
+            "title": "Persoonlijke service",
+            "text": "Ons team staat klaar om je te helpen. Gemiddelde reactietijd: minder dan 24 uur."
+          }
+        }
+      },
+      "block_order": ["feature-1", "feature-2", "feature-3"],
+      "settings": {
+        "subtitle": "Waarom wij",
+        "title": "Waarom kiezen voor ons?",
+        "description": "Wij geloven in kwaliteit, transparantie en een uitstekende klantervaring."
+      }
+    },
+    "reviews": {
+      "type": "reviews",
+      "blocks": {
+        "review-1": {
+          "type": "review",
+          "settings": {
+            "name": "Sophie V.",
+            "date": "2 weken geleden",
+            "rating": 5,
+            "text": "Super tevreden met mijn aankoop! Snelle levering en het product is precies zoals beschreven."
+          }
+        },
+        "review-2": {
+          "type": "review",
+          "settings": {
+            "name": "Mark de B.",
+            "date": "1 maand geleden",
+            "rating": 5,
+            "text": "Eindelijk een webshop die doet wat ze beloven. Kwaliteit is top en de klantenservice reageert snel."
+          }
+        },
+        "review-3": {
+          "type": "review",
+          "settings": {
+            "name": "Lisa K.",
+            "date": "3 weken geleden",
+            "rating": 5,
+            "text": "Mooi verpakt en snel binnen. Het product overtreft mijn verwachtingen. Ik bestel hier zeker vaker!"
+          }
+        }
+      },
+      "block_order": ["review-1", "review-2", "review-3"],
+      "settings": {
+        "subtitle": "Reviews",
+        "title": "Wat onze klanten zeggen",
+        "total_reviews": "2500"
+      }
+    },
+    "bestsellers": {
+      "type": "bestsellers",
+      "settings": {
+        "subtitle": "Bestsellers",
+        "title": "Onze bestsellers",
+        "products_to_show": 4
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Hoe lang duurt de levering?",
+            "answer": "Bestellingen worden binnen 1-3 werkdagen geleverd. Je ontvangt een track & trace code zodra je pakket is verzonden."
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Kan ik mijn bestelling retourneren?",
+            "answer": "Ja, je hebt 30 dagen bedenktijd. Retourneren is gratis en eenvoudig via ons retourportaal."
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Welke betaalmethodes accepteren jullie?",
+            "answer": "Wij accepteren iDEAL, creditcard (Visa, Mastercard), PayPal en Bancontact."
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Hoe kan ik contact opnemen?",
+            "answer": "Stuur een e-mail naar ons klantenservice-adres of gebruik het contactformulier. We reageren binnen 24 uur."
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3", "q4"],
+      "settings": {
+        "subtitle": "FAQ",
+        "title": "Veelgestelde vragen",
+        "gray_bg": true
+      }
+    },
+    "newsletter": {
+      "type": "newsletter-section",
+      "settings": {
+        "title": "Blijf op de hoogte",
+        "text": "Schrijf je in en ontvang exclusieve aanbiedingen, nieuwe producten en 10% korting op je eerste bestelling.",
+        "button_label": "Inschrijven"
+      }
+    },
+    "cta": {
+      "type": "cta-banner",
+      "settings": {
+        "title": "Klaar om te ontdekken?",
+        "text": "Bekijk onze volledige collectie en vind het perfecte product voor jou.",
+        "button_label": "Shop de collectie"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "usp",
+    "featured",
+    "why-us",
+    "reviews",
+    "bestsellers",
+    "faq",
+    "newsletter",
+    "cta"
+  ]
+}

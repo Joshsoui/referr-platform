@@ -18,10 +18,12 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants = {
-  primary: "bg-fk-primary text-fk-white hover:bg-fk-navy shadow-sm",
-  secondary: "bg-fk-secondary text-fk-white hover:bg-fk-primary shadow-sm",
+  primary:
+    "brand-gradient-bg text-fk-white shadow-sm hover:brightness-105 border-0",
+  secondary:
+    "bg-fk-navy text-fk-white hover:bg-fk-navy/90 shadow-sm",
   outline:
-    "border-2 border-fk-primary bg-transparent text-fk-primary hover:bg-fk-primary hover:text-fk-white",
+    "border-2 border-fk-primary bg-transparent text-fk-primary hover:bg-fk-primary-muted",
   inverse:
     "border border-fk-primary/15 bg-fk-white text-fk-primary hover:bg-fk-light shadow-md",
   "on-dark":
@@ -42,7 +44,11 @@ export function Button({
 }: ButtonProps) {
   const { enabled: deckTheme } = useDeckTheme();
   const primaryClass =
-    deckTheme && variant === "primary" ? "header-cta border-0" : variants[variant];
+    variant === "primary"
+      ? deckTheme
+        ? "header-cta border-0"
+        : "brand-gradient-bg text-fk-white shadow-sm hover:brightness-105 border-0"
+      : variants[variant];
   const classes = `btn-press inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-colors disabled:opacity-60 disabled:pointer-events-none ${primaryClass} ${className}`;
 
   const content = loading ? (
@@ -51,7 +57,7 @@ export function Button({
         className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
         style={{ animation: "spin-slow 0.7s linear infinite" }}
       />
-      Even geduld...
+      Even geduld…
     </>
   ) : (
     children

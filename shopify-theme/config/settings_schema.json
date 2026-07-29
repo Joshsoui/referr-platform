@@ -1,0 +1,237 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Premium Dropship",
+    "theme_version": "1.0.0",
+    "theme_author": "Your Brand",
+    "theme_documentation_url": "https://help.shopify.com",
+    "theme_support_url": "https://help.shopify.com"
+  },
+  {
+    "name": "Branding",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 50,
+        "max": 300,
+        "step": 10,
+        "unit": "px",
+        "label": "Logo breedte",
+        "default": 140
+      },
+      {
+        "type": "text",
+        "id": "brand_name",
+        "label": "Merknaam",
+        "default": "Jouw Merk"
+      },
+      {
+        "type": "text",
+        "id": "brand_tagline",
+        "label": "Tagline",
+        "default": "Premium producten, zorgvuldig geselecteerd"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primaire kleur",
+        "default": "#1a1a2e"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Secundaire kleur",
+        "default": "#c9a96e"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accentkleur (CTA)",
+        "default": "#1a1a2e"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Achtergrondkleur",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Tekstkleur",
+        "default": "#2d2d2d"
+      },
+      {
+        "type": "color",
+        "id": "color_text_muted",
+        "label": "Secundaire tekstkleur",
+        "default": "#6b6b6b"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon"
+      }
+    ]
+  },
+  {
+    "name": "Contactgegevens",
+    "settings": [
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "E-mailadres",
+        "default": "hallo@jouwmerk.nl"
+      },
+      {
+        "type": "text",
+        "id": "contact_phone",
+        "label": "Telefoonnummer",
+        "default": "+31 20 123 4567"
+      },
+      {
+        "type": "text",
+        "id": "contact_address",
+        "label": "Adres",
+        "default": "Voorbeeldstraat 1, 1012 AB Amsterdam"
+      },
+      {
+        "type": "text",
+        "id": "business_hours",
+        "label": "Openingstijden klantenservice",
+        "default": "Ma–Vr 09:00–17:00"
+      }
+    ]
+  },
+  {
+    "name": "USP's",
+    "settings": [
+      {
+        "type": "text",
+        "id": "usp_1_title",
+        "label": "USP 1 titel",
+        "default": "Gratis verzending"
+      },
+      {
+        "type": "text",
+        "id": "usp_1_text",
+        "label": "USP 1 tekst",
+        "default": "Bij bestellingen vanaf €50"
+      },
+      {
+        "type": "text",
+        "id": "usp_2_title",
+        "label": "USP 2 titel",
+        "default": "30 dagen retourneren"
+      },
+      {
+        "type": "text",
+        "id": "usp_2_text",
+        "label": "USP 2 tekst",
+        "default": "Zonder gedoe, snel je geld terug"
+      },
+      {
+        "type": "text",
+        "id": "usp_3_title",
+        "label": "USP 3 titel",
+        "default": "Veilig betalen"
+      },
+      {
+        "type": "text",
+        "id": "usp_3_text",
+        "label": "USP 3 tekst",
+        "default": "iDEAL, creditcard & PayPal"
+      },
+      {
+        "type": "text",
+        "id": "usp_4_title",
+        "label": "USP 4 titel",
+        "default": "Klantenservice"
+      },
+      {
+        "type": "text",
+        "id": "usp_4_text",
+        "label": "USP 4 tekst",
+        "default": "Bereikbaar binnen 24 uur"
+      }
+    ]
+  },
+  {
+    "name": "Conversie",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_urgency_badges",
+        "label": "Urgency badges tonen",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_newsletter_popup",
+        "label": "Nieuwsbrief pop-up tonen",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "newsletter_popup_title",
+        "label": "Pop-up titel",
+        "default": "Ontvang 10% korting"
+      },
+      {
+        "type": "text",
+        "id": "newsletter_popup_text",
+        "label": "Pop-up tekst",
+        "default": "Schrijf je in voor exclusieve aanbiedingen en nieuwe producten."
+      },
+      {
+        "type": "text",
+        "id": "free_shipping_threshold",
+        "label": "Gratis verzending drempel (€)",
+        "default": "50"
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram URL"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook URL"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok URL"
+      }
+    ]
+  },
+  {
+    "name": "SEO",
+    "settings": [
+      {
+        "type": "text",
+        "id": "seo_default_title",
+        "label": "Standaard meta title",
+        "default": "Jouw Merk | Premium producten online"
+      },
+      {
+        "type": "textarea",
+        "id": "seo_default_description",
+        "label": "Standaard meta description",
+        "default": "Ontdek zorgvuldig geselecteerde premium producten. Gratis verzending, 30 dagen retourneren en uitstekende klantenservice."
+      }
+    ]
+  }
+]

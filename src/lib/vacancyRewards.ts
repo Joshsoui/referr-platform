@@ -23,24 +23,24 @@ export const DIFFICULTY_META: Record<
   { label: string; emoji: string; badgeClass: string }
 > = {
   easy: {
-    label: "Easy",
+    label: "Makkelijk",
     emoji: "🟢",
     badgeClass: "bg-emerald-50 text-emerald-800 border-emerald-200",
   },
   hard: {
-    label: "Hard",
+    label: "Uitdagend",
     emoji: "🟣",
     badgeClass: "bg-purple-50 text-purple-800 border-purple-200",
   },
   expert: {
-    label: "Expert",
+    label: "Specialist",
     emoji: "🔴",
     badgeClass: "bg-red-50 text-red-800 border-red-200",
   },
 };
 
 export const KEEPER_BONUS = {
-  title: "🏆 Keeper Bonus",
+  title: "Retentiebeloning",
   description:
     "De grootste beloning ontvang je wanneer jouw kandidaat na 1 maand nog succesvol werkzaam is.",
 };
@@ -81,5 +81,5 @@ export function formatDifficultyRewardSummary(
   difficulty: VacancyDifficulty
 ): string {
   const rewards = getDifficultyRewards(difficulty);
-  return `Match ${formatCurrency(rewards.match)} · Keeper ${formatCurrency(rewards.keeper)}`;
+  return `Plaatsing ${formatCurrency(rewards.match)} · Retentie ${formatCurrency(rewards.keeper)}`;
 }

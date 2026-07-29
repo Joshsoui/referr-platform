@@ -1,0 +1,17 @@
+{%- if settings.show_urgency_badges -%}
+  {%- liquid
+    assign badge_type = badge_type | default: 'popular'
+    assign inventory = product.selected_or_first_available_variant.inventory_quantity
+  -%}
+  <div class="product-card__badge">
+    {%- if badge_type == 'stock' and inventory > 0 and inventory <= 10 -%}
+      <span class="badge badge--stock">{{ 'products.low_stock' | t }}</span>
+    {%- elsif product.tags contains 'bestseller' -%}
+      <span class="badge badge--popular">{{ 'products.popular' | t }}</span>
+    {%- elsif on_sale -%}
+      <span class="badge badge--sale">Sale</span>
+    {%- else -%}
+      <span class="badge badge--popular">{{ 'products.popular' | t }}</span>
+    {%- endif -%}
+  </div>
+{%- endif -%}

@@ -1,11 +1,11 @@
 const items = [
-  "Kevin de Vries +10 XP",
-  "Emma Jansen +50 XP",
-  "Mike van Dijk +500 XP",
-  "Lennart Lakeman #1 Finder",
-  "Sophie van der Meer +100 XP",
-  "Joshua Souisay Master Finder",
-  "Sanne de Vries eerste Keeper +1000 XP",
+  "Kevin de Vries · introductie verstuurd",
+  "Emma Jansen · eerste gesprek gepland",
+  "Mike van Dijk · kandidaat aangenomen",
+  "Lennart Lakeman · #1 op de ranglijst",
+  "Sophie van der Meer · voorstel gedaan",
+  "Joshua Souisay · Topverbinder",
+  "Sanne de Vries · beloning uitbetaald",
 ];
 
 export function LiveTicker() {

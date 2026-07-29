@@ -1,0 +1,27 @@
+{%- if section.settings.show -%}
+  <div class="announcement-bar" role="region" aria-label="Aankondiging">
+    <div class="container">
+      {{ section.settings.text | default: '🎉 Gratis verzending bij bestellingen vanaf €' | append: settings.free_shipping_threshold }}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Aankondigingsbalk",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show",
+      "label": "Tonen",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Tekst",
+      "default": "🎉 Gratis verzending bij bestellingen vanaf €50"
+    }
+  ]
+}
+{% endschema %}
