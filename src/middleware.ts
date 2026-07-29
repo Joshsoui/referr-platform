@@ -13,6 +13,8 @@ export const config = {
     "/leaderboard/:path*",
     "/hall-of-fame/:path*",
     "/admin/:path*",
+    "/recruitment",
+    "/recruitment/:path*",
     "/account/:path*",
     "/inloggen",
     "/account-aanmaken",

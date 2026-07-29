@@ -9,6 +9,7 @@ import { useDeckTheme } from "@/context/DeckThemeContext";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/recruitment", label: "Portal" },
   { href: "/vacatures", label: "Challenges" },
   { href: "/aandragen", label: "Mijn introducties" },
   { href: "/rewards", label: "Beloningen" },

@@ -1,6 +1,7 @@
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
+  trustHost: true,
   pages: {
     signIn: "/inloggen",
   },
@@ -30,6 +31,7 @@ export const authConfig = {
         pathname.startsWith("/leaderboard") ||
         pathname.startsWith("/hall-of-fame") ||
         pathname.startsWith("/admin") ||
+        pathname.startsWith("/recruitment") ||
         pathname === "/account" ||
         pathname.startsWith("/account/");
 
