@@ -8,7 +8,11 @@ services:
     envVars:
       - key: AUTH_SECRET
         sync: false
+      - key: AUTH_TRUST_HOST
+        value: "true"
+      - key: AUTH_URL
+        value: https://referr-platform.onrender.com
       - key: AUTH_DEMO_MODE
         value: "true"
       - key: NEXT_PUBLIC_SITE_URL
-        sync: false
+        value: https://referr-platform.onrender.com
