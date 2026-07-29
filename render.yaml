@@ -3,7 +3,7 @@ services:
     name: referr-platform
     runtime: node
     plan: free
-    buildCommand: npm install --include=dev && npm run build
+    buildCommand: npm run render-build
     startCommand: npm start
     envVars:
       - key: AUTH_SECRET

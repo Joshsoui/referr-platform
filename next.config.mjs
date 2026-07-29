@@ -1,5 +1,4 @@
-import type { NextConfig } from "next";
-
+/** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === "production";
 
 const securityHeaders = [
@@ -34,7 +33,7 @@ const securityHeaders = [
     : []),
 ];
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react"],
   },
@@ -55,9 +54,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/inloggen",
-        headers: [
-          { key: "Cache-Control", value: "private, no-store" },
-        ],
+        headers: [{ key: "Cache-Control", value: "private, no-store" }],
       },
     ];
   },
