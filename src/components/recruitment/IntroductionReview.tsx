@@ -116,7 +116,7 @@ export function IntroductionReview({ id }: { id: string }) {
 
         <div className="mt-4 rounded-xl border border-fk-navy/[0.06] bg-fk-white p-4 sm:p-5">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-fk-navy/40">
-            Referrer
+            referrer
           </p>
           <p className="mt-2 text-sm font-medium text-fk-navy">
             {base.referrerName}

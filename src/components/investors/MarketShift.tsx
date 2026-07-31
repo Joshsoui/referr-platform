@@ -42,7 +42,7 @@ export function MarketShift() {
         <blockquote className="mt-14 text-center text-2xl font-bold leading-snug tracking-[-0.03em] text-fk-navy sm:text-3xl lg:text-4xl">
           AI vergroot de snelheid.
           <br />
-          <span className="brand-wordmark">Referr vergroot het bereik.</span>
+          <span className="brand-wordmark">referr vergroot het bereik.</span>
         </blockquote>
       </Reveal>
     </InvestorSectionShell>

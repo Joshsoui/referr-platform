@@ -16,7 +16,7 @@ export function InvestmentThesis() {
     <InvestorSectionShell id="investment-thesis" variant="light">
       <InvestorHeadline>Iedereen kent talent.</InvestorHeadline>
       <InvestorSubtext>
-        Referr maakt het voor iedereen mogelijk om talent te introduceren bij
+        referr maakt het voor iedereen mogelijk om talent te introduceren bij
         bedrijven en recruitmentorganisaties.
       </InvestorSubtext>
       <InvestorSubtext className="mt-3">

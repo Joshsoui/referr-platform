@@ -35,7 +35,7 @@ export function GoToMarket() {
       </ol>
 
       <InvestorSubtext className="mt-10">
-        Referr hoeft in de eerste fase niet direct een groot consumentennetwerk op
+        referr hoeft in de eerste fase niet direct een groot consumentennetwerk op
         te bouwen. Iedere nieuwe challenge kan zijn eigen relevante netwerk
         activeren.
       </InvestorSubtext>

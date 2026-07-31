@@ -1,9 +1,8 @@
 "use client";
 
-import { Card } from "@/components/ui/Card";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 import {
-  CHALLENGE_CREDITS_FEATURES,
-  ENTERPRISE_FEATURES,
   formatInvestorEuro,
   PLACEMENT_FEE_EXAMPLE,
   SUBSCRIPTION_TIERS,
@@ -14,141 +13,162 @@ import {
   InvestorSubtext,
 } from "./InvestorSectionShell";
 import { Reveal } from "@/components/landing/Reveal";
+import { registerGsap, useReducedMotion, useScrollReveal } from "./useInvestorMotion";
+
+const FEE_ROWS = [
+  {
+    label: "Opdrachtgever",
+    value: PLACEMENT_FEE_EXAMPLE.clientFee,
+    share: 1,
+    tone: "bg-fk-navy/15",
+  },
+  {
+    label: "referrer",
+    value: PLACEMENT_FEE_EXAMPLE.referrerReward,
+    share: PLACEMENT_FEE_EXAMPLE.referrerReward / PLACEMENT_FEE_EXAMPLE.clientFee,
+    tone: "bg-gradient-to-r from-[#ff4d59] to-[#ff9a3c]",
+  },
+  {
+    label: "referr platform",
+    value: PLACEMENT_FEE_EXAMPLE.platformFee,
+    share: PLACEMENT_FEE_EXAMPLE.platformFee / PLACEMENT_FEE_EXAMPLE.clientFee,
+    tone: "bg-gradient-to-r from-[#ff4d59] to-[#ff7a30]",
+    highlight: true,
+  },
+  {
+    label: "Partner marge",
+    value: PLACEMENT_FEE_EXAMPLE.partnerMargin,
+    share: PLACEMENT_FEE_EXAMPLE.partnerMargin / PLACEMENT_FEE_EXAMPLE.clientFee,
+    tone: "bg-fk-navy/25",
+  },
+] as const;
 
 export function BusinessModel() {
-  const feeRows = [
-    { label: "Plaatsingsfee opdrachtgever", value: PLACEMENT_FEE_EXAMPLE.clientFee },
-    { label: "Beloning referrer", value: PLACEMENT_FEE_EXAMPLE.referrerReward },
-    { label: "Platformfee Referr", value: PLACEMENT_FEE_EXAMPLE.platformFee, highlight: true },
-    { label: "Resterende marge recruitmentpartner", value: PLACEMENT_FEE_EXAMPLE.partnerMargin },
-  ];
+  const barsRef = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  const revealRef = useScrollReveal<HTMLDivElement>({ y: 28 });
+
+  useEffect(() => {
+    if (reduced || !barsRef.current) return;
+    registerGsap();
+    const bars = barsRef.current.querySelectorAll<HTMLElement>("[data-fee-bar]");
+    gsap.fromTo(
+      bars,
+      { scaleX: 0 },
+      {
+        scaleX: 1,
+        duration: 0.9,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: barsRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
+  }, [reduced]);
 
   return (
     <InvestorSectionShell id="business-model" variant="light" wide label="Businessmodel">
       <InvestorHeadline>
-        Meerdere inkomstenstromen.
+        Twee kernstromen.
         <br />
-        Eén schaalbaar platform.
+        <span className="brand-wordmark">Eén schaalbaar platform.</span>
       </InvestorHeadline>
       <InvestorSubtext>
-        De exacte prijsstelling wordt nog getest en gevalideerd in pilots.
+        Prijsstelling wordt gevalideerd in pilots — onderstaande is illustratief.
       </InvestorSubtext>
-      <p className="mt-4 inline-flex rounded-full border border-fk-primary/15 bg-fk-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-fk-primary">
-        Potentieel verdienmodel
-      </p>
 
-      {/* Model 1 */}
       <Reveal>
-        <div className="mt-14">
-          <h3 className="text-xl font-bold text-fk-navy">
-            Model 1 — Platformabonnement
+        <div className="mt-12">
+          <h3 className="text-sm font-bold uppercase tracking-[0.14em] text-fk-primary">
+            Abonnement
           </h3>
-          <p className="mt-2 text-sm text-fk-navy/55">
-            Recruitmentbureaus en werkgevers betalen voor toegang tot het Referr-platform.
-          </p>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {SUBSCRIPTION_TIERS.map((tier) => (
-              <Card key={tier.name} hover className="border-fk-primary/10">
-                <p className="text-sm font-bold text-fk-primary">{tier.name}</p>
-                <p className="mt-2 text-lg font-extrabold text-fk-navy">
-                  {tier.price}
+              <div
+                key={tier.name}
+                className="rounded-2xl border border-fk-primary/10 bg-gradient-to-br from-fk-white to-fk-primary-muted/20 p-4"
+              >
+                <p className="text-xs font-bold uppercase tracking-wide text-fk-primary">
+                  {tier.name}
                 </p>
-                <p className="mt-2 text-xs leading-relaxed text-fk-navy/55">
+                <p className="mt-2 text-lg font-extrabold tracking-tight text-fk-navy">
+                  {tier.price.includes("€") ? (
+                    <>
+                      <span className="brand-wordmark">
+                        {tier.price.match(/€\s*[\d.]+/)?.[0] ?? tier.price}
+                      </span>
+                      <span className="ml-1 text-sm font-semibold text-fk-navy/45">
+                        {tier.price.replace(/€\s*[\d.]+\s*/, "")}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-base">{tier.price}</span>
+                  )}
+                </p>
+                <p className="mt-2 text-xs leading-relaxed text-fk-navy/50">
                   {tier.description}
                 </p>
-              </Card>
+              </div>
             ))}
           </div>
-          <p className="mt-4 text-xs text-fk-navy/45">
-            Illustratieve prijsstelling. Definitieve tarieven worden bepaald op
-            basis van pilots en marktvalidatie.
-          </p>
         </div>
       </Reveal>
 
-      {/* Model 2 */}
-      <Reveal delay={80}>
-        <div className="mt-14">
-          <h3 className="text-xl font-bold text-fk-navy">
-            Model 2 — Fee per succesvolle plaatsing
-          </h3>
-          <p className="mt-2 text-sm text-fk-navy/55">
-            Referr ontvangt een vast bedrag of percentage bij een succesvolle plaatsing.
-          </p>
-          <Card className="mt-6 border-fk-primary/10">
-            <div className="grid gap-3 sm:grid-cols-2">
-              {feeRows.map((row) => (
-                <div
-                  key={row.label}
-                  className={`flex items-center justify-between rounded-xl px-4 py-3 ${
-                    row.highlight
-                      ? "bg-fk-primary-muted/50"
-                      : "bg-fk-light/80"
+      <div ref={revealRef} className="mt-12">
+        <h3 className="text-sm font-bold uppercase tracking-[0.14em] text-fk-primary">
+          Fee per plaatsing
+        </h3>
+        <p className="mt-2 text-sm text-fk-navy/50">
+          Voorbeeldverdeling bij een plaatsingsfee van{" "}
+          <span className="font-semibold text-fk-navy">
+            {formatInvestorEuro(PLACEMENT_FEE_EXAMPLE.clientFee)}
+          </span>
+        </p>
+
+        <div
+          ref={barsRef}
+          className="mt-6 space-y-4 rounded-2xl border border-fk-primary/10 bg-fk-white p-5 sm:p-6"
+        >
+          {FEE_ROWS.map((row) => (
+            <div key={row.label}>
+              <div className="mb-1.5 flex items-baseline justify-between gap-3">
+                <span
+                  className={`text-sm ${
+                    "highlight" in row && row.highlight
+                      ? "font-semibold text-fk-navy"
+                      : "text-fk-navy/60"
                   }`}
                 >
-                  <span className="text-sm text-fk-navy/65">{row.label}</span>
-                  <span
-                    className={`text-sm font-bold tabular-nums ${
-                      row.highlight ? "text-fk-primary" : "text-fk-navy"
-                    }`}
-                  >
-                    {formatInvestorEuro(row.value)}
-                  </span>
-                </div>
-              ))}
+                  {row.label}
+                </span>
+                <span
+                  className={`text-sm font-bold tabular-nums ${
+                    "highlight" in row && row.highlight
+                      ? "brand-wordmark"
+                      : "text-fk-navy"
+                  }`}
+                >
+                  {formatInvestorEuro(row.value)}
+                </span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-fk-navy/[0.06]">
+                <div
+                  data-fee-bar
+                  className={`h-full origin-left rounded-full ${row.tone}`}
+                  style={{ width: `${Math.max(8, row.share * 100)}%` }}
+                />
+              </div>
             </div>
-            <p className="mt-4 text-xs leading-relaxed text-fk-navy/45">
-              Dit voorbeeld is uitsluitend bedoeld om de economische verdeling
-              zichtbaar te maken. De werkelijke fee kan per klant, vacature en
-              samenwerking verschillen.
-            </p>
-          </Card>
+          ))}
         </div>
-      </Reveal>
+      </div>
 
-      {/* Model 3 */}
-      <Reveal delay={120}>
-        <div className="mt-14">
-          <h3 className="text-xl font-bold text-fk-navy">
-            Model 3 — Challenge credits en zichtbaarheid
-          </h3>
-          <p className="mt-2 text-sm text-fk-navy/55">
-            Organisaties kunnen aanvullend betalen voor:
-          </p>
-          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-            {CHALLENGE_CREDITS_FEATURES.map((feature) => (
-              <li
-                key={feature}
-                className="rounded-xl border border-fk-primary/10 bg-fk-white px-4 py-2.5 text-sm text-fk-navy/65"
-              >
-                {feature}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Reveal>
-
-      {/* Model 4 */}
-      <Reveal delay={160}>
-        <div className="mt-14">
-          <h3 className="text-xl font-bold text-fk-navy">
-            Model 4 — Enterprise en white-label
-          </h3>
-          <p className="mt-2 text-sm text-fk-navy/55">
-            Voor grotere werkgevers en recruitmentorganisaties — een latere groeifase.
-          </p>
-          <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {ENTERPRISE_FEATURES.map((feature) => (
-              <li
-                key={feature}
-                className="rounded-xl border border-fk-navy/8 bg-fk-white px-4 py-2.5 text-sm text-fk-navy/65"
-              >
-                {feature}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Reveal>
+      <p className="mt-8 text-sm text-fk-navy/45">
+        Later: challenge credits, zichtbaarheid en enterprise / white-label.
+      </p>
     </InvestorSectionShell>
   );
 }

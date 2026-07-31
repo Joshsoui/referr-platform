@@ -5,7 +5,6 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ArrowRight } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
-import { Button } from "@/components/ui/Button";
 import { INVESTOR_LINKS } from "@/lib/investors/investorsData";
 import { registerGsap, useReducedMotion } from "./useInvestorMotion";
 
@@ -38,38 +37,40 @@ export function InvestorClosing() {
   return (
     <section
       ref={sectionRef}
-      className="flex min-h-[70vh] flex-col items-center justify-center bg-fk-white px-4 py-28 text-center sm:px-6 lg:px-8"
+      className="relative overflow-hidden bg-fk-navy px-4 py-24 text-center sm:px-6 sm:py-32 lg:px-8"
     >
-      <h2 className="max-w-3xl text-balance text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-fk-navy sm:text-5xl lg:text-6xl">
-        Iedereen kent talent.
-        <br />
-        <span className="brand-wordmark">Referr maakt dat netwerk zichtbaar.</span>
-      </h2>
+      <div className="landing-dark-glow landing-dark-glow--cta" aria-hidden />
+      <div className="relative mx-auto max-w-3xl">
+        <h2 className="text-balance text-3xl font-bold leading-[1.08] tracking-[-0.04em] text-fk-white sm:text-5xl">
+          Wij bouwen geen betere database.
+          <br />
+          <span className="brand-wordmark">
+            Wij bouwen een betere manier om mensen te vinden.
+          </span>
+        </h2>
 
-      <div className="mx-auto mt-8 max-w-lg space-y-2 text-base font-medium text-fk-navy/55 sm:text-lg">
-        <p>Wij bouwen geen betere database.</p>
-        <p>Wij bouwen een betere manier om mensen te vinden.</p>
-      </div>
+        <div ref={logoRef} className="mt-10 flex justify-center">
+          <BrandLogo href={null} height={36} invertOnDark />
+        </div>
 
-      <div ref={logoRef} className="mt-12">
-        <BrandLogo href={null} height={40} />
-      </div>
-
-      <div className="mt-10 flex flex-wrap justify-center gap-3">
-        <Button href={INVESTOR_LINKS.meeting}>Plan een gesprek</Button>
-        <Link
-          href={INVESTOR_LINKS.product}
-          className="btn-press inline-flex items-center justify-center gap-2 rounded-xl border-2 border-fk-primary/15 bg-fk-white px-6 py-3 text-sm font-semibold text-fk-primary transition-colors hover:bg-fk-primary-muted"
-        >
-          Bekijk het product
-          <ArrowRight size={16} />
-        </Link>
-        <Link
-          href={INVESTOR_LINKS.vision}
-          className="btn-press inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-fk-navy/55 transition-colors hover:text-fk-navy"
-        >
-          Open Referr Vision
-        </Link>
+        <div className="mt-10 flex flex-wrap justify-center gap-3">
+          <Link href={INVESTOR_LINKS.meeting} className="landing-btn-on-dark group">
+            Plan een gesprek
+            <ArrowRight
+              size={16}
+              className="ml-1 inline transition-transform duration-300 group-hover:translate-x-0.5"
+            />
+          </Link>
+          <Link href={INVESTOR_LINKS.product} className="landing-btn-on-dark-ghost">
+            Bekijk het product
+          </Link>
+          <Link
+            href={INVESTOR_LINKS.vision}
+            className="inline-flex items-center px-4 py-3 text-sm font-semibold text-white/45 transition-colors hover:text-white"
+          >
+            Vision
+          </Link>
+        </div>
       </div>
     </section>
   );

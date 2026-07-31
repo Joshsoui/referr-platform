@@ -14,26 +14,30 @@ const STATUS_STYLES: Record<
 > = {
   gebouwd: {
     label: "Gebouwd",
-    className: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    className: "border-fk-primary/25 bg-fk-primary-muted text-fk-primary",
   },
   "in ontwikkeling": {
     label: "In ontwikkeling",
-    className: "bg-amber-50 text-amber-800 border-amber-200",
+    className: "border-fk-secondary/30 bg-[#fff4e8] text-[#c45a12]",
   },
   gepland: {
     label: "Gepland",
-    className: "bg-blue-50 text-blue-700 border-blue-200",
+    className: "border-fk-navy/12 bg-fk-light text-fk-navy/55",
   },
   toekomst: {
     label: "Toekomst",
-    className: "bg-fk-light text-fk-navy/50 border-fk-navy/10",
+    className: "border-fk-navy/8 bg-fk-white text-fk-navy/40",
   },
 };
 
 export function ProductRoadmap() {
   return (
     <InvestorSectionShell id="roadmap" wide label="Productroadmap">
-      <InvestorHeadline>Productroadmap</InvestorHeadline>
+      <InvestorHeadline>
+        Van MVP naar
+        <br />
+        <span className="brand-wordmark">schaalbaar platform.</span>
+      </InvestorHeadline>
 
       <div className="mt-12 grid gap-8 lg:grid-cols-3">
         {PRODUCT_ROADMAP.map((phase, phaseIndex) => (

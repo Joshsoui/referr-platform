@@ -12,9 +12,9 @@ export function RiskValidation() {
   return (
     <InvestorSectionShell id="risks" variant="light" label="Validatie">
       <InvestorHeadline>
-        Een sterk idee
+        Een sterk idee moet
         <br />
-        moet in de praktijk worden bewezen.
+        <span className="brand-wordmark">in de praktijk bewezen worden.</span>
       </InvestorHeadline>
 
       <div className="mt-12 grid gap-8 lg:grid-cols-2">

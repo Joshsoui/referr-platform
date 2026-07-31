@@ -39,9 +39,9 @@ export interface MarketSegment {
 }
 
 export const INVESTOR_META = {
-  title: "Referr Investors | Investeerderspresentatie",
+  title: "referr investors | Investeerderspresentatie",
   description:
-    "Ontdek de visie, het businessmodel en het groeipotentieel van Referr: het platform dat recruitment activeert via menselijke netwerken.",
+    "Ontdek de visie, het businessmodel en het groeipotentieel van referr: het platform dat recruitment activeert via menselijke netwerken.",
   version: "1.0",
   confidentialLabel: "Vertrouwelijk",
 } as const;
@@ -106,7 +106,7 @@ export const APPROACH_COMPARISON = {
     ],
   },
   referr: {
-    title: "Het Referr-model",
+    title: "Het referr-model",
     items: [
       "Een netwerk helpt talent ontdekken",
       "Mensen introduceren iemand die zij kennen",
@@ -251,7 +251,7 @@ export const UNIT_ECONOMICS_STAKEHOLDERS = [
   "De recruitmentpartner realiseert omzet.",
   "De kandidaat vindt een nieuwe baan.",
   "De referrer ontvangt een beloning.",
-  "Referr ontvangt een platformfee.",
+  "referr ontvangt een platformfee.",
 ] as const;
 
 export const FUTURE_KPIS = [
@@ -321,7 +321,7 @@ export const GTM_STEPS = [
   "Recruitmentbureaus als launching partners.",
   "Uitnodigen van bestaande kandidaten en netwerken.",
   "Social campagnes rond concrete challenges.",
-  "Referrers activeren via gedeelde resultaten en beloningen.",
+  "referrers activeren via gedeelde resultaten en beloningen.",
   "Werkgevers aansluiten nadat het model via bureaus is gevalideerd.",
 ] as const;
 
@@ -344,7 +344,7 @@ export const MARKET_SEGMENTS: MarketSegment[] = [
     id: "som",
     label: "SOM",
     description:
-      "Het realistische deel dat Referr in de eerste jaren kan bedienen.",
+      "Het realistische deel dat referr in de eerste jaren kan bedienen.",
     value: "Nog te valideren met actuele marktdata.",
   },
 ];
@@ -356,7 +356,7 @@ export const COMPETITIVE_POSITIONS = [
   { label: "Vacaturebanken", x: 0.85, y: 0.15 },
   { label: "Recruitmentbureaus", x: 0.2, y: 0.75 },
   { label: "Crowdsourced recruitmentplatformen", x: 0.75, y: 0.55 },
-  { label: "Referr", x: 0.82, y: 0.88, highlight: true },
+  { label: "referr", x: 0.82, y: 0.88, highlight: true },
 ] as const;
 
 export const DEFENSIBILITY_PILLARS = [
@@ -368,7 +368,7 @@ export const DEFENSIBILITY_PILLARS = [
   {
     title: "Gedrags- en matchingdata",
     description:
-      "Referr leert welke challenges, netwerken en introducties tot goede matches leiden.",
+      "referr leert welke challenges, netwerken en introducties tot goede matches leiden.",
   },
   {
     title: "Integraties en workflow",
@@ -378,7 +378,7 @@ export const DEFENSIBILITY_PILLARS = [
   {
     title: "Merk en categorie",
     description:
-      "Referr kan uitgroeien tot de herkenbare naam voor netwerkgedreven recruitment.",
+      "referr kan uitgroeien tot de herkenbare naam voor netwerkgedreven recruitment.",
   },
 ] as const;
 

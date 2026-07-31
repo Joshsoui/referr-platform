@@ -82,10 +82,14 @@ export function ProductFlow() {
     >
       <div ref={sectionRef}>
         <InvestorHeadline>
-          Van vacature
+          Iedereen kent talent.
           <br />
-          <span className="brand-wordmark">naar challenge.</span>
+          <span className="brand-wordmark">Van vacature naar challenge.</span>
         </InvestorHeadline>
+        <p className="mt-4 max-w-xl text-base font-medium text-fk-navy/50">
+          Introduceer iemand. Volg de voortgang. Speel bij plaatsing een beloning
+          vrij.
+        </p>
 
         <div className="mt-14 grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <BrowserFrame>
@@ -110,8 +114,10 @@ export function ProductFlow() {
               <p className="text-xs font-semibold uppercase text-fk-navy/45">
                 Beloning tot
               </p>
-              <p className="mt-0.5 text-2xl font-extrabold text-amber-700">
-                {formatInvestorEuro(DEMO_CHALLENGE.reward)}
+              <p className="mt-0.5 text-2xl font-extrabold tracking-tight">
+                <span className="brand-wordmark">
+                  {formatInvestorEuro(DEMO_CHALLENGE.reward)}
+                </span>
               </p>
             </div>
 

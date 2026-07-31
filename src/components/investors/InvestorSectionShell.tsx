@@ -32,7 +32,7 @@ export function InvestorSectionShell({
     <section
       id={id}
       ref={ref}
-      className={`relative px-4 py-20 sm:px-6 sm:py-28 lg:px-8 ${bg} ${className}`}
+      className={`relative px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24 ${bg} ${className}`}
     >
       <div
         className={`mx-auto ${wide ? "max-w-6xl" : "max-w-5xl"}`}

@@ -138,10 +138,13 @@ export function RevenueCalculator() {
 
   return (
     <InvestorSectionShell id="revenue-calculator" wide label="Businesscase">
-      <InvestorHeadline>Interactieve businesscase</InvestorHeadline>
+      <InvestorHeadline>
+        Speel met de
+        <br />
+        <span className="brand-wordmark">economische logica.</span>
+      </InvestorHeadline>
       <InvestorSubtext>
-        Pas aannames aan en bekijk illustratieve scenario&apos;s. Geen voorspelling,
-        wel inzicht in de economische logica.
+        Illustratieve scenario&apos;s — geen voorspelling, wel inzicht.
       </InvestorSubtext>
 
       <div
@@ -217,7 +220,7 @@ export function RevenueCalculator() {
                 <dt className="text-sm text-fk-navy/60">{row.label}</dt>
                 <dd
                   className={`text-sm font-bold tabular-nums ${
-                    row.highlight ? "text-fk-primary" : "text-fk-navy"
+                    row.highlight ? "brand-wordmark" : "text-fk-navy"
                   }`}
                 >
                   {formatInvestorEuro(row.value)}
@@ -226,7 +229,7 @@ export function RevenueCalculator() {
               </div>
             ))}
           </dl>
-          <p className="mt-6 rounded-xl border border-amber-200/80 bg-amber-50/60 px-4 py-3 text-xs leading-relaxed text-amber-900/80">
+          <p className="mt-6 rounded-xl border border-fk-primary/15 bg-fk-primary-muted/40 px-4 py-3 text-xs leading-relaxed text-fk-navy/60">
             Dit zijn scenario&apos;s en geen financiële voorspellingen of garanties.
           </p>
         </Card>
