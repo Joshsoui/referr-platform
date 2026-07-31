@@ -123,106 +123,190 @@ export function HeroScrollStory() {
 
     const root = rootRef.current;
     const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    const scrollLength = isMobile ? "+=500%" : "+=600%";
+    // Extra panels for each progress checkpoint → calmer reading
+    const scrollLength = isMobile ? "+=1100%" : "+=1200%";
 
     const ctx = gsap.context(() => {
-      const scenes = [
-        scene1Ref.current,
-        scene2Ref.current,
-        scene3Ref.current,
-        scene4Ref.current,
-        scene5Ref.current,
-        scene6Ref.current,
+      type Panel = {
+        el: HTMLElement | null;
+        kind: "intro" | "scene" | "progress" | "reward";
+        /** 0–5 for progress checkpoints (STEPS length) */
+        progressStep?: number;
+      };
+
+      const progressPanels: Panel[] = STEPS.map((_, step) => ({
+        el: scene4Ref.current,
+        kind: "progress" as const,
+        progressStep: step,
+      }));
+
+      const panels: Panel[] = [
+        { el: introCopyRef.current, kind: "intro" },
+        { el: contextRef.current, kind: "scene" },
+        { el: scene1Ref.current, kind: "scene" },
+        { el: scene2Ref.current, kind: "scene" },
+        { el: scene3Ref.current, kind: "scene" },
+        ...progressPanels,
+        { el: scene5Ref.current, kind: "scene" },
+        { el: scene6Ref.current, kind: "reward" },
       ];
+      const panelCount = panels.length;
       const steps = stepRefs.current.filter(Boolean) as HTMLDivElement[];
 
-      scenes.forEach((scene) => {
-        if (scene) gsap.set(scene, { autoAlpha: 0, y: 40 });
+      const uniqueEls = new Set(
+        panels.map((p) => p.el).filter(Boolean) as HTMLElement[]
+      );
+      uniqueEls.forEach((el) => {
+        const isIntro = el === introCopyRef.current;
+        gsap.set(el, { autoAlpha: isIntro ? 1 : 0, y: isIntro ? 0 : 16 });
       });
-      gsap.set(contextRef.current, { autoAlpha: 0, y: 30 });
       gsap.set(glowRef.current, { opacity: 0.6, scale: 1 });
-      gsap.set(progressFillRef.current, { scaleX: 0, transformOrigin: "left center" });
+      gsap.set(progressFillRef.current, {
+        scaleX: 0,
+        transformOrigin: "left center",
+      });
+      gsap.set(scrollHintRef.current, { autoAlpha: 1 });
+      if (rewardAmountRef.current) {
+        rewardAmountRef.current.textContent = formatEuro(0);
+      }
 
-      const syncSteps = (progress: number) => {
-        const t = Math.min(1, Math.max(0, (progress - 0.48) / 0.24));
-        const activeCount = Math.min(steps.length, Math.floor(t * steps.length + 0.001) + 1);
+      let activeIndex = 0;
+
+      const setProgressCheckpoint = (stepIndex: number) => {
+        const activeCount = stepIndex + 1;
+        const fill = activeCount / steps.length;
+        const fullyDone = stepIndex >= steps.length - 1;
 
         steps.forEach((step, index) => {
           const reached = index < activeCount;
-          const done = index < activeCount - 1 || progress >= 0.75;
-          const current = index === activeCount - 1 && progress < 0.75;
-          step.classList.toggle("is-reached", reached || progress >= 0.75);
-          step.classList.toggle("is-done", done || progress >= 0.75);
+          const done = index < activeCount - 1 || fullyDone;
+          const current = index === stepIndex && !fullyDone;
+          step.classList.toggle("is-reached", reached);
+          step.classList.toggle("is-done", done);
           step.classList.toggle("is-current", current);
         });
 
         if (progressFillRef.current) {
-          const fill = progress >= 0.75 ? 1 : Math.min(1, Math.max(0, (progress - 0.48) / 0.27));
           progressFillRef.current.style.transform = `scaleX(${fill})`;
         }
 
         if (updateRef.current) {
-          let text = "";
-          if (progress >= 0.75) text = UPDATES[4];
-          else if (activeCount >= 4) text = UPDATES[3];
-          else if (activeCount >= 3) text = UPDATES[2];
-          else if (activeCount >= 2) text = UPDATES[1];
-          else if (progress >= 0.48) text = UPDATES[0];
+          const text = UPDATES[Math.min(stepIndex, UPDATES.length - 1)] ?? "";
           updateRef.current.textContent = text;
           updateRef.current.style.opacity = text ? "1" : "0";
         }
-
-        if (rewardAmountRef.current) {
-          const rewardT = Math.min(1, Math.max(0, (progress - 0.78) / 0.1));
-          rewardAmountRef.current.textContent = formatEuro(rewardT * 1500);
-        }
       };
 
-      const tl = gsap.timeline({
-        defaults: { ease: "power2.inOut" },
-        scrollTrigger: {
-          trigger: root,
-          start: "top top",
-          end: scrollLength,
-          pin: pinRef.current,
-          scrub: isMobile ? 0.4 : 0.7,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => syncSteps(self.progress),
+      const showPanel = (index: number) => {
+        if (index === activeIndex) return;
+        const prev = panels[activeIndex];
+        const next = panels[index];
+
+        // Switching between progress checkpoints keeps the same element visible
+        const sameEl = prev?.el && next?.el && prev.el === next.el;
+
+        if (!sameEl) {
+          if (prev?.el) {
+            gsap.to(prev.el, {
+              autoAlpha: 0,
+              y: -12,
+              duration: 0.3,
+              ease: "power2.out",
+              overwrite: "auto",
+            });
+          }
+          if (next?.el) {
+            gsap.fromTo(
+              next.el,
+              { autoAlpha: 0, y: 16 },
+              {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.35,
+                ease: "power2.out",
+                overwrite: "auto",
+              }
+            );
+          }
+        } else if (next?.el) {
+          gsap.set(next.el, { autoAlpha: 1, y: 0 });
+        }
+
+        gsap.to(scrollHintRef.current, {
+          autoAlpha: index === 0 ? 1 : 0,
+          duration: 0.2,
+          overwrite: "auto",
+        });
+
+        const isReward = next?.kind === "reward";
+        const isLate = index >= panelCount - 2;
+        gsap.to(glowRef.current, {
+          opacity: index === 0 ? 0.6 : isReward ? 1 : 0.85,
+          scale: index === 0 ? 1 : isLate ? 1.1 : 1.05,
+          duration: 0.35,
+          overwrite: "auto",
+        });
+
+        if (next?.kind === "progress" && typeof next.progressStep === "number") {
+          setProgressCheckpoint(next.progressStep);
+        }
+
+        if (next?.kind === "reward" && rewardAmountRef.current) {
+          // Always land on the challenge reward: € 1.500
+          const obj = { value: 0 };
+          gsap.to(obj, {
+            value: 1500,
+            duration: 0.9,
+            ease: "power2.out",
+            overwrite: true,
+            onUpdate: () => {
+              if (rewardAmountRef.current) {
+                rewardAmountRef.current.textContent = formatEuro(obj.value);
+              }
+            },
+            onComplete: () => {
+              if (rewardAmountRef.current) {
+                rewardAmountRef.current.textContent = formatEuro(1500);
+              }
+            },
+          });
+        }
+
+        activeIndex = index;
+      };
+
+      ScrollTrigger.create({
+        trigger: root,
+        start: "top top",
+        end: scrollLength,
+        pin: pinRef.current,
+        scrub: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        snap: {
+          snapTo: 1 / (panelCount - 1),
+          duration: { min: 0.12, max: isMobile ? 0.28 : 0.35 },
+          delay: 0.04,
+          ease: "power1.inOut",
+        },
+        onUpdate: (self) => {
+          const raw = self.progress * (panelCount - 1);
+          const index = Math.min(
+            panelCount - 1,
+            Math.max(0, Math.round(raw))
+          );
+          showPanel(index);
+        },
+        onSnapComplete: (self) => {
+          const index = Math.min(
+            panelCount - 1,
+            Math.max(0, Math.round(self.progress * (panelCount - 1)))
+          );
+          if (panels[index]?.kind === "reward" && rewardAmountRef.current) {
+            rewardAmountRef.current.textContent = formatEuro(1500);
+          }
         },
       });
-
-      // Fade intro
-      tl.to(scrollHintRef.current, { autoAlpha: 0, duration: 0.03 }, 0)
-        .to(introCopyRef.current, { autoAlpha: 0, y: -60, duration: 0.12 }, 0.02)
-        .to(glowRef.current, { opacity: 0.8, scale: 1.05, duration: 0.12 }, 0.04);
-
-      // Context intro
-      tl.to(contextRef.current, { autoAlpha: 1, y: 0, duration: 0.08 }, 0.08)
-        .to(contextRef.current, { autoAlpha: 0, y: -20, duration: 0.06 }, 0.16);
-
-      // Scene transitions
-      tl.to(scene1Ref.current, { autoAlpha: 1, y: 0, duration: 0.08 }, 0.19)
-        .to(scene1Ref.current, { autoAlpha: 0, y: -30, duration: 0.06 }, 0.28);
-
-      tl.to(scene2Ref.current, { autoAlpha: 1, y: 0, duration: 0.08 }, 0.31)
-        .to(scene2Ref.current, { autoAlpha: 0, y: -30, duration: 0.06 }, 0.40);
-
-      tl.to(scene3Ref.current, { autoAlpha: 1, y: 0, duration: 0.08 }, 0.43)
-        .to(scene3Ref.current, { autoAlpha: 0, y: -30, duration: 0.06 }, 0.50);
-
-      tl.to(scene4Ref.current, { autoAlpha: 1, y: 0, duration: 0.08 }, 0.52)
-        .to(glowRef.current, { opacity: 0.9, scale: 1.08, duration: 0.08 }, 0.52)
-        .to(scene4Ref.current, { autoAlpha: 0, y: -30, duration: 0.06 }, 0.72);
-
-      tl.to(scene5Ref.current, { autoAlpha: 1, y: 0, duration: 0.08 }, 0.74)
-        .to(glowRef.current, { opacity: 1, scale: 1.12, duration: 0.06 }, 0.74)
-        .to(scene5Ref.current, { autoAlpha: 0, y: -30, duration: 0.06 }, 0.82);
-
-      tl.to(scene6Ref.current, { autoAlpha: 1, y: 0, duration: 0.08 }, 0.84)
-        .to(glowRef.current, { opacity: 1, scale: 1.16, duration: 0.08 }, 0.84);
-
-      tl.to(glowRef.current, { opacity: 0.6, scale: 1, duration: 0.08 }, 0.94);
     }, root);
 
     return () => ctx.revert();

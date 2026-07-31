@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/landing/Reveal";
 import { HowItWorks } from "@/components/landing/HowItWorks";
@@ -12,6 +13,19 @@ const landingChallenges = INITIAL_VACANCIES.filter((v) => v.status === "open").s
   0,
   4
 );
+
+function InlineReferrLogo({ height = 14 }: { height?: number }) {
+  return (
+    <Image
+      src="/brand/referr-logo.png"
+      alt="referr"
+      height={height}
+      width={Math.round(height * 3.75)}
+      className="inline-block w-auto object-contain object-left"
+      style={{ height: `${height}px`, width: "auto" }}
+    />
+  );
+}
 
 export function LandingExperience() {
   return (
@@ -86,6 +100,15 @@ export function LandingExperience() {
               className="landing-btn-on-dark-ghost"
             >
               Maak account aan
+            </Link>
+          </div>
+          <div className="relative mt-6 flex justify-center">
+            <Link
+              href="/vision"
+              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-white/70 transition hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
+            >
+              <InlineReferrLogo height={15} />
+              <span className="tracking-wide">vision</span>
             </Link>
           </div>
         </Reveal>

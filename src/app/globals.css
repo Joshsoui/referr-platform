@@ -23,8 +23,13 @@ body {
   background: linear-gradient(90deg, #ff4d59 0%, #ff7a30 50%, #ffaa20 100%);
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
   font-weight: 700;
+  display: inline-block;
+  line-height: 1.2;
+  padding-bottom: 0.18em;
+  margin-bottom: -0.18em;
 }
 
 .brand-gradient {
@@ -1608,6 +1613,114 @@ html.fk-deck-theme main button.rounded-xl:hover {
   50% { transform: translateY(3px); }
 }
 
+/* ── Vision page phone mockup ── */
+.vision-phone-glow {
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  height: 70%;
+  width: min(90%, 420px);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 77, 89, 0.16) 0%,
+    rgba(255, 154, 60, 0.08) 40%,
+    transparent 70%
+  );
+}
+
+.vision-phone {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 268px);
+}
+
+.vision-phone-frame {
+  position: relative;
+  border-radius: 2.45rem;
+  border: 3px solid #1c1c1f;
+  background: linear-gradient(160deg, #2a2a2e 0%, #0f0f12 55%, #1a1a1e 100%);
+  padding: 0.55rem;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 20px 50px -18px rgba(15, 23, 42, 0.4),
+    0 36px 70px -28px rgba(255, 77, 89, 0.22);
+}
+
+.vision-phone-notch {
+  position: absolute;
+  top: 0.72rem;
+  left: 50%;
+  z-index: 2;
+  height: 1.3rem;
+  width: 5.4rem;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  background: #0f0f12;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+
+.vision-phone-screen {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.95rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f6f7f9 100%);
+  padding: 1.9rem 0.85rem 0.8rem;
+  min-height: 34rem;
+}
+
+.vision-phone-viewport {
+  position: relative;
+  height: 24.75rem;
+  overflow: hidden;
+}
+
+.vision-phone-viewport::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  height: 2rem;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(246, 247, 249, 0) 0%,
+    rgba(246, 247, 249, 0.85) 55%,
+    #f6f7f9 100%
+  );
+}
+
+.vision-phone-track {
+  will-change: transform;
+}
+
+.vision-phone-panel {
+  flex-shrink: 0;
+  min-height: 24.75rem;
+  box-sizing: border-box;
+  padding-bottom: 1.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .vision-phone {
+    animation: vision-phone-float 6.5s ease-in-out infinite;
+  }
+}
+
+@keyframes vision-phone-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@media (max-width: 639px) {
+  .vision-phone {
+    width: min(100%, 240px);
+  }
+}
+
 @media (max-width: 767px) {
   .hero-scroll-rail-item-light {
     font-size: 0.58rem;
@@ -1617,6 +1730,10 @@ html.fk-deck-theme main button.rounded-xl:hover {
 @media (prefers-reduced-motion: reduce) {
   .hero-light-glow {
     transform: none !important;
+  }
+
+  .vision-phone {
+    animation: none;
   }
 }
 
