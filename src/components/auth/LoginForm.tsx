@@ -13,7 +13,15 @@ import { BrandLogo } from "@/components/brand/BrandLogo";
 
 const initial: ActionResult | null = null;
 
-export function LoginForm({ nextPath = "/dashboard" }: { nextPath?: string }) {
+export function LoginForm({
+  nextPath = "/dashboard",
+  registerHref = "/account-aanmaken",
+  registerLabel = "Account aanmaken",
+}: {
+  nextPath?: string;
+  registerHref?: string;
+  registerLabel?: string;
+}) {
   const [state, action, pending] = useActionState(loginAction, initial);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -97,10 +105,10 @@ export function LoginForm({ nextPath = "/dashboard" }: { nextPath?: string }) {
       <p className="mt-6 text-center text-sm text-fk-navy/65">
         Nog geen account?{" "}
         <Link
-          href="/account-aanmaken"
+          href={registerHref}
           className="font-semibold text-fk-primary hover:underline"
         >
-          Account aanmaken
+          {registerLabel}
         </Link>
       </p>
     </Card>

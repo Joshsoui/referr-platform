@@ -156,10 +156,13 @@ export async function createUser(input: {
   lastName: string;
   password: string;
   marketingConsent: boolean;
+  role?: UserRole;
 }): Promise<StoredUser> {
   const email = normalizeEmail(input.email);
   const passwordHash = await bcrypt.hash(input.password, 12);
   const now = new Date();
+  const role: UserRole =
+    input.role === "admin" || input.role === "recruiter" ? input.role : "user";
 
   if (hasDatabase()) {
     const existing = await tryPrisma((prisma) =>
@@ -174,7 +177,7 @@ export async function createUser(input: {
           firstName: input.firstName.trim(),
           lastName: input.lastName.trim(),
           passwordHash,
-          role: "user",
+          role: role as PrismaUserRole,
           marketingConsent: input.marketingConsent,
           marketingConsentAt: input.marketingConsent ? now : null,
           marketingConsentVersion: input.marketingConsent
@@ -200,7 +203,7 @@ export async function createUser(input: {
     firstName: input.firstName.trim(),
     lastName: input.lastName.trim(),
     passwordHash,
-    role: "user",
+    role,
     emailVerifiedAt: null,
     marketingConsent: input.marketingConsent,
     marketingConsentAt: input.marketingConsent ? iso : null,

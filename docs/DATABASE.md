@@ -21,6 +21,6 @@ Optional (serverless-style pooling):
 1. Set `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`, `ADMIN_BOOTSTRAP_TOKEN` on Render
 2. Deploy latest `main`
 3. Build runs `prisma migrate deploy` and creates tables
-4. Register at `/account-aanmaken`
+4. Register at `/account-aanmaken` (referrers) or `/account-aanmaken/beheerder` (staff, needs invite code = `ADMIN_BOOTSTRAP_TOKEN`)
 
 Without a working DB URL the app falls back to local JSON files (not durable on Render free).

@@ -37,12 +37,21 @@ Mails sent:
 
 | Route | Purpose |
 | --- | --- |
-| `/account-aanmaken` | Registration |
+| `/account-aanmaken` | Registration (referrers) |
+| `/account-aanmaken/beheerder` | Staff registration (admin/recruiter) with invite code |
 | `/email-bevestigen` | Email verification |
-| `/inloggen` | Login |
+| `/inloggen` | Login (`?mode=partner` for staff) |
 | `/wachtwoord-vergeten` | Password reset request |
 | `/wachtwoord-herstellen` | Password reset completion |
 | `/account` | Privacy Center |
+
+### Beheerder / partner account
+
+1. Set `ADMIN_BOOTSTRAP_TOKEN` on Render (long random string)
+2. Open `/account-aanmaken/beheerder` (also linked from partner login)
+3. Enter the invite code (= that env token), choose Admin or Recruiter, register
+4. Confirm email if required, then log in via **Ik beheer challenges**
+5. Optional fallback: `POST /api/admin/bootstrap` to promote an existing user
 
 ## Security notes
 

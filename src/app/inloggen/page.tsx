@@ -50,7 +50,19 @@ export default async function LoginPage({
           </a>
         </div>
       </div>
-      <LoginForm nextPath={suggestedNext} />
+      <LoginForm
+        nextPath={suggestedNext}
+        registerHref={
+          mode === "partner"
+            ? "/account-aanmaken/beheerder"
+            : "/account-aanmaken"
+        }
+        registerLabel={
+          mode === "partner"
+            ? "Beheerderaccount aanmaken"
+            : "Account aanmaken"
+        }
+      />
     </div>
   );
 }
