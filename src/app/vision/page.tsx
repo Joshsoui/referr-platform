@@ -18,6 +18,7 @@ function InlineLogo({ height = 28, className = "" }: { height?: number; classNam
       alt="referr"
       height={height}
       width={width}
+      unoptimized
       className={`brand-logo-mark inline-block h-[1em] w-auto object-contain align-baseline ${className}`}
       style={{ height: `${height}px`, width: "auto" }}
     />
