@@ -4,6 +4,15 @@ function isStaffRole(role: string | undefined | null): boolean {
   return role === "admin" || role === "recruiter";
 }
 
+function isComingSoonHost(hostHeader: string | null): boolean {
+  const host = (hostHeader ?? "").split(":")[0].toLowerCase();
+  const fromEnv = process.env.COMING_SOON_HOSTS?.split(",")
+    .map((h) => h.trim().toLowerCase())
+    .filter(Boolean);
+  const hosts = fromEnv?.length ? fromEnv : ["referr.nl", "www.referr.nl"];
+  return hosts.includes(host);
+}
+
 export const authConfig = {
   trustHost: true,
   pages: {
@@ -16,6 +25,11 @@ export const authConfig = {
   providers: [],
   callbacks: {
     authorized({ auth, request }) {
+      // Marketing domain always serves coming-soon — skip app auth gates
+      if (isComingSoonHost(request.headers.get("host"))) {
+        return true;
+      }
+
       const { pathname } = request.nextUrl;
       const isLoggedIn = !!auth?.user;
       const isStaff = isStaffRole(auth?.user?.role);
