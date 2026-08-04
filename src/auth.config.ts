@@ -1,5 +1,9 @@
 import type { NextAuthConfig } from "next-auth";
 
+function isStaffRole(role: string | undefined | null): boolean {
+  return role === "admin" || role === "recruiter";
+}
+
 export const authConfig = {
   trustHost: true,
   pages: {
@@ -14,6 +18,7 @@ export const authConfig = {
     authorized({ auth, request }) {
       const { pathname } = request.nextUrl;
       const isLoggedIn = !!auth?.user;
+      const isStaff = isStaffRole(auth?.user?.role);
 
       const isAuthPage =
         pathname.startsWith("/inloggen") ||
@@ -22,21 +27,25 @@ export const authConfig = {
         pathname.startsWith("/wachtwoord-herstellen") ||
         pathname.startsWith("/email-bevestigen");
 
-      const isPrivate =
+      const isReferrerApp =
         pathname.startsWith("/dashboard") ||
         pathname.startsWith("/aandragen") ||
         pathname.startsWith("/levels") ||
         pathname.startsWith("/challenges") ||
         pathname.startsWith("/rewards") ||
         pathname.startsWith("/leaderboard") ||
-        pathname.startsWith("/hall-of-fame") ||
+        pathname.startsWith("/hall-of-fame");
+
+      const isPrivate =
+        isReferrerApp ||
         pathname.startsWith("/admin") ||
         pathname.startsWith("/recruitment") ||
         pathname === "/account" ||
         pathname.startsWith("/account/");
 
       if (isAuthPage && isLoggedIn) {
-        return Response.redirect(new URL("/dashboard", request.nextUrl));
+        const home = isStaff ? "/recruitment" : "/dashboard";
+        return Response.redirect(new URL(home, request.nextUrl));
       }
 
       if (isPrivate && !isLoggedIn) {
@@ -45,19 +54,16 @@ export const authConfig = {
         return Response.redirect(login);
       }
 
-      if (
-        pathname.startsWith("/admin") &&
-        auth?.user?.role !== "admin" &&
-        auth?.user?.role !== "recruiter"
-      ) {
+      // Staff stays in beheeromgeving — no access to referrer dashboard app
+      if (isLoggedIn && isStaff && isReferrerApp) {
+        return Response.redirect(new URL("/recruitment", request.nextUrl));
+      }
+
+      if (pathname.startsWith("/admin") && !isStaff) {
         return Response.redirect(new URL("/dashboard", request.nextUrl));
       }
 
-      if (
-        pathname.startsWith("/recruitment") &&
-        auth?.user?.role !== "admin" &&
-        auth?.user?.role !== "recruiter"
-      ) {
+      if (pathname.startsWith("/recruitment") && !isStaff) {
         return Response.redirect(new URL("/dashboard", request.nextUrl));
       }
 
@@ -79,7 +85,8 @@ export const authConfig = {
         session.user.role = token.role as "user" | "admin" | "recruiter";
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
-        session.user.emailVerifiedAt = (token.emailVerifiedAt as string | null) ?? null;
+        session.user.emailVerifiedAt =
+          (token.emailVerifiedAt as string | null) ?? null;
       }
       return session;
     },

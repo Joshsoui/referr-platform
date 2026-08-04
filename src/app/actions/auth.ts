@@ -16,6 +16,7 @@ import {
   updatePassword,
   updateProfile,
 } from "@/lib/auth/users";
+import { isStaffRole } from "@/lib/auth/roles";
 import {
   isEmailConfigured,
   sendPasswordResetEmail,
@@ -227,11 +228,27 @@ export async function loginAction(
   const password = String(formData.get("password") ?? "");
   const next = String(formData.get("next") ?? "/dashboard");
 
+  const existing = await findUserByEmail(email);
+  let redirectTo = next.startsWith("/") ? next : "/dashboard";
+  if (existing && isStaffRole(existing.role)) {
+    const isReferrerDestination =
+      redirectTo.startsWith("/dashboard") ||
+      redirectTo.startsWith("/aandragen") ||
+      redirectTo.startsWith("/levels") ||
+      redirectTo.startsWith("/challenges") ||
+      redirectTo.startsWith("/rewards") ||
+      redirectTo.startsWith("/leaderboard") ||
+      redirectTo.startsWith("/hall-of-fame");
+    if (isReferrerDestination || redirectTo === "/") {
+      redirectTo = "/recruitment";
+    }
+  }
+
   try {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: next.startsWith("/") ? next : "/dashboard",
+      redirectTo,
     });
     return { ok: true };
   } catch (error) {

@@ -8,12 +8,20 @@ import { useSession } from "next-auth/react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { NotificationCenter } from "@/components/NotificationCenter";
 import { useDeckTheme } from "@/context/DeckThemeContext";
+import { isStaffRole } from "@/lib/auth/roles";
 
-const navLinks = [
+const referrerNavLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/vacatures", label: "Challenges" },
   { href: "/aandragen", label: "Mijn tips" },
   { href: "/rewards", label: "Beloningen" },
+  { href: "/account", label: "Profiel" },
+];
+
+const staffNavLinks = [
+  { href: "/recruitment", label: "Beheeromgeving" },
+  { href: "/admin", label: "Tips & challenges" },
+  { href: "/admin/payouts", label: "Uitbetalingen" },
   { href: "/account", label: "Profiel" },
 ];
 
@@ -22,15 +30,11 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { enabled: deckTheme } = useDeckTheme();
   const { data: session } = useSession();
-  const canAccessAdmin =
-    session?.user?.role === "admin" || session?.user?.role === "recruiter";
-  const links = canAccessAdmin
-    ? [
-        ...navLinks,
-        { href: "/recruitment", label: "Beheeromgeving" },
-        { href: "/admin", label: "Tips & challenges" },
-      ]
-    : navLinks;
+  const isStaff = isStaffRole(session?.user?.role);
+  const links = isStaff ? staffNavLinks : referrerNavLinks;
+  const homeHref = isStaff ? "/recruitment" : "/";
+  const ctaHref = isStaff ? "/admin" : "/vacatures";
+  const ctaLabel = isStaff ? "Tips beheren" : "Ontdek challenges";
 
   if (pathname === "/founders-deck") return null;
 
@@ -43,11 +47,18 @@ export function Header() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 sm:py-3.5 lg:px-8">
-        <BrandLogo height={28} priority />
+        <BrandLogo height={28} priority href={homeHref} />
 
         <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 overflow-x-auto md:flex [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {links.map((link) => {
-            const active = pathname === link.href;
+            const active =
+              pathname === link.href ||
+              (link.href !== "/admin" &&
+                link.href !== "/recruitment" &&
+                pathname.startsWith(`${link.href}/`)) ||
+              (link.href === "/admin" &&
+                pathname.startsWith("/admin") &&
+                !pathname.startsWith("/admin/payouts"));
             return (
               <Link
                 key={link.href}
@@ -71,10 +82,10 @@ export function Header() {
         <div className="flex shrink-0 items-center gap-2">
           <NotificationCenter />
           <Link
-            href="/vacatures"
+            href={ctaHref}
             className="header-cta group hidden items-center gap-2 sm:inline-flex"
           >
-            <span>Ontdek challenges</span>
+            <span>{ctaLabel}</span>
             <ArrowRight
               size={15}
               className="shrink-0 transition-transform duration-200 group-hover:translate-x-0.5"
@@ -114,11 +125,11 @@ export function Header() {
               );
             })}
             <Link
-              href="/vacatures"
+              href={ctaHref}
               onClick={() => setMobileOpen(false)}
               className="header-cta mt-2 justify-center"
             >
-              <span>Ontdek challenges</span>
+              <span>{ctaLabel}</span>
               <ArrowRight size={15} />
             </Link>
           </div>

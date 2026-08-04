@@ -27,6 +27,4 @@ export async function requireRole(roles: UserRole[]) {
   return { session, error: null };
 }
 
-export function isStaffRole(role: string | undefined | null): boolean {
-  return role === "admin" || role === "recruiter";
-}
+export { isStaffRole } from "@/lib/auth/roles";
