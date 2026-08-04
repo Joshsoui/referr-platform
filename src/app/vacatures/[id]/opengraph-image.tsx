@@ -77,7 +77,7 @@ export default async function OpengraphImage({
             Reward: {reward}
           </div>
           <div style={{ fontSize: 24, opacity: 0.8 }}>
-            Tip iemand via Referr
+            Tip iemand via referr
           </div>
         </div>
       </div>

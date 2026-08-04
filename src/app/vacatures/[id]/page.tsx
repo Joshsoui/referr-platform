@@ -25,7 +25,7 @@ export async function generateMetadata(
 
   const reward = formatCurrency(getDifficultyRewards(vacancy.difficulty).total);
   const title = `${vacancy.title} in ${vacancy.location} · Challenge`;
-  const description = `Ken jij iemand voor ${vacancy.title} in ${vacancy.location}? Tip diegene via Referr. Reward tot ${reward}.`;
+  const description = `Ken jij iemand voor ${vacancy.title} in ${vacancy.location}? Tip diegene via referr. Reward tot ${reward}.`;
   const canonicalPath = `/vacatures/${vacancy.id}`;
   const ogImagePath = `/vacatures/${vacancy.id}/opengraph-image`;
 

@@ -4,7 +4,7 @@ import type { Vacancy } from "@/types/vacancy";
 
 export function buildChallengeShareMessage(vacancy: Vacancy, url: string): string {
   const reward = formatCurrency(getDifficultyRewards(vacancy.difficulty).total);
-  return `Ken jij iemand voor de challenge ${vacancy.title} in ${vacancy.location}? Tip diegene via Referr en verdien tot ${reward} bij een succesvolle match. ${url}`;
+  return `Ken jij iemand voor de challenge ${vacancy.title} in ${vacancy.location}? Tip diegene via referr en verdien tot ${reward} bij een succesvolle match. ${url}`;
 }
 
 export function resolveBaseUrl(): string {

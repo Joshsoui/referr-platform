@@ -26,7 +26,7 @@ export function BrandLogo({
       alt="referr"
       height={height}
       width={width}
-      className={`h-auto w-auto object-contain object-left ${invertOnDark ? "brightness-[1.8] contrast-[0.9]" : ""} ${className}`}
+      className={`brand-logo-mark h-auto w-auto object-contain object-left ${invertOnDark ? "brightness-[1.8] contrast-[0.9]" : ""} ${className}`}
       style={{ height, width: "auto", maxWidth: "100%" }}
       priority={priority}
     />

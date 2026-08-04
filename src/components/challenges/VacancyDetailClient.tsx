@@ -51,7 +51,7 @@ export function VacancyDetailClient({ vacancy }: { vacancy: Vacancy }) {
             </h1>
             <p className="mt-3 text-base leading-relaxed text-fk-navy/70">
               Ken jij iemand die past bij deze rol? Tip diegene direct en volg de
-              voortgang in Referr.
+              voortgang in referr.
             </p>
 
             <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm text-fk-navy/60">
