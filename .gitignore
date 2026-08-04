@@ -39,3 +39,9 @@ next-env.d.ts
 .venv-brand/
 
 /src/generated/prisma
+
+# Agent skill caches
+.agents/skills/
+.claude/skills/
+.windsurf/skills/
+skills-lock.json
