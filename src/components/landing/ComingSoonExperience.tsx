@@ -25,7 +25,8 @@ export function ComingSoonExperience() {
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           transition={{ duration: 1.4, ease: EASE }}
         >
-          <div className="coming-soon-logo-glow" aria-hidden />
+          <div className="coming-soon-logo-glow coming-soon-logo-glow--core" aria-hidden />
+          <div className="coming-soon-logo-glow coming-soon-logo-glow--halo" aria-hidden />
           <Image
             src="/brand/referr-logo.png"
             alt="referr"
