@@ -32,5 +32,7 @@ services:
         sync: false
       - key: EMAIL_FROM
         sync: false
+      - key: COMING_SOON_HOSTS
+        value: "referr.nl,www.referr.nl"
       - key: DATA_DIR
         value: /tmp/referr-data

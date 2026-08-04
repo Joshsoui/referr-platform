@@ -1821,3 +1821,128 @@ html.fk-deck-theme main button.rounded-xl:hover {
 }
 
 
+
+/* ── Coming soon (referr.nl) ── */
+.coming-soon-surface {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(255, 241, 243, 0.95), transparent 70%),
+    linear-gradient(165deg, #fff8f6 0%, #f5f7fa 45%, #fff1f3 100%);
+}
+
+.coming-soon-wash {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 55%, rgba(255, 77, 89, 0.12), transparent 65%),
+    radial-gradient(ellipse 50% 40% at 20% 30%, rgba(255, 122, 48, 0.1), transparent 60%),
+    radial-gradient(ellipse 45% 35% at 80% 25%, rgba(255, 170, 32, 0.08), transparent 55%);
+  animation: coming-soon-wash-breathe 10s ease-in-out infinite;
+}
+
+.coming-soon-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  will-change: transform, opacity;
+}
+
+.coming-soon-orb--a {
+  width: min(70vw, 520px);
+  height: min(70vw, 520px);
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(255, 77, 89, 0.45) 0%, rgba(255, 77, 89, 0) 70%);
+  animation: coming-soon-orb-pulse 7s ease-in-out infinite;
+}
+
+.coming-soon-orb--b {
+  width: min(55vw, 380px);
+  height: min(55vw, 380px);
+  bottom: 5%;
+  left: 8%;
+  background: radial-gradient(circle, rgba(255, 122, 48, 0.35) 0%, rgba(255, 122, 48, 0) 70%);
+  animation: coming-soon-orb-drift 14s ease-in-out infinite;
+}
+
+.coming-soon-orb--c {
+  width: min(48vw, 320px);
+  height: min(48vw, 320px);
+  top: 18%;
+  right: 4%;
+  background: radial-gradient(circle, rgba(255, 170, 32, 0.28) 0%, rgba(255, 170, 32, 0) 70%);
+  animation: coming-soon-orb-drift 18s ease-in-out infinite reverse;
+}
+
+.coming-soon-mesh {
+  opacity: 0.35;
+  background-image:
+    radial-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, black 20%, transparent 75%);
+}
+
+.coming-soon-grain {
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  mix-blend-mode: multiply;
+}
+
+.coming-soon-logo-wrap {
+  position: relative;
+  filter: drop-shadow(0 18px 40px rgba(255, 77, 89, 0.18));
+}
+
+.coming-soon-logo {
+  animation: coming-soon-logo-breathe 5.5s ease-in-out infinite;
+}
+
+.coming-soon-label {
+  animation: coming-soon-label-fade 4s ease-in-out infinite;
+}
+
+.coming-soon-pulse {
+  animation: coming-soon-dot-pulse 2.4s ease-in-out infinite;
+  box-shadow: 0 0 0 0 rgba(255, 77, 89, 0.45);
+}
+
+@keyframes coming-soon-wash-breathe {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+
+@keyframes coming-soon-orb-pulse {
+  0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.95; transform: translateX(-50%) scale(1.12); }
+}
+
+@keyframes coming-soon-orb-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  40% { transform: translate(4%, -6%) scale(1.08); opacity: 0.85; }
+  70% { transform: translate(-3%, 4%) scale(0.96); opacity: 0.65; }
+}
+
+@keyframes coming-soon-logo-breathe {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.035); filter: brightness(1.04); }
+}
+
+@keyframes coming-soon-label-fade {
+  0%, 100% { opacity: 0.55; letter-spacing: 0.28em; }
+  50% { opacity: 0.9; letter-spacing: 0.32em; }
+}
+
+@keyframes coming-soon-dot-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 77, 89, 0.45); }
+  70% { transform: scale(1.15); box-shadow: 0 0 0 14px rgba(255, 77, 89, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 77, 89, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coming-soon-wash,
+  .coming-soon-orb,
+  .coming-soon-logo,
+  .coming-soon-label,
+  .coming-soon-pulse {
+    animation: none !important;
+  }
+}

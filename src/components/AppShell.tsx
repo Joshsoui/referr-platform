@@ -24,7 +24,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { data: session } = useSession();
 
-  if (pathname === "/founders-deck") {
+  if (pathname === "/founders-deck" || pathname === "/coming-soon") {
     return <>{children}</>;
   }
 
