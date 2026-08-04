@@ -27,6 +27,10 @@ export interface StoredUser {
   country?: string;
   iban?: string;
   ibanAccountName?: string;
+  stripeAccountId?: string;
+  stripeOnboardingComplete?: boolean;
+  stripeChargesEnabled?: boolean;
+  stripePayoutsEnabled?: boolean;
 }
 
 interface UserStore {
@@ -78,6 +82,10 @@ export function getPublicUser(user: StoredUser) {
     country: user.country ?? "Nederland",
     iban: user.iban ?? "",
     ibanAccountName: user.ibanAccountName ?? "",
+    stripeAccountId: user.stripeAccountId ?? "",
+    stripeOnboardingComplete: user.stripeOnboardingComplete ?? false,
+    stripeChargesEnabled: user.stripeChargesEnabled ?? false,
+    stripePayoutsEnabled: user.stripePayoutsEnabled ?? false,
   };
 }
 
@@ -133,6 +141,10 @@ export async function createUser(input: {
     country: "Nederland",
     iban: "",
     ibanAccountName: "",
+    stripeAccountId: "",
+    stripeOnboardingComplete: false,
+    stripeChargesEnabled: false,
+    stripePayoutsEnabled: false,
   };
 
   store.users.push(user);
@@ -224,6 +236,33 @@ export async function deleteUser(userId: string): Promise<boolean> {
   if (store.users.length === before) return false;
   await saveStore(store);
   return true;
+}
+
+export async function updateUserStripeAccount(
+  userId: string,
+  input: {
+    stripeAccountId: string;
+    stripeOnboardingComplete?: boolean;
+    stripeChargesEnabled?: boolean;
+    stripePayoutsEnabled?: boolean;
+  }
+): Promise<StoredUser | null> {
+  const store = await ensureStore();
+  const user = store.users.find((u) => u.id === userId);
+  if (!user) return null;
+  user.stripeAccountId = input.stripeAccountId;
+  if (typeof input.stripeOnboardingComplete === "boolean") {
+    user.stripeOnboardingComplete = input.stripeOnboardingComplete;
+  }
+  if (typeof input.stripeChargesEnabled === "boolean") {
+    user.stripeChargesEnabled = input.stripeChargesEnabled;
+  }
+  if (typeof input.stripePayoutsEnabled === "boolean") {
+    user.stripePayoutsEnabled = input.stripePayoutsEnabled;
+  }
+  user.updatedAt = new Date().toISOString();
+  await saveStore(store);
+  return user;
 }
 
 export async function exportUserData(userId: string) {
