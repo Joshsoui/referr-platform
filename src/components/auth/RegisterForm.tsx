@@ -37,7 +37,7 @@ export function RegisterForm() {
     return (
       <Card className="mx-auto w-full max-w-md border-fk-navy/5 p-6 sm:p-8">
         <BrandLogo height={28} href="/" />
-        <h1 className="mt-6 text-2xl font-bold text-fk-navy">
+        <h1 className="mt-6 text-2xl font-bold tracking-tight text-fk-navy">
           Check je inbox
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-fk-navy/65">
@@ -64,8 +64,8 @@ export function RegisterForm() {
   return (
     <Card className="mx-auto w-full max-w-md border-fk-navy/5 p-6 sm:p-8">
       <BrandLogo height={28} href="/" />
-      <h1 className="mt-6 text-2xl font-bold text-fk-navy">Maak account aan</h1>
-      <p className="mt-2 text-sm font-medium text-fk-navy/55">
+      <h1 className="mt-6 text-2xl font-bold tracking-tight text-fk-navy">Maak account aan</h1>
+      <p className="mt-2 text-sm text-fk-navy/55">
         Alleen wat je nodig hebt om te starten.
       </p>
 

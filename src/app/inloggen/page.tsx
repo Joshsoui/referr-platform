@@ -19,9 +19,9 @@ export default async function LoginPage({
 
   return (
     <div className="px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto mb-6 max-w-3xl rounded-2xl border border-fk-primary/10 bg-fk-white p-4 sm:p-5">
-        <h1 className="text-xl font-bold text-fk-navy sm:text-2xl">Inloggen</h1>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+      <div className="mx-auto mb-6 max-w-md rounded-2xl border border-fk-primary/10 bg-fk-white p-4 sm:p-5">
+        <p className="text-sm font-medium text-fk-navy/55">Kies hoe je inlogt</p>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <a
             href="/inloggen?mode=referrer"
             className={`rounded-xl border px-4 py-3 transition ${
@@ -30,9 +30,9 @@ export default async function LoginPage({
                 : "border-fk-primary/15 hover:border-fk-primary/30"
             }`}
           >
-            <p className="font-semibold text-fk-navy">Ik wil iemand tippen</p>
-            <p className="mt-1 text-sm text-fk-navy/60">
-              Voor referrers en gebruikers van het platform
+            <p className="text-sm font-semibold text-fk-navy">Ik wil tippen</p>
+            <p className="mt-1 text-xs text-fk-navy/60">
+              Voor referrers
             </p>
           </a>
           <a
@@ -43,9 +43,9 @@ export default async function LoginPage({
                 : "border-fk-primary/15 hover:border-fk-primary/30"
             }`}
           >
-            <p className="font-semibold text-fk-navy">Ik beheer challenges</p>
-            <p className="mt-1 text-sm text-fk-navy/60">
-              Voor werkgevers, recruitmentpartners en beheerders
+            <p className="text-sm font-semibold text-fk-navy">Ik beheer challenges</p>
+            <p className="mt-1 text-xs text-fk-navy/60">
+              Voor partners &amp; admins
             </p>
           </a>
         </div>

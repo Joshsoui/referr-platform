@@ -9,6 +9,7 @@ import {
 } from "@/app/actions/auth";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 const initial: ActionResult | null = null;
 
@@ -18,8 +19,11 @@ export function ResetPasswordForm({ token }: { token: string }) {
 
   if (!token) {
     return (
-      <Card className="mx-auto w-full max-w-md border-fk-primary/10 p-6 sm:p-8">
-        <h1 className="text-2xl font-extrabold text-fk-navy">
+      <Card className="mx-auto w-full max-w-md border-fk-navy/5 p-6 sm:p-8">
+        <div className="mb-6">
+          <BrandLogo height={28} href="/" />
+        </div>
+        <h1 className="text-2xl font-bold tracking-tight text-fk-navy">
           Ongeldige link
         </h1>
         <p className="mt-3 text-sm text-fk-navy/70">
@@ -34,8 +38,11 @@ export function ResetPasswordForm({ token }: { token: string }) {
 
   if (state?.ok) {
     return (
-      <Card className="mx-auto w-full max-w-md border-fk-primary/10 p-6 sm:p-8">
-        <h1 className="text-2xl font-extrabold text-fk-navy">
+      <Card className="mx-auto w-full max-w-md border-fk-navy/5 p-6 sm:p-8">
+        <div className="mb-6">
+          <BrandLogo height={28} href="/" />
+        </div>
+        <h1 className="text-2xl font-bold tracking-tight text-fk-navy">
           Wachtwoord bijgewerkt
         </h1>
         <p className="mt-3 text-sm text-fk-navy/70">{state.message}</p>
@@ -47,8 +54,11 @@ export function ResetPasswordForm({ token }: { token: string }) {
   }
 
   return (
-    <Card className="mx-auto w-full max-w-md border-fk-primary/10 p-6 sm:p-8">
-      <h1 className="text-2xl font-extrabold text-fk-navy">
+    <Card className="mx-auto w-full max-w-md border-fk-navy/5 p-6 sm:p-8">
+      <div className="mb-6">
+        <BrandLogo height={28} href="/" />
+      </div>
+      <h1 className="text-2xl font-bold tracking-tight text-fk-navy">
         Nieuw wachtwoord
       </h1>
       <p className="mt-2 text-sm text-fk-navy/65">

@@ -22,8 +22,8 @@ export function LoginForm({ nextPath = "/dashboard" }: { nextPath?: string }) {
       <div className="mb-6">
         <BrandLogo height={28} href="/" />
       </div>
-      <h1 className="text-2xl font-bold text-fk-navy">Welkom terug</h1>
-      <p className="mt-2 text-sm font-medium text-fk-navy/55">
+      <h1 className="text-2xl font-bold tracking-tight text-fk-navy">Welkom terug</h1>
+      <p className="mt-2 text-sm text-fk-navy/55">
         Log in om verder te gaan.
       </p>
 
