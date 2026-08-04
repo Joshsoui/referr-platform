@@ -2,7 +2,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import bcrypt from "bcryptjs";
 
-export type UserRole = "user" | "admin";
+export type UserRole = "user" | "admin" | "recruiter";
 
 export interface StoredUser {
   id: string;

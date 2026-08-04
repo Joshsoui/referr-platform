@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 
@@ -54,16 +54,9 @@ export function PublicHeader() {
         <div className="hidden items-center gap-1 sm:flex">
           <Link
             href="/inloggen"
-            className="rounded-full px-3.5 py-1.5 text-sm font-medium text-fk-navy/50 transition-colors hover:text-fk-navy"
+            className="header-cta inline-flex items-center justify-center"
           >
             Inloggen
-          </Link>
-          <Link
-            href="/account-aanmaken"
-            className="header-cta ml-1 inline-flex items-center gap-1.5"
-          >
-            Maak account aan
-            <ArrowRight size={14} />
           </Link>
         </div>
 
@@ -94,17 +87,9 @@ export function PublicHeader() {
             <Link
               href="/inloggen"
               onClick={() => setMobileOpen(false)}
-              className="rounded-xl px-3 py-2.5 text-sm font-semibold text-fk-navy"
-            >
-              Inloggen
-            </Link>
-            <Link
-              href="/account-aanmaken"
-              onClick={() => setMobileOpen(false)}
               className="header-cta mt-2 justify-center"
             >
-              Maak account aan
-              <ArrowRight size={15} />
+              Inloggen
             </Link>
           </div>
         </nav>

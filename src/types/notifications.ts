@@ -11,4 +11,7 @@ export interface AppNotification {
   kind: NotificationKind;
   title: string;
   message: string;
+  link?: string;
+  readAt?: string | null;
+  createdAt?: string;
 }

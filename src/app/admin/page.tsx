@@ -76,7 +76,7 @@ export default function AdminPage() {
               <Shield size={22} />
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold text-fk-navy">Admin</h1>
+              <h1 className="text-3xl font-extrabold text-fk-navy">Beheeromgeving</h1>
               <p className="text-fk-navy/60">
                 Beheer talenttips, XP, cash en kwaliteit
               </p>

@@ -14,7 +14,7 @@ export function PortalDashboardHeader() {
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-fk-navy/40">
-          Recruitment Portal
+          Beheeromgeving
         </p>
         <h1 className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-fk-navy sm:text-3xl">
           Dashboard

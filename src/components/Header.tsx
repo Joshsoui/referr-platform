@@ -4,14 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { NotificationCenter } from "@/components/NotificationCenter";
 import { useDeckTheme } from "@/context/DeckThemeContext";
 
 const navLinks = [
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/recruitment", label: "Portal" },
   { href: "/vacatures", label: "Challenges" },
-  { href: "/aandragen", label: "Mijn introducties" },
+  { href: "/aandragen", label: "Mijn tips" },
   { href: "/rewards", label: "Beloningen" },
   { href: "/account", label: "Profiel" },
 ];
@@ -20,6 +21,12 @@ export function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { enabled: deckTheme } = useDeckTheme();
+  const { data: session } = useSession();
+  const canAccessAdmin =
+    session?.user?.role === "admin" || session?.user?.role === "recruiter";
+  const links = canAccessAdmin
+    ? [...navLinks, { href: "/recruitment", label: "Beheeromgeving" }]
+    : navLinks;
 
   if (pathname === "/founders-deck") return null;
 
@@ -35,7 +42,7 @@ export function Header() {
         <BrandLogo height={28} priority />
 
         <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 overflow-x-auto md:flex [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {navLinks.map((link) => {
+          {links.map((link) => {
             const active = pathname === link.href;
             return (
               <Link
@@ -58,6 +65,7 @@ export function Header() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
+          <NotificationCenter />
           <Link
             href="/vacatures"
             className="header-cta group hidden items-center gap-2 sm:inline-flex"
@@ -84,7 +92,7 @@ export function Header() {
       {mobileOpen && (
         <nav className="border-t border-fk-navy/5 bg-fk-white px-4 py-4 md:hidden">
           <div className="flex flex-col gap-1">
-            {navLinks.map((link) => {
+            {links.map((link) => {
               const active = pathname === link.href;
               return (
                 <Link

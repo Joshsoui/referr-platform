@@ -5,23 +5,13 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { FadeIn } from "@/components/animations/FadeIn";
-import { ActivityTimeline } from "@/components/ActivityTimeline";
 import { DashboardHeader } from "@/components/DashboardHeader";
-import { ReferralPipeline } from "@/components/ReferralPipeline";
 import { ChallengeCard } from "@/components/VacancyCard";
 import { Card } from "@/components/ui/Card";
 import { useScout } from "@/context/ScoutContext";
-import {
-  buildPersonalMoments,
-} from "@/lib/activityMoments";
 import { CURRENT_USER } from "@/lib/mock-data";
-import {
-  getNextStepLabel,
-  getUserJourneyIndex,
-  getUserStatusLabel,
-  USER_JOURNEY_STEPS,
-} from "@/lib/recommendationStatus";
 import { formatCurrency } from "@/lib/xp";
+import type { Candidate } from "@/types";
 
 const LAST_VISIT_KEY = "referr-last-visit";
 
@@ -38,38 +28,29 @@ export default function DashboardPage() {
   }, []);
 
   const myReferrals = candidates.filter((c) => c.referredBy === CURRENT_USER);
-  const activeReferrals = myReferrals.filter(
-    (candidate) =>
-      candidate.referralApproval !== "afgekeurd" &&
-      candidate.status !== "proeftijd_gehaald"
-  );
-  const nearlyDone = activeReferrals.filter(
-    (c) => c.status === "geplaatst" || c.status === "voorgesteld"
-  );
-  const nextActionCandidate =
-    [...activeReferrals].sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )[0] ?? myReferrals[0];
-
   const openVacancies = vacancies.filter((v) => v.status === "open");
-  const moments = buildPersonalMoments(myReferrals).slice(0, 5);
-
-  const activeVacancy = nextActionCandidate?.vacancyId
-    ? vacancies.find((v) => v.id === nextActionCandidate.vacancyId)
-    : openVacancies[0];
-
-  const summary = [
-    { label: "Actieve challenges", value: String(openVacancies.length) },
-    {
-      label: "Introducties in behandeling",
-      value: String(activeReferrals.length),
-    },
-    { label: "Bijna voltooid", value: String(nearlyDone.length) },
-    {
-      label: "Beschikbare beloningen",
-      value: formatCurrency(rewards.cashEarned),
-    },
+  const successfulMatches = myReferrals.filter(
+    (candidate) =>
+      candidate.status === "geplaatst" || candidate.status === "proeftijd_gehaald"
+  ).length;
+  const personalStats = [
+    { label: "Aantal tips", value: String(myReferrals.length) },
+    { label: "Succesvolle matches", value: String(successfulMatches) },
+    { label: "Totaal verdiend", value: formatCurrency(rewards.cashEarned) },
   ];
+
+  const greetingSummary =
+    openVacancies.length > 0
+      ? `Er zijn ${openVacancies.length} challenges die je nu kunt delen.`
+      : "Er staan nu even geen nieuwe challenges open.";
+
+  const statusLabelMap: Record<Candidate["status"], string> = {
+    nieuw: "Tip ontvangen",
+    intake_gepland: "Wordt bekeken",
+    voorgesteld: "In gesprek",
+    geplaatst: "Aangenomen",
+    proeftijd_gehaald: "Uitbetaald",
+  };
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-8">
@@ -91,85 +72,29 @@ export default function DashboardPage() {
         )}
 
         <FadeIn delay={40}>
-          <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {summary.map((item) => (
-              <Card
-                key={item.label}
-                className="border-fk-primary/10 px-4 py-3.5"
-              >
-                <p className="text-xs font-semibold uppercase tracking-wide text-fk-navy/45">
-                  {item.label}
-                </p>
-                <p className="mt-1 text-xl font-bold tracking-tight text-fk-navy">
-                  {item.value}
-                </p>
-              </Card>
-            ))}
-          </div>
+          <Card className="mb-8 border-fk-primary/15">
+            <h2 className="text-2xl font-bold text-fk-navy">
+              {displayName.split(" ")[0]}, wat wil je nu doen?
+            </h2>
+            <p className="mt-2 text-sm text-fk-navy/65">{greetingSummary}</p>
+            <Link
+              href="/vacatures"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-fk-primary px-4 py-2.5 text-sm font-semibold text-fk-white"
+            >
+              Bekijk challenges
+              <ArrowRight size={14} />
+            </Link>
+          </Card>
         </FadeIn>
-
-        {nextActionCandidate && (
-          <FadeIn delay={80}>
-            <Card className="mb-8 border-fk-primary/15 bg-gradient-to-br from-fk-white via-fk-white to-fk-primary/5">
-              <p className="text-xs font-bold uppercase tracking-wider text-fk-secondary">
-                Actieve challenge
-              </p>
-              <h2 className="mt-2 text-xl font-bold text-fk-navy sm:text-2xl">
-                {activeVacancy?.title ?? "Jouw introductie"}
-              </h2>
-              <p className="mt-1 text-sm font-medium text-fk-navy/60">
-                {nextActionCandidate.name} ·{" "}
-                {getUserStatusLabel(nextActionCandidate)}
-              </p>
-              {(() => {
-                const journeyIndex = getUserJourneyIndex(nextActionCandidate);
-                if (journeyIndex < 0) return null;
-                return (
-                  <div className="mt-4">
-                    <div className="flex gap-1">
-                      {USER_JOURNEY_STEPS.map((step, index) => (
-                        <div
-                          key={step}
-                          className={`h-1.5 flex-1 rounded-full ${
-                            index <= journeyIndex
-                              ? "bg-fk-primary"
-                              : "bg-fk-primary/15"
-                          }`}
-                          title={step}
-                        />
-                      ))}
-                    </div>
-                    <p className="mt-2 text-xs text-fk-navy/45">
-                      {journeyIndex + 1} van {USER_JOURNEY_STEPS.length} stappen
-                      · {USER_JOURNEY_STEPS[journeyIndex]}
-                    </p>
-                  </div>
-                );
-              })()}
-              <p className="mt-3 text-sm text-fk-navy/55">
-                {getNextStepLabel(nextActionCandidate)
-                  ? `Volgende update: ${getNextStepLabel(nextActionCandidate)}`
-                  : "Er zit beweging in je introductie."}
-              </p>
-              <Link
-                href="/aandragen"
-                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-fk-primary hover:text-fk-navy"
-              >
-                Bekijk voortgang
-                <ArrowRight size={14} />
-              </Link>
-            </Card>
-          </FadeIn>
-        )}
 
         <FadeIn delay={100}>
           <div className="mb-3 flex items-end justify-between gap-3">
             <div>
               <h2 className="text-lg font-bold text-fk-navy">
-                Nieuwe challenges voor jou
+                Challenges voor jou
               </h2>
               <p className="mt-1 text-sm text-fk-navy/50">
-                Misschien ken jij precies de persoon die hier past.
+                Kort overzicht van nieuwe en relevante challenges.
               </p>
             </div>
             <Link
@@ -197,43 +122,69 @@ export default function DashboardPage() {
           </div>
         </FadeIn>
 
-        <div className="mb-8 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
-          <FadeIn delay={140}>
-            <ActivityTimeline
-              moments={moments}
-              title="Recente activiteit"
-              subtitle="Wat er bewoog rond jouw introducties"
-            />
-          </FadeIn>
-          <FadeIn delay={160}>
-            <Card className="border-fk-primary/15">
-              <p className="mb-2 text-xs font-bold uppercase tracking-wider text-fk-secondary">
-                Beloningen
-              </p>
-              <p className="text-2xl font-bold text-fk-navy">
-                {formatCurrency(rewards.cashEarned)}
-              </p>
-              <p className="mt-1 text-sm text-fk-navy/50">
-                Beschikbaar of recent vrijgespeeld
-              </p>
-              {rewards.cashPending > 0 && (
-                <p className="mt-3 rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-900">
-                  In behandeling: {formatCurrency(rewards.cashPending)}
-                </p>
-              )}
-              <Link
-                href="/rewards"
-                className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-fk-primary"
-              >
-                Bekijk beloningen
-                <ArrowRight size={14} />
+        <FadeIn delay={140}>
+          <Card className="mb-6 border-fk-primary/12">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-fk-navy">Mijn referrals</h2>
+              <Link href="/aandragen" className="text-sm font-semibold text-fk-primary">
+                Alles bekijken
               </Link>
-            </Card>
-          </FadeIn>
-        </div>
+            </div>
+            {myReferrals.length === 0 ? (
+              <div className="rounded-xl border border-fk-primary/12 bg-fk-light/30 p-4">
+                <p className="text-sm text-fk-navy/70">
+                  Je hebt nog niemand getipt. Bekijk een challenge en denk aan
+                  iemand uit je netwerk.
+                </p>
+                <Link
+                  href="/vacatures"
+                  className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-fk-primary"
+                >
+                  Bekijk challenges
+                  <ArrowRight size={14} />
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {myReferrals.slice(0, 5).map((referral) => {
+                  const vacancy = vacancies.find((item) => item.id === referral.vacancyId);
+                  const status = statusLabelMap[referral.status];
+                  return (
+                    <div
+                      key={referral.id}
+                      className="rounded-xl border border-fk-primary/12 px-4 py-3"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <p className="font-semibold text-fk-navy">{referral.name}</p>
+                        <span className="rounded-full bg-fk-primary-muted/60 px-2.5 py-0.5 text-xs font-semibold text-fk-primary">
+                          {status}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-sm text-fk-navy/60">
+                        {vacancy?.title ?? "Challenge"} · update{" "}
+                        {new Date(referral.createdAt).toLocaleDateString("nl-NL")}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </Card>
+        </FadeIn>
 
         <FadeIn delay={180}>
-          <ReferralPipeline candidates={myReferrals} />
+          <div className="grid gap-3 sm:grid-cols-3">
+            {personalStats.map((item) => (
+              <Card key={item.label} className="border-fk-primary/10 px-4 py-3.5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-fk-navy/45">
+                  {item.label}
+                </p>
+                <p className="mt-1 text-xl font-bold tracking-tight text-fk-navy">
+                  {item.value}
+                </p>
+              </Card>
+            ))}
+          </div>
         </FadeIn>
       </div>
     </div>

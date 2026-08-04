@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowRight, MapPin } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, MapPin, Share2 } from "lucide-react";
+import { ChallengeShareModal } from "@/components/challenges/ChallengeShareModal";
 import { Card } from "@/components/ui/Card";
 import { getDifficultyRewards } from "@/lib/vacancyRewards";
 import { formatCurrency } from "@/lib/xp";
@@ -22,6 +26,7 @@ export function ChallengeCard({
   activeIntroductions,
   daysLeft,
 }: ChallengeCardProps) {
+  const [shareOpen, setShareOpen] = useState(false);
   const rewards = getDifficultyRewards(vacancy.difficulty);
   const missionText =
     mission ??
@@ -72,13 +77,34 @@ export function ChallengeCard({
         </div>
       </div>
 
-      <Link
-        href={`/vacatures/${vacancy.id}`}
-        className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-fk-primary hover:text-fk-navy"
-      >
-        Bekijk challenge
-        <ArrowRight size={14} />
-      </Link>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <Link
+          href={`/aandragen?vacancy=${vacancy.id}`}
+          className="inline-flex items-center gap-1 rounded-lg bg-fk-primary px-3 py-2 text-sm font-semibold text-fk-white transition hover:brightness-105"
+        >
+          Tip iemand
+        </Link>
+        <button
+          type="button"
+          onClick={() => setShareOpen(true)}
+          className="inline-flex items-center gap-1 rounded-lg border border-fk-primary/20 px-3 py-2 text-sm font-semibold text-fk-navy transition hover:border-fk-primary/35"
+        >
+          <Share2 size={14} />
+          Deel challenge
+        </button>
+        <Link
+          href={`/vacatures/${vacancy.id}`}
+          className="inline-flex items-center gap-1 px-1 py-2 text-sm font-semibold text-fk-primary hover:text-fk-navy"
+        >
+          Bekijk
+          <ArrowRight size={14} />
+        </Link>
+      </div>
+      <ChallengeShareModal
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        vacancy={vacancy}
+      />
     </Card>
   );
 }

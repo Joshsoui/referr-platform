@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -95,6 +96,8 @@ interface ScoutContextValue {
   grantPlacementBonus: (id: string) => void;
   grantRetentionBonus: (id: string) => void;
   revokeXp: (id: string, amount: number) => void;
+  markNotificationRead: (id: number) => void;
+  markAllNotificationsRead: () => void;
 }
 
 const ScoutContext = createContext<ScoutContextValue | null>(null);
@@ -150,7 +153,29 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
   const [referralProfile, setReferralProfile] = useState(CURRENT_SCOUT_REFERRAL);
   const [rewards, setRewards] = useState<RewardSummary>(INITIAL_REWARD_SUMMARY);
   const [vacancies, setVacancies] = useState<Vacancy[]>(INITIAL_VACANCIES);
+  const [localNotificationPrefs, setLocalNotificationPrefs] = useState<{
+    nearbyChallengesEnabled: boolean;
+    city: string;
+  }>({ nearbyChallengesEnabled: false, city: "" });
   const idCounter = useRef(0);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const raw = window.localStorage.getItem("referr-notification-preferences");
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw) as {
+        nearbyChallengesEnabled?: boolean;
+        city?: string;
+      };
+      setLocalNotificationPrefs({
+        nearbyChallengesEnabled: Boolean(parsed.nearbyChallengesEnabled),
+        city: String(parsed.city ?? ""),
+      });
+    } catch {
+      // ignore malformed local cache
+    }
+  }, []);
 
   const getCandidateDifficulty = useCallback(
     (candidate: Candidate) => {
@@ -202,13 +227,45 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
   const pushNotification = useCallback(
     (notification: Omit<AppNotification, "id">) => {
       idCounter.current += 1;
-      setNotifications((prev) => [
-        ...prev,
-        { ...notification, id: idCounter.current },
-      ]);
+      setNotifications((prev) => {
+        const duplicate = prev.find(
+          (item) =>
+            item.kind === notification.kind &&
+            item.title === notification.title &&
+            item.message === notification.message &&
+            !item.readAt
+        );
+        if (duplicate) return prev;
+        return [
+          ...prev,
+          {
+            ...notification,
+            id: idCounter.current,
+            createdAt: new Date().toISOString(),
+            readAt: null,
+          },
+        ];
+      });
     },
     []
   );
+
+  const markNotificationRead = useCallback((id: number) => {
+    setNotifications((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, readAt: item.readAt ?? new Date().toISOString() }
+          : item
+      )
+    );
+  }, []);
+
+  const markAllNotificationsRead = useCallback(() => {
+    const now = new Date().toISOString();
+    setNotifications((prev) =>
+      prev.map((item) => ({ ...item, readAt: item.readAt ?? now }))
+    );
+  }, []);
 
   const updateLeaderboardCurrentUser = useCallback(
     (updater: (scout: Scout) => Scout) => {
@@ -473,8 +530,22 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         createdAt: new Date().toISOString(),
       };
       setVacancies((prev) => [vacancy, ...prev]);
+      if (
+        localNotificationPrefs.nearbyChallengesEnabled &&
+        localNotificationPrefs.city &&
+        data.location
+          .toLowerCase()
+          .includes(localNotificationPrefs.city.toLowerCase().trim())
+      ) {
+        pushNotification({
+          kind: "progress",
+          title: "Nieuwe challenge in jouw buurt",
+          message: `${data.title} in ${data.location}. Reward beschikbaar bij succesvolle match.`,
+          link: `/vacatures/${vacancy.id}`,
+        });
+      }
     },
-    []
+    [localNotificationPrefs.city, localNotificationPrefs.nearbyChallengesEnabled, pushNotification]
   );
 
   const updateVacancy = useCallback((id: string, data: VacancyFormData) => {
@@ -689,6 +760,8 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       grantPlacementBonus,
       grantRetentionBonus,
       revokeXp,
+      markNotificationRead,
+      markAllNotificationsRead,
     }),
     [
       xp,
@@ -718,6 +791,8 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       grantPlacementBonus,
       grantRetentionBonus,
       revokeXp,
+      markNotificationRead,
+      markAllNotificationsRead,
     ]
   );
 
