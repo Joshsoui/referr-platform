@@ -27,5 +27,10 @@ services:
         sync: false
       - key: STRIPE_PAYOUTS_ENABLED
         value: "false"
+      # Transactional email (Resend recommended). When set, AUTH_DEMO_MODE can be false.
+      - key: RESEND_API_KEY
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
       - key: DATA_DIR
         value: /tmp/referr-data

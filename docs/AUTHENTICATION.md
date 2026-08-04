@@ -4,19 +4,41 @@ referr uses [Auth.js (NextAuth v5)](https://authjs.dev) with the Credentials pro
 
 ## Local setup
 
-1. Copy `.env.example` to `.env.local`
-2. Set a long random `AUTH_SECRET` (e.g. `openssl rand -base64 32`)
-3. Keep `AUTH_DEMO_MODE=true` until SMTP is configured
-4. Run `npm run build` / `npm start` or `npm run demo`
+1. Set a long random `AUTH_SECRET` (e.g. `openssl rand -base64 32`)
+2. For real email: set `RESEND_API_KEY` + `EMAIL_FROM`, then `AUTH_DEMO_MODE=false`
+3. Without email config, keep `AUTH_DEMO_MODE=true` (links shown in UI)
 
-User records are stored in `.data/users.json` (gitignored). This is a **demo baseline**, not a production multi-tenant database.
+## Transactional email
+
+Supported providers (first match wins):
+
+1. **Resend** — `RESEND_API_KEY` (+ optional `EMAIL_FROM`)
+2. **SMTP** — `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`, optional `SMTP_PORT` / `SMTP_SECURE`
+
+Mails sent:
+
+- Account aangemaakt → e-mailbevestiging (`/email-bevestigen?token=…`)
+- Wachtwoord vergeten → resetlink (`/wachtwoord-herstellen?token=…`)
+- Opnieuw versturen vanaf dashboard/e-mail-bevestigen
+
+### Resend (aanbevolen)
+
+1. Account op [resend.com](https://resend.com)
+2. API key aanmaken
+3. Domain verifiëren (of tijdelijk `EMAIL_FROM=referr <onboarding@resend.dev>` alleen naar je eigen inbox)
+4. Render env:
+   - `RESEND_API_KEY=re_...`
+   - `EMAIL_FROM=referr <noreply@jouwdomein.nl>`
+   - `AUTH_DEMO_MODE=false`
+   - `NEXT_PUBLIC_SITE_URL=https://referr-platform.onrender.com`
+5. Redeploy
 
 ## Flows
 
 | Route | Purpose |
 | --- | --- |
-| `/account-aanmaken` | Registration (name, email, password, terms, optional marketing) |
-| `/email-bevestigen` | Email verification (token) |
+| `/account-aanmaken` | Registration |
+| `/email-bevestigen` | Email verification |
 | `/inloggen` | Login |
 | `/wachtwoord-vergeten` | Password reset request |
 | `/wachtwoord-herstellen` | Password reset completion |
@@ -28,13 +50,4 @@ User records are stored in `.data/users.json` (gitignored). This is a **demo bas
 - Verification/reset tokens stored as SHA-256 hashes, single-use, time-limited
 - Rate limiting on register, login, reset, verify, export
 - Generic error messages to reduce account enumeration
-- Middleware protects private routes; admin requires `role === "admin"`
-- Sessions: JWT via Auth.js HttpOnly cookies (7-day maxAge)
-
-## Not yet production-ready
-
-- SMTP transactional email (demo links shown in UI when `AUTH_DEMO_MODE=true`)
-- Persistent session store / logout-all-devices
-- Passkeys / MFA
-- Multi-instance rate limiting (in-memory only)
-- Per-user server-side referral data (ScoutContext remains client mock)
+- Middleware protects private routes; admin/recruiter for `/admin` and `/recruitment`

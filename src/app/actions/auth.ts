@@ -16,6 +16,11 @@ import {
   updatePassword,
   updateProfile,
 } from "@/lib/auth/users";
+import {
+  isEmailConfigured,
+  sendPasswordResetEmail,
+  sendVerificationEmail,
+} from "@/lib/email";
 
 const registerSchema = z.object({
   firstName: z.string().trim().min(1).max(80),
@@ -68,14 +73,26 @@ export async function registerAction(
   try {
     const user = await createUser(parsed.data);
     const { token } = await createToken(user.id, "email_verify");
-    const demoLink = demoMode()
-      ? `/email-bevestigen?token=${encodeURIComponent(token)}`
-      : undefined;
+
+    let demoLink: string | undefined;
+    if (isEmailConfigured()) {
+      const sent = await sendVerificationEmail({
+        to: user.email,
+        firstName: user.firstName,
+        token,
+      });
+      if (!sent.ok) {
+        console.error("[register] verification email failed", sent.error);
+      }
+    } else if (demoMode()) {
+      demoLink = `/email-bevestigen?token=${encodeURIComponent(token)}`;
+    }
 
     return {
       ok: true,
-      message:
-        "Je account is aangemaakt. Bevestig je e-mailadres om verder te gaan.",
+      message: isEmailConfigured()
+        ? "Je account is aangemaakt. We hebben een bevestigingsmail gestuurd — check je inbox (en spam)."
+        : "Je account is aangemaakt. Bevestig je e-mailadres om verder te gaan.",
       demoLink,
     };
   } catch (error) {
@@ -147,9 +164,20 @@ export async function requestPasswordResetAction(
   }
 
   const { token } = await createToken(user.id, "password_reset");
-  const demoLink = demoMode()
-    ? `/wachtwoord-herstellen?token=${encodeURIComponent(token)}`
-    : undefined;
+
+  let demoLink: string | undefined;
+  if (isEmailConfigured()) {
+    const sent = await sendPasswordResetEmail({
+      to: user.email,
+      firstName: user.firstName,
+      token,
+    });
+    if (!sent.ok) {
+      console.error("[reset] password email failed", sent.error);
+    }
+  } else if (demoMode()) {
+    demoLink = `/wachtwoord-herstellen?token=${encodeURIComponent(token)}`;
+  }
 
   return { ok: true, message: generic, demoLink };
 }
@@ -221,12 +249,30 @@ export async function resendVerificationAction(): Promise<ActionResult> {
   }
 
   const { token } = await createToken(user.id, "email_verify");
+
+  let demoLink: string | undefined;
+  if (isEmailConfigured()) {
+    const sent = await sendVerificationEmail({
+      to: user.email,
+      firstName: user.firstName,
+      token,
+    });
+    if (!sent.ok) {
+      return {
+        ok: false,
+        message: "Bevestigingsmail versturen lukte niet. Probeer het later opnieuw.",
+      };
+    }
+  } else if (demoMode()) {
+    demoLink = `/email-bevestigen?token=${encodeURIComponent(token)}`;
+  }
+
   return {
     ok: true,
-    message: "Nieuwe bevestigingsmail is klaargezet.",
-    demoLink: demoMode()
-      ? `/email-bevestigen?token=${encodeURIComponent(token)}`
-      : undefined,
+    message: isEmailConfigured()
+      ? "Nieuwe bevestigingsmail is verstuurd. Check je inbox."
+      : "Nieuwe bevestigingsmail is klaargezet.",
+    demoLink,
   };
 }
 
