@@ -28,6 +28,14 @@ export function PrivacyCenter({
     marketingConsent: boolean;
     createdAt: string;
     termsAcceptedAt: string;
+    phone: string;
+    street: string;
+    houseNumber: string;
+    postalCode: string;
+    city: string;
+    country: string;
+    iban: string;
+    ibanAccountName: string;
   };
   notificationPreferences: {
     nearbyChallengesEnabled: boolean;
@@ -91,6 +99,101 @@ export function PrivacyCenter({
               defaultValue={user.lastName}
               required
               className="w-full rounded-lg border border-fk-primary/20 px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="phone" className="mb-1 block text-sm font-medium">
+              Telefoonnummer
+            </label>
+            <input
+              id="phone"
+              name="phone"
+              defaultValue={user.phone}
+              className="w-full rounded-lg border border-fk-primary/20 px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="country" className="mb-1 block text-sm font-medium">
+              Land
+            </label>
+            <input
+              id="country"
+              name="country"
+              defaultValue={user.country || "Nederland"}
+              className="w-full rounded-lg border border-fk-primary/20 px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="street" className="mb-1 block text-sm font-medium">
+              Straat
+            </label>
+            <input
+              id="street"
+              name="street"
+              defaultValue={user.street}
+              className="w-full rounded-lg border border-fk-primary/20 px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="houseNumber" className="mb-1 block text-sm font-medium">
+              Huisnummer
+            </label>
+            <input
+              id="houseNumber"
+              name="houseNumber"
+              defaultValue={user.houseNumber}
+              className="w-full rounded-lg border border-fk-primary/20 px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="postalCode" className="mb-1 block text-sm font-medium">
+              Postcode
+            </label>
+            <input
+              id="postalCode"
+              name="postalCode"
+              defaultValue={user.postalCode}
+              className="w-full rounded-lg border border-fk-primary/20 px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="city" className="mb-1 block text-sm font-medium">
+              Plaats
+            </label>
+            <input
+              id="city"
+              name="city"
+              defaultValue={user.city}
+              className="w-full rounded-lg border border-fk-primary/20 px-3 py-2 text-sm"
+            />
+          </div>
+          <div className="sm:col-span-2 mt-2 rounded-lg border border-fk-primary/10 bg-fk-light/40 p-3">
+            <p className="text-sm font-semibold text-fk-navy">Uitbetaling</p>
+            <p className="mt-1 text-xs text-fk-navy/55">
+              Vul je rekeninggegevens in voor reward-uitbetalingen.
+            </p>
+          </div>
+          <div>
+            <label htmlFor="ibanAccountName" className="mb-1 block text-sm font-medium">
+              Rekeninghouder
+            </label>
+            <input
+              id="ibanAccountName"
+              name="ibanAccountName"
+              defaultValue={user.ibanAccountName}
+              className="w-full rounded-lg border border-fk-primary/20 px-3 py-2 text-sm"
+            />
+          </div>
+          <div>
+            <label htmlFor="iban" className="mb-1 block text-sm font-medium">
+              IBAN
+            </label>
+            <input
+              id="iban"
+              name="iban"
+              defaultValue={user.iban}
+              className="w-full rounded-lg border border-fk-primary/20 px-3 py-2 text-sm"
+              placeholder="NL00BANK0123456789"
             />
           </div>
           {profileState && (

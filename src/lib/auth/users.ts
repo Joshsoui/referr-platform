@@ -19,6 +19,14 @@ export interface StoredUser {
   termsVersion: string;
   createdAt: string;
   updatedAt: string;
+  phone?: string;
+  street?: string;
+  houseNumber?: string;
+  postalCode?: string;
+  city?: string;
+  country?: string;
+  iban?: string;
+  ibanAccountName?: string;
 }
 
 interface UserStore {
@@ -62,6 +70,14 @@ export function getPublicUser(user: StoredUser) {
     marketingConsent: user.marketingConsent,
     termsAcceptedAt: user.termsAcceptedAt,
     createdAt: user.createdAt,
+    phone: user.phone ?? "",
+    street: user.street ?? "",
+    houseNumber: user.houseNumber ?? "",
+    postalCode: user.postalCode ?? "",
+    city: user.city ?? "",
+    country: user.country ?? "Nederland",
+    iban: user.iban ?? "",
+    ibanAccountName: user.ibanAccountName ?? "",
   };
 }
 
@@ -109,6 +125,14 @@ export async function createUser(input: {
     termsVersion: TERMS_VERSION,
     createdAt: now,
     updatedAt: now,
+    phone: "",
+    street: "",
+    houseNumber: "",
+    postalCode: "",
+    city: "",
+    country: "Nederland",
+    iban: "",
+    ibanAccountName: "",
   };
 
   store.users.push(user);
@@ -162,13 +186,32 @@ export async function updateMarketingConsent(
 
 export async function updateProfile(
   userId: string,
-  data: { firstName: string; lastName: string }
+  data: {
+    firstName: string;
+    lastName: string;
+    phone?: string;
+    street?: string;
+    houseNumber?: string;
+    postalCode?: string;
+    city?: string;
+    country?: string;
+    iban?: string;
+    ibanAccountName?: string;
+  }
 ): Promise<StoredUser | null> {
   const store = await ensureStore();
   const user = store.users.find((u) => u.id === userId);
   if (!user) return null;
   user.firstName = data.firstName.trim();
   user.lastName = data.lastName.trim();
+  user.phone = (data.phone ?? "").trim();
+  user.street = (data.street ?? "").trim();
+  user.houseNumber = (data.houseNumber ?? "").trim();
+  user.postalCode = (data.postalCode ?? "").trim();
+  user.city = (data.city ?? "").trim();
+  user.country = (data.country ?? "Nederland").trim();
+  user.iban = (data.iban ?? "").trim().toUpperCase();
+  user.ibanAccountName = (data.ibanAccountName ?? "").trim();
   user.updatedAt = new Date().toISOString();
   await saveStore(store);
   return user;

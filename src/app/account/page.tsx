@@ -15,8 +15,24 @@ export default async function AccountPage() {
   if (!session?.user?.id) redirect("/inloggen?next=/account");
 
   const user = await findUserById(session.user.id);
-  if (!user) redirect("/inloggen");
   const notificationPreferences = await getNotificationPreferences(session.user.id);
+  const safeUser = user ?? {
+    email: session.user.email ?? "",
+    firstName: session.user.firstName ?? "",
+    lastName: session.user.lastName ?? "",
+    emailVerifiedAt: session.user.emailVerifiedAt ?? null,
+    marketingConsent: false,
+    createdAt: new Date().toISOString(),
+    termsAcceptedAt: new Date().toISOString(),
+    phone: "",
+    street: "",
+    houseNumber: "",
+    postalCode: "",
+    city: "",
+    country: "Nederland",
+    iban: "",
+    ibanAccountName: "",
+  };
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-8">
@@ -27,13 +43,21 @@ export default async function AccountPage() {
         </p>
         <PrivacyCenter
           user={{
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            emailVerifiedAt: user.emailVerifiedAt,
-            marketingConsent: user.marketingConsent,
-            createdAt: user.createdAt,
-            termsAcceptedAt: user.termsAcceptedAt,
+            email: safeUser.email,
+            firstName: safeUser.firstName,
+            lastName: safeUser.lastName,
+            emailVerifiedAt: safeUser.emailVerifiedAt,
+            marketingConsent: safeUser.marketingConsent,
+            createdAt: safeUser.createdAt,
+            termsAcceptedAt: safeUser.termsAcceptedAt,
+            phone: safeUser.phone ?? "",
+            street: safeUser.street ?? "",
+            houseNumber: safeUser.houseNumber ?? "",
+            postalCode: safeUser.postalCode ?? "",
+            city: safeUser.city ?? "",
+            country: safeUser.country ?? "Nederland",
+            iban: safeUser.iban ?? "",
+            ibanAccountName: safeUser.ibanAccountName ?? "",
           }}
           notificationPreferences={notificationPreferences}
         />

@@ -243,7 +243,27 @@ export async function updateProfileAction(
     return { ok: false, message: "Voor- en achternaam zijn verplicht." };
   }
 
-  await updateProfile(session.user.id, { firstName, lastName });
+  const phone = String(formData.get("phone") ?? "").trim();
+  const street = String(formData.get("street") ?? "").trim();
+  const houseNumber = String(formData.get("houseNumber") ?? "").trim();
+  const postalCode = String(formData.get("postalCode") ?? "").trim();
+  const city = String(formData.get("city") ?? "").trim();
+  const country = String(formData.get("country") ?? "Nederland").trim();
+  const iban = String(formData.get("iban") ?? "").trim().toUpperCase();
+  const ibanAccountName = String(formData.get("ibanAccountName") ?? "").trim();
+
+  await updateProfile(session.user.id, {
+    firstName,
+    lastName,
+    phone,
+    street,
+    houseNumber,
+    postalCode,
+    city,
+    country,
+    iban,
+    ibanAccountName,
+  });
   return { ok: true, message: "Profiel bijgewerkt." };
 }
 
