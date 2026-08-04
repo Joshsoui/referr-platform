@@ -25,7 +25,11 @@ export function Header() {
   const canAccessAdmin =
     session?.user?.role === "admin" || session?.user?.role === "recruiter";
   const links = canAccessAdmin
-    ? [...navLinks, { href: "/recruitment", label: "Beheeromgeving" }]
+    ? [
+        ...navLinks,
+        { href: "/recruitment", label: "Beheeromgeving" },
+        { href: "/admin", label: "Tips & challenges" },
+      ]
     : navLinks;
 
   if (pathname === "/founders-deck") return null;

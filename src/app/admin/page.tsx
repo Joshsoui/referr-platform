@@ -80,6 +80,14 @@ export default function AdminPage() {
               <p className="text-fk-navy/60">
                 Beheer talenttips, XP, cash en kwaliteit
               </p>
+              <div className="mt-2 flex flex-wrap gap-3 text-sm">
+                <a href="/recruitment" className="font-medium text-fk-primary hover:underline">
+                  Portal dashboard
+                </a>
+                <a href="/admin/payouts" className="font-medium text-fk-navy/55 hover:underline">
+                  IBAN-uitbetalingen
+                </a>
+              </div>
             </div>
           </div>
         </FadeIn>

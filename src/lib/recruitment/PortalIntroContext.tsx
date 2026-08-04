@@ -4,18 +4,14 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
   type ReactNode,
 } from "react";
-import {
-  PORTAL_INTRODUCTIONS,
-  type IntroStatus,
-  type PortalIntroduction,
+import { useScout } from "@/context/ScoutContext";
+import type {
+  IntroStatus,
+  PortalIntroduction,
 } from "@/lib/recruitment/portalMockData";
-
-const STORAGE_KEY = "referr-portal-intro-reviews";
 
 type ReviewDecision = "goedgekeurd" | "afgewezen" | "meer_info";
 
@@ -25,8 +21,6 @@ interface StoredReview {
   note?: string;
   reviewedAt: string;
 }
-
-type ReviewMap = Record<string, StoredReview>;
 
 interface PortalIntroContextValue {
   introductions: PortalIntroduction[];
@@ -40,72 +34,70 @@ interface PortalIntroContextValue {
 
 const PortalIntroContext = createContext<PortalIntroContextValue | null>(null);
 
-function loadReviews(): ReviewMap {
-  if (typeof window === "undefined") return {};
-  try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as ReviewMap) : {};
-  } catch {
-    return {};
-  }
-}
-
-function saveReviews(reviews: ReviewMap) {
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
-}
-
-function decisionToStatus(decision: ReviewDecision): IntroStatus {
-  if (decision === "goedgekeurd") return "goedgekeurd";
-  if (decision === "afgewezen") return "afgewezen";
-  return "in_beoordeling";
+function toIntroStatus(input: {
+  referralApproval: string;
+}): IntroStatus {
+  if (input.referralApproval === "goedgekeurd") return "goedgekeurd";
+  if (input.referralApproval === "afgekeurd") return "afgewezen";
+  return "nieuw";
 }
 
 export function PortalIntroProvider({ children }: { children: ReactNode }) {
-  const [reviews, setReviews] = useState<ReviewMap>({});
+  const {
+    candidates,
+    vacancies,
+    approveReferral,
+    rejectReferral,
+    updateCandidateStatus,
+  } = useScout();
 
-  useEffect(() => {
-    setReviews(loadReviews());
-    const sync = () => setReviews(loadReviews());
-    window.addEventListener("focus", sync);
-    return () => window.removeEventListener("focus", sync);
-  }, []);
-
-  const reviewIntroduction = useCallback(
-    (id: string, decision: ReviewDecision, note?: string) => {
-      setReviews((prev) => {
-        const next: ReviewMap = {
-          ...prev,
-          [id]: {
-            status: decisionToStatus(decision),
-            decision,
-            note,
-            reviewedAt: new Date().toISOString(),
-          },
+  const introductions = useMemo<PortalIntroduction[]>(
+    () =>
+      candidates.map((candidate) => {
+        const vacancy = vacancies.find((item) => item.id === candidate.vacancyId);
+        return {
+          id: candidate.id,
+          candidateName: candidate.name,
+          candidateEmail: candidate.emailOrPhone,
+          challengeTitle: vacancy?.title ?? candidate.role,
+          company: "referr",
+          location: vacancy?.location ?? "—",
+          referrerName: candidate.referredBy,
+          referrerEmail: "",
+          date: new Date(candidate.createdAt).toLocaleDateString("nl-NL"),
+          status: toIntroStatus(candidate),
+          motivation: candidate.recommendation || candidate.description || "",
+          experience: candidate.reasons.join(", "),
+          href: `/recruitment/introducties/${candidate.id}`,
         };
-        saveReviews(next);
-        return next;
-      });
-    },
-    []
+      }),
+    [candidates, vacancies]
   );
 
-  const introductions = useMemo(
-    () =>
-      PORTAL_INTRODUCTIONS.map((intro) => {
-        const review = reviews[intro.id];
-        if (!review) return intro;
-        return { ...intro, status: review.status };
-      }),
-    [reviews]
+  const reviewIntroduction = useCallback(
+    (id: string, decision: ReviewDecision, _note?: string) => {
+      if (decision === "goedgekeurd") {
+        approveReferral(id);
+        updateCandidateStatus(id, "intake_gepland");
+        return;
+      }
+      if (decision === "afgewezen") {
+        rejectReferral(id);
+        return;
+      }
+      // meer_info → keep pending but mark as viewed/approved pipeline start
+      approveReferral(id);
+    },
+    [approveReferral, rejectReferral, updateCandidateStatus]
   );
 
   const value = useMemo(
     () => ({
       introductions,
       reviewIntroduction,
-      getReview: (id: string) => reviews[id],
+      getReview: () => undefined,
     }),
-    [introductions, reviewIntroduction, reviews]
+    [introductions, reviewIntroduction]
   );
 
   return (

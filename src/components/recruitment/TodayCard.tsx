@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import {
-  TODAY_ACTIONS,
-  type TodayPriority,
-} from "@/lib/recruitment/portalMockData";
+import { useMemo } from "react";
+import { useScout } from "@/context/ScoutContext";
+import type { TodayPriority } from "@/lib/recruitment/portalMockData";
 import { MotionCard, SectionLabel, SectionTitle } from "./MotionCard";
 
 const priorityStyles: Record<
@@ -20,6 +19,64 @@ const priorityStyles: Record<
 };
 
 export function TodayCard() {
+  const { candidates, vacancies } = useScout();
+
+  const actions = useMemo(() => {
+    const pending = candidates.filter(
+      (item) => item.referralApproval === "pending"
+    );
+    const firstPending = pending[0];
+    const openChallenges = vacancies.filter((item) => item.status === "open").length;
+    const payoutReady = candidates.filter((item) =>
+      ["intake_goedgekeurd", "plaatsing_goedgekeurd", "retentie_goedgekeurd"].includes(
+        item.cashStatus
+      )
+    ).length;
+
+    const items: {
+      id: string;
+      priority: TodayPriority;
+      label: string;
+      href: string;
+    }[] = [];
+
+    if (pending.length > 0 && firstPending) {
+      items.push({
+        id: "review",
+        priority: "critical",
+        label: `${pending.length} tip${pending.length === 1 ? "" : "s"} beoordelen`,
+        href: `/recruitment/introducties/${firstPending.id}`,
+      });
+    }
+
+    items.push({
+      id: "admin",
+      priority: "high",
+      label: "Tips & challenges beheren",
+      href: "/admin",
+    });
+
+    if (openChallenges === 0) {
+      items.push({
+        id: "create",
+        priority: "attention",
+        label: "Eerste challenge aanmaken",
+        href: "/admin",
+      });
+    }
+
+    if (payoutReady > 0) {
+      items.push({
+        id: "payouts",
+        priority: "warning",
+        label: `${payoutReady} uitbetaling${payoutReady === 1 ? "" : "en"} klaar (IBAN)`,
+        href: "/admin/payouts",
+      });
+    }
+
+    return items.slice(0, 5);
+  }, [candidates, vacancies]);
+
   return (
     <MotionCard className="!p-0 overflow-hidden">
       <div className="border-b border-fk-navy/[0.05] px-5 py-4 sm:px-6">
@@ -27,32 +84,38 @@ export function TodayCard() {
         <SectionTitle>Jouw werk voor vandaag</SectionTitle>
       </div>
       <ul className="divide-y divide-fk-navy/[0.05]">
-        {TODAY_ACTIONS.slice(0, 5).map((action) => {
-          const style = priorityStyles[action.priority];
-          return (
-            <li key={action.id}>
-              <Link
-                href={action.href}
-                className="group flex items-center gap-3 px-5 py-3.5 transition hover:bg-fk-light/50 sm:px-6"
-              >
-                <span
-                  className={`h-2 w-2 shrink-0 rounded-full ${style.dot}`}
-                  aria-hidden
-                />
-                <span className="flex-1 text-sm text-fk-navy sm:text-[15px]">
-                  {action.label}
-                </span>
-                <span className="hidden text-[10px] font-medium uppercase tracking-wide text-fk-navy/35 sm:inline">
-                  {style.label}
-                </span>
-                <ArrowRight
-                  size={15}
-                  className="shrink-0 text-fk-navy/25 transition group-hover:text-fk-navy/60"
-                />
-              </Link>
-            </li>
-          );
-        })}
+        {actions.length === 0 ? (
+          <li className="px-5 py-4 text-sm text-fk-navy/55 sm:px-6">
+            Geen open acties — alles bijgewerkt.
+          </li>
+        ) : (
+          actions.map((action) => {
+            const style = priorityStyles[action.priority];
+            return (
+              <li key={action.id}>
+                <Link
+                  href={action.href}
+                  className="group flex items-center gap-3 px-5 py-3.5 transition hover:bg-fk-light/50 sm:px-6"
+                >
+                  <span
+                    className={`h-2 w-2 shrink-0 rounded-full ${style.dot}`}
+                    aria-hidden
+                  />
+                  <span className="flex-1 text-sm text-fk-navy sm:text-[15px]">
+                    {action.label}
+                  </span>
+                  <span className="hidden text-[10px] font-medium uppercase tracking-wide text-fk-navy/35 sm:inline">
+                    {style.label}
+                  </span>
+                  <ArrowRight
+                    size={15}
+                    className="shrink-0 text-fk-navy/25 transition group-hover:text-fk-navy/60"
+                  />
+                </Link>
+              </li>
+            );
+          })
+        )}
       </ul>
     </MotionCard>
   );

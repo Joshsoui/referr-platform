@@ -24,7 +24,6 @@ import {
   RELATIONSHIP_OPTIONS,
   SECTORS,
 } from "@/lib/mockQualityRules";
-import { CURRENT_USER } from "@/lib/mock-data";
 import { calculateConfidenceScore } from "@/lib/scoring";
 import type { CandidateFormData } from "@/types";
 
@@ -41,6 +40,7 @@ const emptyForm: CandidateFormData = {
   cvUploaded: false,
   role: "",
   description: "",
+  vacancyId: undefined,
 };
 
 type Tab = "actief" | "voltooid" | "niet_succesvol" | "nieuw";
@@ -49,7 +49,7 @@ function AandragenPageContent() {
   const searchParams = useSearchParams();
   const vacancyParam = searchParams.get("vacancy");
   const startNew = searchParams.get("nieuw") === "1";
-  const { submitCandidate, candidates, vacancies } = useScout();
+  const { submitCandidate, candidates, vacancies, currentUser } = useScout();
   const [form, setForm] = useState<CandidateFormData>(emptyForm);
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
@@ -75,11 +75,12 @@ function AandragenPageContent() {
         ...prev,
         sector: linkedVacancy.sector,
         role: linkedVacancy.title,
+        vacancyId: linkedVacancy.id,
       }));
     }
   }, [linkedVacancy]);
 
-  const myReferrals = candidates.filter((c) => c.referredBy === CURRENT_USER);
+  const myReferrals = candidates.filter((c) => c.referredBy === currentUser);
   const active = myReferrals.filter(
     (c) =>
       c.referralApproval !== "afgekeurd" && c.status !== "proeftijd_gehaald"

@@ -2,9 +2,14 @@ services:
   - type: web
     name: referr-platform
     runtime: node
-    plan: free
+    # Persistent disk requires a paid plan (starter+). Free disk is ephemeral.
+    plan: starter
     buildCommand: npm run render-build
     startCommand: npm start
+    disk:
+      name: referr-data
+      mountPath: /var/data
+      sizeGB: 1
     envVars:
       - key: AUTH_SECRET
         sync: false
@@ -16,3 +21,10 @@ services:
         value: "true"
       - key: NEXT_PUBLIC_SITE_URL
         value: https://referr-platform.onrender.com
+      - key: DATA_DIR
+        value: /var/data
+      - key: ADMIN_BOOTSTRAP_TOKEN
+        sync: false
+      # Keep Stripe parked for the pilot (manual IBAN payouts).
+      - key: STRIPE_PAYOUTS_ENABLED
+        value: "false"

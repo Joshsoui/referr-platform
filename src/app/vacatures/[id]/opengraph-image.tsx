@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { INITIAL_VACANCIES } from "@/lib/mockVacancies";
+import { findVacancyById } from "@/lib/vacancyStore";
 import { getDifficultyRewards } from "@/lib/vacancyRewards";
 import { formatCurrency } from "@/lib/xp";
 
@@ -16,7 +16,7 @@ export default async function OpengraphImage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const vacancy = INITIAL_VACANCIES.find((item) => item.id === id);
+  const vacancy = await findVacancyById(id);
 
   const title = vacancy?.title ?? "Challenge";
   const location = vacancy?.location ?? "Nederland";

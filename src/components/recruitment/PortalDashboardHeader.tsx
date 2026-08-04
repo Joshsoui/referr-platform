@@ -19,6 +19,14 @@ export function PortalDashboardHeader() {
         <h1 className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-fk-navy sm:text-3xl">
           Dashboard
         </h1>
+        <div className="mt-3 flex flex-wrap gap-3 text-sm">
+          <Link href="/admin" className="font-medium text-fk-primary hover:underline">
+            Tips & challenges
+          </Link>
+          <Link href="/admin/payouts" className="font-medium text-fk-navy/55 hover:underline">
+            IBAN-uitbetalingen
+          </Link>
+        </div>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3">
@@ -41,7 +49,6 @@ export function PortalDashboardHeader() {
           aria-label="Notificaties"
         >
           <Bell size={18} />
-          <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-fk-primary" />
         </button>
 
         <Link

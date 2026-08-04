@@ -26,6 +26,7 @@ export interface Candidate {
   relationship: RelationshipType;
   cvUploaded?: boolean;
   referredBy: string;
+  referredByUserId?: string | null;
   status: CandidateStatus;
   xpAwarded: number;
   confidenceScore: number;
@@ -65,4 +66,5 @@ export interface CandidateFormData {
   /** Legacy mapping for display */
   role: string;
   description: string;
+  vacancyId?: string;
 }

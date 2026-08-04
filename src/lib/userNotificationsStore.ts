@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { getDataDir } from "@/lib/dataDir";
 
 import type { NotificationKind } from "@/types/notifications";
 
@@ -20,7 +21,7 @@ interface NotificationStore {
   notifications: UserNotificationRecord[];
 }
 
-const DATA_DIR = path.join(process.cwd(), ".data");
+const DATA_DIR = getDataDir();
 const FILE = path.join(DATA_DIR, "user-notifications.json");
 
 async function readStore(): Promise<NotificationStore> {

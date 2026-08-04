@@ -7,7 +7,6 @@ import { ArrowLeft, Building2, Mail, MapPin, User } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import {
-  getIntroductionById,
   introStatusLabel,
   type IntroStatus,
 } from "@/lib/recruitment/portalMockData";
@@ -25,8 +24,8 @@ function statusVariant(
 
 export function IntroductionReview({ id }: { id: string }) {
   const router = useRouter();
-  const { reviewIntroduction, getReview } = usePortalIntroductions();
-  const base = getIntroductionById(id);
+  const { introductions, reviewIntroduction, getReview } = usePortalIntroductions();
+  const base = introductions.find((item) => item.id === id);
   const existingReview = getReview(id);
 
   const [note, setNote] = useState(existingReview?.note ?? "");

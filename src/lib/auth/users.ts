@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import bcrypt from "bcryptjs";
+import { getDataDir } from "@/lib/dataDir";
 
 export type UserRole = "user" | "admin" | "recruiter";
 
@@ -37,13 +38,12 @@ interface UserStore {
   users: StoredUser[];
 }
 
-const DATA_DIR = path.join(process.cwd(), ".data");
-const USERS_FILE = path.join(DATA_DIR, "users.json");
+const USERS_FILE = path.join(getDataDir(), "users.json");
 const TERMS_VERSION = "2026-07-28";
 const MARKETING_VERSION = "2026-07-28";
 
 async function ensureStore(): Promise<UserStore> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
+  await fs.mkdir(getDataDir(), { recursive: true });
   try {
     const raw = await fs.readFile(USERS_FILE, "utf8");
     return JSON.parse(raw) as UserStore;
@@ -55,7 +55,7 @@ async function ensureStore(): Promise<UserStore> {
 }
 
 async function saveStore(store: UserStore): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
+  await fs.mkdir(getDataDir(), { recursive: true });
   await fs.writeFile(USERS_FILE, JSON.stringify(store, null, 2), "utf8");
 }
 
@@ -279,6 +279,26 @@ export async function updateUserRoleByEmail(
   return user;
 }
 
+export async function listUsersWithPayoutDetails() {
+  const store = await ensureStore();
+  return store.users
+    .map((user) => ({
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone ?? "",
+      iban: user.iban ?? "",
+      ibanAccountName: user.ibanAccountName ?? "",
+      city: user.city ?? "",
+      postalCode: user.postalCode ?? "",
+      country: user.country ?? "",
+      updatedAt: user.updatedAt,
+    }))
+    .filter((user) => Boolean(user.iban.trim()))
+    .sort((a, b) => a.lastName.localeCompare(b.lastName, "nl"));
+}
+
 export async function exportUserData(userId: string) {
   const user = await findUserById(userId);
   if (!user) return null;
@@ -292,7 +312,7 @@ export async function exportUserData(userId: string) {
       marketingConsentAt: user.marketingConsentAt,
       marketingConsentVersion: user.marketingConsentVersion,
     },
-    note: "Product activity data remains in client demo state until a durable backend exists.",
+    note: "Account and tip/challenge records are stored server-side under DATA_DIR.",
   };
 }
 

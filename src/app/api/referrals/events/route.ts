@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
+import { isStaffRole } from "@/lib/auth/sessionGuards";
 import { createReferralEvent, listReferralEvents } from "@/lib/referralEventsStore";
 import type { CandidateStatus } from "@/types";
 import type { CashStatus } from "@/types/incentives";
 
 export async function GET(request: Request) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+  }
+
   const url = new URL(request.url);
   const raw = url.searchParams.get("candidateIds") ?? "";
   const candidateIds = raw
@@ -13,11 +19,21 @@ export async function GET(request: Request) {
     .filter(Boolean);
 
   const events = await listReferralEvents(candidateIds);
-  return NextResponse.json({ events });
+
+  if (isStaffRole(session.user.role)) {
+    return NextResponse.json({ events });
+  }
+
+  const mine = events.filter((event) => event.userId === session.user.id);
+  return NextResponse.json({ events: mine });
 }
 
 export async function POST(request: Request) {
   const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+  }
+
   const body = (await request.json().catch(() => null)) as
     | {
         candidateId?: string;
@@ -42,9 +58,8 @@ export async function POST(request: Request) {
     cashStatus: body.cashStatus,
     title: body.title,
     message: body.message,
-    userId: session?.user?.id ?? null,
+    userId: session.user.id,
   });
 
   return NextResponse.json({ event });
 }
-

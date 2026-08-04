@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireRole } from "@/lib/auth/sessionGuards";
 import { createNotification } from "@/lib/userNotificationsStore";
 import {
   listAllNotificationPreferences,
@@ -9,6 +10,9 @@ import { formatCurrency } from "@/lib/xp";
 import type { VacancyDifficulty } from "@/types/vacancy";
 
 export async function POST(request: Request) {
+  const { error } = await requireRole(["admin", "recruiter"]);
+  if (error) return error;
+
   const body = (await request.json().catch(() => null)) as
     | {
         vacancyId?: string;
@@ -74,4 +78,3 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ ok: true, createdCount: createdFor.length });
 }
-

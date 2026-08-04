@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { VacancyDetailClient } from "@/components/challenges/VacancyDetailClient";
-import { INITIAL_VACANCIES } from "@/lib/mockVacancies";
+import { findVacancyById } from "@/lib/vacancyStore";
 import { getDifficultyRewards } from "@/lib/vacancyRewards";
 import { formatCurrency } from "@/lib/xp";
-
-function getVacancy(id: string) {
-  return INITIAL_VACANCIES.find((item) => item.id === id);
-}
 
 export async function generateMetadata(
   props: {
@@ -15,7 +11,7 @@ export async function generateMetadata(
   }
 ): Promise<Metadata> {
   const { id } = await props.params;
-  const vacancy = getVacancy(id);
+  const vacancy = await findVacancyById(id);
   if (!vacancy) {
     return {
       title: "Challenge niet gevonden",
@@ -53,7 +49,7 @@ export default async function VacatureDetailPage(props: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await props.params;
-  const vacancy = getVacancy(id);
+  const vacancy = await findVacancyById(id);
 
   if (!vacancy) {
     return (

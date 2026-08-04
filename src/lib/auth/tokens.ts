@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { getDataDir } from "@/lib/dataDir";
 import { createHash, randomBytes } from "crypto";
 
 export type TokenPurpose = "email_verify" | "password_reset";
@@ -18,7 +19,7 @@ interface TokenStore {
   tokens: TokenRecord[];
 }
 
-const DATA_DIR = path.join(process.cwd(), ".data");
+const DATA_DIR = getDataDir();
 const TOKENS_FILE = path.join(DATA_DIR, "tokens.json");
 
 const EXPIRY_MS: Record<TokenPurpose, number> = {

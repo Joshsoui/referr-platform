@@ -116,7 +116,8 @@ function sortLeaderboardByImpact(leaderboard: Scout[]): Scout[] {
 function buildCandidate(
   data: CandidateFormData,
   referrerName: string,
-  id: string
+  id: string,
+  referredByUserId?: string | null
 ): Candidate {
   const confidenceScore = calculateConfidenceScore(data);
   return {
@@ -132,12 +133,14 @@ function buildCandidate(
     relationship: (data.relationship || "netwerk") as Candidate["relationship"],
     cvUploaded: data.cvUploaded,
     referredBy: referrerName,
+    referredByUserId: referredByUserId ?? null,
     status: "nieuw",
     xpAwarded: 0,
     confidenceScore,
     cashStatus: "geen_cash",
     duplicateStatus: "uniek",
     referralApproval: "pending",
+    vacancyId: data.vacancyId || undefined,
     createdAt: new Date().toISOString(),
   };
 }
@@ -157,18 +160,69 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
   const { data: session } = useSession();
   const idCounter = useRef(0);
 
-  useEffect(() => {
-    const sessionUserId = session?.user?.id;
-    if (!sessionUserId) return;
+  const currentUser = useMemo(() => {
+    if (session?.user) {
+      const name = `${session.user.firstName ?? ""} ${session.user.lastName ?? ""}`.trim();
+      if (name) return name;
+    }
+    return CURRENT_USER;
+  }, [session?.user]);
 
+  const isOwnReferral = useCallback(
+    (candidate: Candidate) => {
+      if (session?.user?.id && candidate.referredByUserId === session.user.id) {
+        return true;
+      }
+      return candidate.referredBy === currentUser;
+    },
+    [currentUser, session?.user?.id]
+  );
+
+  const persistCandidatePatch = useCallback(
+    (id: string, patch: Record<string, unknown>) => {
+      fetch("/api/candidates", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, ...patch }),
+      }).catch(() => {
+        // non-blocking persistence
+      });
+    },
+    []
+  );
+
+  useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/notifications");
-        if (!res.ok) return;
-        const data = (await res.json()) as { notifications?: AppNotification[] };
+        const vacancyRes = await fetch("/api/vacancies");
+        if (vacancyRes.ok) {
+          const data = (await vacancyRes.json()) as { vacancies?: Vacancy[] };
+          if (!cancelled && data.vacancies) setVacancies(data.vacancies);
+        }
+      } catch {
+        // keep seed fallback
+      }
+
+      if (!session?.user?.id) return;
+      try {
+        const [notifyRes, candidateRes] = await Promise.all([
+          fetch("/api/notifications"),
+          fetch("/api/candidates"),
+        ]);
         if (cancelled) return;
-        if (data.notifications) setNotifications(data.notifications);
+        if (notifyRes.ok) {
+          const data = (await notifyRes.json()) as {
+            notifications?: AppNotification[];
+          };
+          if (data.notifications) setNotifications(data.notifications);
+        }
+        if (candidateRes.ok) {
+          const data = (await candidateRes.json()) as {
+            candidates?: Candidate[];
+          };
+          if (data.candidates) setCandidates(data.candidates);
+        }
       } catch {
         // ignore fetch errors
       }
@@ -193,8 +247,8 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
   }, [candidates]);
 
   const challenges = useMemo(
-    () => syncMissions(candidates, CURRENT_USER),
-    [candidates]
+    () => syncMissions(candidates, currentUser),
+    [candidates, currentUser]
   );
 
   const nextId = useCallback((prefix: string) => {
@@ -396,8 +450,13 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       referrerName: string,
       viaReferralLink = true
     ): number => {
-      const candidateId = nextId("c");
-      const candidate = buildCandidate(data, referrerName, candidateId);
+      const optimisticId = crypto.randomUUID();
+      const candidate = buildCandidate(
+        data,
+        referrerName,
+        optimisticId,
+        session?.user?.id ?? null
+      );
       let xpGain = STATUS_XP.nieuw;
       if (candidate.confidenceScore >= CONFIDENCE_BONUS_THRESHOLD) {
         xpGain += CONFIDENCE_BONUS_XP;
@@ -405,17 +464,49 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       candidate.xpAwarded = xpGain;
 
       setCandidates((prev) => [candidate, ...prev]);
-      persistReferralEvent({
-        candidateId: candidate.id,
-        candidateName: candidate.name,
-        type: "submitted",
-        title: "Tip ontvangen",
-        message: `${candidate.name} is toegevoegd en wacht op beoordeling.`,
-        status: candidate.status,
-        cashStatus: candidate.cashStatus,
-      });
 
-      if (referrerName === CURRENT_USER) {
+      fetch("/api/candidates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...data,
+          vacancyId: data.vacancyId,
+          referrerName,
+        }),
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((payload) => {
+          const saved = (payload as { candidate?: Candidate } | null)?.candidate;
+          if (!saved) return;
+          setCandidates((prev) =>
+            prev.map((item) => (item.id === optimisticId ? saved : item))
+          );
+          persistReferralEvent({
+            candidateId: saved.id,
+            candidateName: saved.name,
+            type: "submitted",
+            title: "Tip ontvangen",
+            message: `${saved.name} is toegevoegd en wacht op beoordeling.`,
+            status: saved.status,
+            cashStatus: saved.cashStatus,
+          });
+        })
+        .catch(() => {
+          persistReferralEvent({
+            candidateId: candidate.id,
+            candidateName: candidate.name,
+            type: "submitted",
+            title: "Tip ontvangen",
+            message: `${candidate.name} is toegevoegd en wacht op beoordeling.`,
+            status: candidate.status,
+            cashStatus: candidate.cashStatus,
+          });
+        });
+
+      const ownTip =
+        (session?.user?.id && referrerName === currentUser) ||
+        referrerName === currentUser;
+      if (ownTip) {
         awardXp(xpGain);
         setStats((prev) => ({
           ...prev,
@@ -450,17 +541,18 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [
       addActivity,
       awardXp,
-      nextId,
+      currentUser,
       persistReferralEvent,
       pushNotification,
+      session?.user?.id,
       updateLeaderboardXp,
     ]
   );
 
   const submitCandidate = useCallback(
     (data: CandidateFormData) =>
-      submitReferralCandidate(data, CURRENT_USER, false),
-    [submitReferralCandidate]
+      submitReferralCandidate(data, currentUser, false),
+    [currentUser, submitReferralCandidate]
   );
 
   const updateCandidateInState = useCallback(
@@ -481,7 +573,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         const xpGain = getXpForStatusChange(candidate.status, newStatus);
         if (xpGain === 0) return prev;
 
-        if (candidate.referredBy === CURRENT_USER) {
+        if (isOwnReferral(candidate)) {
           awardXp(xpGain);
           updateLeaderboardXp(xpGain);
 
@@ -526,12 +618,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
           });
         }
 
+        const nextXp = candidate.xpAwarded + xpGain;
+        persistCandidatePatch(id, { status: newStatus, xpAwarded: nextXp });
+
         return prev.map((c) =>
           c.id === id
             ? {
                 ...c,
                 status: newStatus,
-                xpAwarded: c.xpAwarded + xpGain,
+                xpAwarded: nextXp,
               }
             : c
         );
@@ -540,6 +635,8 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [
       addActivity,
       awardXp,
+      isOwnReferral,
+      persistCandidatePatch,
       persistReferralEvent,
       pushNotification,
       updateLeaderboardPlacements,
@@ -555,7 +652,9 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         referralApproval: "goedgekeurd" as ReferralApproval,
       }));
 
-      if (candidate?.referredBy === CURRENT_USER) {
+      persistCandidatePatch(id, { referralApproval: "goedgekeurd" });
+
+      if (candidate && isOwnReferral(candidate)) {
         persistReferralEvent({
           candidateId: candidate.id,
           candidateName: candidate.name,
@@ -572,7 +671,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         });
       }
     },
-    [candidates, persistReferralEvent, pushNotification, updateCandidateInState]
+    [candidates, isOwnReferral, persistCandidatePatch, persistReferralEvent, pushNotification, updateCandidateInState]
   );
 
   const rejectReferral = useCallback(
@@ -584,7 +683,12 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         cashStatus: "afgekeurd",
       }));
 
-      if (candidate?.referredBy === CURRENT_USER) {
+      persistCandidatePatch(id, {
+        referralApproval: "afgekeurd",
+        cashStatus: "afgekeurd",
+      });
+
+      if (candidate && isOwnReferral(candidate)) {
         persistReferralEvent({
           candidateId: candidate.id,
           candidateName: candidate.name,
@@ -601,7 +705,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         });
       }
     },
-    [candidates, persistReferralEvent, pushNotification, updateCandidateInState]
+    [candidates, isOwnReferral, persistCandidatePatch, persistReferralEvent, pushNotification, updateCandidateInState]
   );
 
   const markDuplicate = useCallback(
@@ -610,8 +714,9 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         ...c,
         duplicateStatus: "duplicate" as DuplicateStatus,
       }));
+      persistCandidatePatch(id, { duplicateStatus: "duplicate" });
     },
-    [updateCandidateInState]
+    [persistCandidatePatch, updateCandidateInState]
   );
 
   const setCashStatus = useCallback(
@@ -621,8 +726,10 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
 
       updateCandidateInState(id, (c) => ({ ...c, cashStatus: status }));
 
+      persistCandidatePatch(id, { cashStatus: status });
+
       if (
-        candidate.referredBy === CURRENT_USER &&
+        isOwnReferral(candidate) &&
         (status === "intake_in_behandeling" ||
           status === "plaatsing_in_behandeling" ||
           status === "afgekeurd")
@@ -646,15 +753,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         }
       }
     },
-    [candidates, persistReferralEvent, pushNotification, updateCandidateInState]
+    [candidates, isOwnReferral, persistCandidatePatch, persistReferralEvent, pushNotification, updateCandidateInState]
   );
 
   const addVacancy = useCallback(
     (data: VacancyFormData) => {
       if (!data.sector) return;
-      idCounter.current += 1;
+      const optimisticId = crypto.randomUUID();
       const vacancy: Vacancy = {
-        id: `v-${idCounter.current}`,
+        id: optimisticId,
         title: data.title,
         sector: data.sector,
         location: data.location,
@@ -668,40 +775,31 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       };
       setVacancies((prev) => [vacancy, ...prev]);
 
-      if (
-        typeof vacancy.latitude === "number" &&
-        typeof vacancy.longitude === "number"
-      ) {
-        fetch("/api/notifications/nearby", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            vacancyId: vacancy.id,
-            title: vacancy.title,
-            location: vacancy.location,
-            difficulty: vacancy.difficulty,
-            latitude: vacancy.latitude,
-            longitude: vacancy.longitude,
-          }),
-        }).catch(() => {
-          // ignore notification errors
-        });
-
-        // Refresh the in-app list for the currently signed-in user.
-        if (session?.user?.id) {
-          fetch("/api/notifications")
-            .then((r) => (r.ok ? r.json() : null))
-            .then((data) => {
-              const notifications =
-                (data as { notifications?: AppNotification[] } | null)
-                  ?.notifications ?? undefined;
-              if (notifications) setNotifications(notifications);
-            })
-            .catch(() => {
-              // ignore notification errors
-            });
-        }
-      }
+      fetch("/api/vacancies", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((payload) => {
+          const saved = (payload as { vacancy?: Vacancy } | null)?.vacancy;
+          if (!saved) return;
+          setVacancies((prev) =>
+            prev.map((item) => (item.id === optimisticId ? saved : item))
+          );
+          if (session?.user?.id) {
+            fetch("/api/notifications")
+              .then((r) => (r.ok ? r.json() : null))
+              .then((data) => {
+                const notifications =
+                  (data as { notifications?: AppNotification[] } | null)
+                    ?.notifications ?? undefined;
+                if (notifications) setNotifications(notifications);
+              })
+              .catch(() => {});
+          }
+        })
+        .catch(() => {});
     },
     [session?.user?.id]
   );
@@ -726,6 +824,11 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
           : vacancy
       )
     );
+    fetch("/api/vacancies", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, ...data }),
+    }).catch(() => {});
   }, []);
 
   const assignCandidateVacancy = useCallback(
@@ -734,8 +837,11 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         ...candidate,
         vacancyId: vacancyId || undefined,
       }));
+      persistCandidatePatch(candidateId, {
+        vacancyId: vacancyId || null,
+      });
     },
-    [updateCandidateInState]
+    [persistCandidatePatch, updateCandidateInState]
   );
 
   const grantIntakeBonus = useCallback(
@@ -751,11 +857,11 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         cashPending: Math.max(0, r.cashPending - amount),
       }));
       setStats((s) => ({ ...s, totalReward: s.totalReward + amount }));
-      if (candidate.referredBy === CURRENT_USER) {
+      if (isOwnReferral(candidate)) {
         updateLeaderboardReward(amount);
       }
 
-      if (candidate.referredBy === CURRENT_USER) {
+      if (isOwnReferral(candidate)) {
         const cashNotice = getCashNotification(
           candidate.name,
           "intake_goedgekeurd",
@@ -782,6 +888,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [
       candidates,
       getCandidateDifficulty,
+      isOwnReferral,
       persistReferralEvent,
       pushNotification,
       setCashStatus,
@@ -796,7 +903,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
 
       const amount = getMatchReward(
         getCandidateDifficulty(candidate),
-        candidate.referredBy === CURRENT_USER ? xp : 0
+        isOwnReferral(candidate) ? xp : 0
       );
       setCashStatus(id, "plaatsing_goedgekeurd");
       setRewards((r) => ({
@@ -805,11 +912,11 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         cashPending: Math.max(0, r.cashPending - amount),
       }));
       setStats((s) => ({ ...s, totalReward: s.totalReward + amount }));
-      if (candidate.referredBy === CURRENT_USER) {
+      if (isOwnReferral(candidate)) {
         updateLeaderboardReward(amount);
       }
 
-      if (candidate.referredBy === CURRENT_USER) {
+      if (isOwnReferral(candidate)) {
         const cashNotice = getCashNotification(
           candidate.name,
           "plaatsing_goedgekeurd",
@@ -836,6 +943,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [
       candidates,
       getCandidateDifficulty,
+      isOwnReferral,
       persistReferralEvent,
       pushNotification,
       setCashStatus,
@@ -851,7 +959,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
 
       const amount = getKeeperBonusReward(
         getCandidateDifficulty(candidate),
-        candidate.referredBy === CURRENT_USER ? xp : 0
+        isOwnReferral(candidate) ? xp : 0
       );
       setCashStatus(id, "retentie_goedgekeurd");
       setRewards((r) => ({
@@ -859,11 +967,11 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         cashEarned: r.cashEarned + amount,
       }));
       setStats((s) => ({ ...s, totalReward: s.totalReward + amount }));
-      if (candidate.referredBy === CURRENT_USER) {
+      if (isOwnReferral(candidate)) {
         updateLeaderboardReward(amount);
       }
 
-      if (candidate.referredBy === CURRENT_USER) {
+      if (isOwnReferral(candidate)) {
         const cashNotice = getCashNotification(
           candidate.name,
           "retentie_goedgekeurd",
@@ -890,6 +998,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [
       candidates,
       getCandidateDifficulty,
+      isOwnReferral,
       persistReferralEvent,
       pushNotification,
       setCashStatus,
@@ -901,21 +1010,25 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
   const revokeXp = useCallback(
     (id: string, amount: number) => {
       const candidate = candidates.find((c) => c.id === id);
-      if (!candidate || candidate.referredBy !== CURRENT_USER) return;
+      if (!candidate || !isOwnReferral(candidate)) return;
 
       const revokeAmount = Math.min(amount, candidate.xpAwarded);
       deductXp(revokeAmount);
       updateLeaderboardXp(-revokeAmount);
+      const nextXp = Math.max(0, candidate.xpAwarded - revokeAmount);
       updateCandidateInState(id, (c) => ({
         ...c,
-        xpAwarded: Math.max(0, c.xpAwarded - revokeAmount),
+        xpAwarded: nextXp,
       }));
+      persistCandidatePatch(id, { xpAwarded: nextXp });
       addActivity(`XP ingetrokken voor ${candidate.name}`, -revokeAmount);
     },
     [
       addActivity,
       candidates,
       deductXp,
+      isOwnReferral,
+      persistCandidatePatch,
       updateCandidateInState,
       updateLeaderboardXp,
     ]
@@ -923,7 +1036,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({
-      currentUser: CURRENT_USER,
+      currentUser,
       xp,
       xpPulse,
       xpEvents,
@@ -955,6 +1068,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       markAllNotificationsRead,
     }),
     [
+      currentUser,
       xp,
       xpPulse,
       xpEvents,

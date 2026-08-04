@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { getDataDir } from "@/lib/dataDir";
 
 export type ShareChannel =
   | "whatsapp"
@@ -25,7 +26,7 @@ interface ShareStore {
   shares: ChallengeShareRecord[];
 }
 
-const DATA_DIR = path.join(process.cwd(), ".data");
+const DATA_DIR = getDataDir();
 const SHARES_FILE = path.join(DATA_DIR, "challenge-shares.json");
 
 async function readStore(): Promise<ShareStore> {

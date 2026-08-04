@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { getDataDir } from "@/lib/dataDir";
 
 export interface UserNotificationPreferences {
   userId: string;
@@ -23,7 +24,7 @@ interface PreferenceStore {
   preferences: UserNotificationPreferences[];
 }
 
-const DATA_DIR = path.join(process.cwd(), ".data");
+const DATA_DIR = getDataDir();
 const FILE = path.join(DATA_DIR, "notification-preferences.json");
 
 const defaults = (userId: string): UserNotificationPreferences => {

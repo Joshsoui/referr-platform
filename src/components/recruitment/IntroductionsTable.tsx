@@ -30,7 +30,7 @@ export function IntroductionsTable() {
           <SectionTitle>Nieuwe introducties</SectionTitle>
         </div>
         <Link
-          href="/recruitment/introducties/in-1"
+          href="/admin"
           className="text-sm font-medium text-fk-navy/50 transition hover:text-fk-navy"
         >
           Alles bekijken
