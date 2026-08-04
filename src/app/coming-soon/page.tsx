@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { ComingSoonExperience } from "@/components/landing/ComingSoonExperience";
 
 export const metadata: Metadata = {
@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   description: "Ken iemand. Maak het verschil. referr komt eraan.",
   robots: { index: true, follow: true },
   alternates: { canonical: "https://www.referr.nl" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0b0707",
+  colorScheme: "dark",
 };
 
 export default function ComingSoonPage() {

@@ -20,7 +20,7 @@ export function DeckThemeToggle() {
     setShow(isLocalHost());
   }, []);
 
-  if (!show || pathname === "/") return null;
+  if (!show || pathname === "/" || pathname === "/coming-soon") return null;
 
   return (
     <button
