@@ -5,6 +5,7 @@ import {
   getNotificationPreferences,
   updateNotificationPreferences,
 } from "@/lib/notificationPreferencesStore";
+import { geocodeQuery } from "@/lib/geocode";
 
 export async function getNotificationPreferencesAction() {
   const session = await auth();
@@ -29,6 +30,21 @@ export async function updateNotificationPreferencesAction(input: {
     return { ok: false, message: "Niet ingelogd." };
   }
 
-  await updateNotificationPreferences(session.user.id, input);
+  let geo:
+    | { latitude: number; longitude: number }
+    | null = null;
+
+  if (input.locationConsent) {
+    const city = input.city.trim();
+    const postalCode = input.postalCode.trim();
+    const query = postalCode ? `${postalCode} ${city}`.trim() : city;
+    geo = await geocodeQuery(query);
+  }
+
+  await updateNotificationPreferences(session.user.id, {
+    ...input,
+    latitude: geo?.latitude ?? null,
+    longitude: geo?.longitude ?? null,
+  });
   return { ok: true, message: "Notificatievoorkeuren opgeslagen." };
 }

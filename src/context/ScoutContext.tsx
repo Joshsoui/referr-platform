@@ -31,6 +31,7 @@ import {
 import { INITIAL_VACANCIES } from "@/lib/mockVacancies";
 import type { Challenge } from "@/types/gamification";
 import type { AppNotification } from "@/types/notifications";
+import { useSession } from "next-auth/react";
 import {
   getIntakeReward,
   getKeeperBonusReward,
@@ -96,7 +97,7 @@ interface ScoutContextValue {
   grantPlacementBonus: (id: string) => void;
   grantRetentionBonus: (id: string) => void;
   revokeXp: (id: string, amount: number) => void;
-  markNotificationRead: (id: number) => void;
+  markNotificationRead: (id: string) => void;
   markAllNotificationsRead: () => void;
 }
 
@@ -153,29 +154,30 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
   const [referralProfile, setReferralProfile] = useState(CURRENT_SCOUT_REFERRAL);
   const [rewards, setRewards] = useState<RewardSummary>(INITIAL_REWARD_SUMMARY);
   const [vacancies, setVacancies] = useState<Vacancy[]>(INITIAL_VACANCIES);
-  const [localNotificationPrefs, setLocalNotificationPrefs] = useState<{
-    nearbyChallengesEnabled: boolean;
-    city: string;
-  }>({ nearbyChallengesEnabled: false, city: "" });
+  const { data: session } = useSession();
   const idCounter = useRef(0);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const raw = window.localStorage.getItem("referr-notification-preferences");
-    if (!raw) return;
-    try {
-      const parsed = JSON.parse(raw) as {
-        nearbyChallengesEnabled?: boolean;
-        city?: string;
-      };
-      setLocalNotificationPrefs({
-        nearbyChallengesEnabled: Boolean(parsed.nearbyChallengesEnabled),
-        city: String(parsed.city ?? ""),
-      });
-    } catch {
-      // ignore malformed local cache
-    }
-  }, []);
+    const sessionUserId = session?.user?.id;
+    if (!sessionUserId) return;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/notifications");
+        if (!res.ok) return;
+        const data = (await res.json()) as { notifications?: AppNotification[] };
+        if (cancelled) return;
+        if (data.notifications) setNotifications(data.notifications);
+      } catch {
+        // ignore fetch errors
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.user?.id]);
 
   const getCandidateDifficulty = useCallback(
     (candidate: Candidate) => {
@@ -240,17 +242,43 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
           ...prev,
           {
             ...notification,
-            id: idCounter.current,
+            id: String(idCounter.current),
             createdAt: new Date().toISOString(),
             readAt: null,
           },
         ];
       });
+
+      // Persist server-side so the notification center survives refresh.
+      const dedupeKey = `${notification.kind}:${notification.title}:${notification.message}`;
+      fetch("/api/notifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          kind: notification.kind,
+          title: notification.title,
+          message: notification.message,
+          link: notification.link,
+          dedupeKey,
+        }),
+      })
+        .then((r) => r.ok ? r.json() : null)
+        .then(() => fetch("/api/notifications"))
+        .then((r) => (r && r.ok ? r.json() : null))
+        .then((data) => {
+          const notifications =
+            (data as { notifications?: AppNotification[] } | null)?.notifications ??
+            undefined;
+          if (notifications) setNotifications(notifications);
+        })
+        .catch(() => {
+          // ignore persistence errors
+        });
     },
     []
   );
 
-  const markNotificationRead = useCallback((id: number) => {
+  const markNotificationRead = useCallback((id: string) => {
     setNotifications((prev) =>
       prev.map((item) =>
         item.id === id
@@ -258,6 +286,23 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
           : item
       )
     );
+
+    fetch("/api/notifications/mark-read", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    })
+      .then(() => fetch("/api/notifications"))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        const notifications =
+          (data as { notifications?: AppNotification[] } | null)
+            ?.notifications ?? undefined;
+        if (notifications) setNotifications(notifications);
+      })
+      .catch(() => {
+        // ignore
+      });
   }, []);
 
   const markAllNotificationsRead = useCallback(() => {
@@ -265,6 +310,21 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     setNotifications((prev) =>
       prev.map((item) => ({ ...item, readAt: item.readAt ?? now }))
     );
+
+    fetch("/api/notifications/mark-all-read", {
+      method: "POST",
+    })
+      .then(() => fetch("/api/notifications"))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        const notifications =
+          (data as { notifications?: AppNotification[] } | null)
+            ?.notifications ?? undefined;
+        if (notifications) setNotifications(notifications);
+      })
+      .catch(() => {
+        // ignore
+      });
   }, []);
 
   const updateLeaderboardCurrentUser = useCallback(
@@ -524,28 +584,52 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         title: data.title,
         sector: data.sector,
         location: data.location,
+        postalCode: data.postalCode || undefined,
+        latitude: data.latitude,
+        longitude: data.longitude,
         description: data.description,
         difficulty: data.difficulty,
         status: data.status,
         createdAt: new Date().toISOString(),
       };
       setVacancies((prev) => [vacancy, ...prev]);
+
       if (
-        localNotificationPrefs.nearbyChallengesEnabled &&
-        localNotificationPrefs.city &&
-        data.location
-          .toLowerCase()
-          .includes(localNotificationPrefs.city.toLowerCase().trim())
+        typeof vacancy.latitude === "number" &&
+        typeof vacancy.longitude === "number"
       ) {
-        pushNotification({
-          kind: "progress",
-          title: "Nieuwe challenge in jouw buurt",
-          message: `${data.title} in ${data.location}. Reward beschikbaar bij succesvolle match.`,
-          link: `/vacatures/${vacancy.id}`,
+        fetch("/api/notifications/nearby", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            vacancyId: vacancy.id,
+            title: vacancy.title,
+            location: vacancy.location,
+            difficulty: vacancy.difficulty,
+            latitude: vacancy.latitude,
+            longitude: vacancy.longitude,
+          }),
+        }).catch(() => {
+          // ignore notification errors
         });
+
+        // Refresh the in-app list for the currently signed-in user.
+        if (session?.user?.id) {
+          fetch("/api/notifications")
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => {
+              const notifications =
+                (data as { notifications?: AppNotification[] } | null)
+                  ?.notifications ?? undefined;
+              if (notifications) setNotifications(notifications);
+            })
+            .catch(() => {
+              // ignore notification errors
+            });
+        }
       }
     },
-    [localNotificationPrefs.city, localNotificationPrefs.nearbyChallengesEnabled, pushNotification]
+    [session?.user?.id]
   );
 
   const updateVacancy = useCallback((id: string, data: VacancyFormData) => {
@@ -558,6 +642,9 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
               title: data.title,
               sector: data.sector as Vacancy["sector"],
               location: data.location,
+              postalCode: data.postalCode || undefined,
+              latitude: data.latitude,
+              longitude: data.longitude,
               description: data.description,
               difficulty: data.difficulty,
               status: data.status,

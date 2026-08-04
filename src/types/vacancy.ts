@@ -9,6 +9,9 @@ export interface Vacancy {
   title: string;
   sector: Sector;
   location: string;
+  latitude?: number;
+  longitude?: number;
+  postalCode?: string;
   description: string;
   difficulty: VacancyDifficulty;
   status: VacancyStatus;
@@ -19,6 +22,9 @@ export interface VacancyFormData {
   title: string;
   sector: Sector | "";
   location: string;
+  postalCode?: string;
+  latitude?: number;
+  longitude?: number;
   description: string;
   difficulty: VacancyDifficulty;
   status: VacancyStatus;

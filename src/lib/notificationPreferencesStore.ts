@@ -13,6 +13,8 @@ export interface UserNotificationPreferences {
   city: string;
   postalCode: string;
   locationConsent: boolean;
+  latitude?: number | null;
+  longitude?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -38,6 +40,8 @@ const defaults = (userId: string): UserNotificationPreferences => {
     city: "",
     postalCode: "",
     locationConsent: false,
+    latitude: null,
+    longitude: null,
     createdAt: now,
     updatedAt: now,
   };
@@ -86,4 +90,9 @@ export async function updateNotificationPreferences(
   }
   await saveStore(store);
   return next;
+}
+
+export async function listAllNotificationPreferences() {
+  const store = await readStore();
+  return store.preferences;
 }
