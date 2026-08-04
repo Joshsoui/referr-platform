@@ -20,10 +20,21 @@ const referrerNavLinks = [
 
 const staffNavLinks = [
   { href: "/recruitment", label: "Beheeromgeving" },
-  { href: "/admin", label: "Tips & challenges" },
+  { href: "/admin", label: "Tips" },
+  { href: "/admin/challenges", label: "Challenges" },
   { href: "/admin/payouts", label: "Uitbetalingen" },
   { href: "/account", label: "Profiel" },
 ];
+
+function linkIsActive(pathname: string, href: string): boolean {
+  if (href === "/admin") return pathname === "/admin";
+  if (href === "/admin/challenges") return pathname.startsWith("/admin/challenges");
+  if (href === "/admin/payouts") return pathname.startsWith("/admin/payouts");
+  if (href === "/recruitment") {
+    return pathname === "/recruitment" || pathname.startsWith("/recruitment/");
+  }
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function Header() {
   const pathname = usePathname();
@@ -51,14 +62,7 @@ export function Header() {
 
         <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 overflow-x-auto md:flex [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {links.map((link) => {
-            const active =
-              pathname === link.href ||
-              (link.href !== "/admin" &&
-                link.href !== "/recruitment" &&
-                pathname.startsWith(`${link.href}/`)) ||
-              (link.href === "/admin" &&
-                pathname.startsWith("/admin") &&
-                !pathname.startsWith("/admin/payouts"));
+            const active = linkIsActive(pathname, link.href);
             return (
               <Link
                 key={link.href}
@@ -108,7 +112,7 @@ export function Header() {
         <nav className="border-t border-fk-navy/5 bg-fk-white px-4 py-4 md:hidden">
           <div className="flex flex-col gap-1">
             {links.map((link) => {
-              const active = pathname === link.href;
+              const active = linkIsActive(pathname, link.href);
               return (
                 <Link
                   key={link.href}

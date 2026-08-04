@@ -52,7 +52,7 @@ export function TodayCard() {
     items.push({
       id: "admin",
       priority: "high",
-      label: "Tips & challenges beheren",
+      label: "Tips beoordelen",
       href: "/admin",
     });
 
@@ -61,7 +61,7 @@ export function TodayCard() {
         id: "create",
         priority: "attention",
         label: "Eerste challenge aanmaken",
-        href: "/admin",
+        href: "/admin/challenges",
       });
     }
 

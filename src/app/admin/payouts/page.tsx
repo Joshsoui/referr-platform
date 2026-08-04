@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FadeIn } from "@/components/animations/FadeIn";
+import { AdminSubNav } from "@/components/admin/AdminSubNav";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
@@ -116,7 +117,9 @@ export default function AdminPayoutsPage() {
           </div>
         </FadeIn>
 
-        <Card className="mt-6 border-fk-primary/10 p-0 overflow-hidden">
+        <AdminSubNav />
+
+        <Card className="mt-2 border-fk-primary/10 p-0 overflow-hidden">
           {loading ? (
             <p className="p-5 text-sm text-fk-navy/55">Laden…</p>
           ) : error ? (

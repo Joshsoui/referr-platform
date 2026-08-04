@@ -49,14 +49,14 @@ export function ChallengeCards() {
           <SectionLabel>Challenges</SectionLabel>
           <SectionTitle>Mijn actieve challenges</SectionTitle>
         </div>
-        <Button href="/admin" variant="outline" className="!rounded-lg !px-3 !py-2 text-xs">
-          Beheer tips
+        <Button href="/admin/challenges" variant="outline" className="!rounded-lg !px-3 !py-2 text-xs">
+          Beheer challenges
         </Button>
       </div>
 
       {challenges.length === 0 ? (
         <MotionCard className="!p-5 text-sm text-fk-navy/60">
-          Nog geen open challenges. Maak er een aan via Beheer tips.
+          Nog geen open challenges. Maak er een aan via Challenges.
         </MotionCard>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">

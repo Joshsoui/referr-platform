@@ -2,17 +2,21 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { findUserById } from "@/lib/auth/users";
+import { isStaffRole } from "@/lib/auth/roles";
 import { getNotificationPreferences } from "@/lib/notificationPreferencesStore";
 import { PrivacyCenter } from "@/components/account/PrivacyCenter";
+import { StaffProfileCenter } from "@/components/account/StaffProfileCenter";
 
 export const metadata: Metadata = {
-  title: "Privacycentrum",
+  title: "Profiel",
   robots: { index: false, follow: false },
 };
 
 export default async function AccountPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/inloggen?next=/account");
+
+  const isStaff = isStaffRole(session.user.role);
 
   let user = null;
   try {
@@ -44,6 +48,7 @@ export default async function AccountPage() {
     email: session.user.email ?? "",
     firstName: session.user.firstName ?? "",
     lastName: session.user.lastName ?? "",
+    role: session.user.role ?? "user",
     emailVerifiedAt: session.user.emailVerifiedAt ?? null,
     marketingConsent: false,
     createdAt: new Date().toISOString(),
@@ -56,7 +61,38 @@ export default async function AccountPage() {
     country: "Nederland",
     iban: "",
     ibanAccountName: "",
+    companyName: "",
+    jobTitle: "",
+    companyCity: "",
+    companyKvK: "",
   };
+
+  if (isStaff) {
+    return (
+      <div className="px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl">
+          <h1 className="text-2xl font-extrabold text-fk-navy">Beheerderprofiel</h1>
+          <p className="mt-2 text-sm text-fk-navy/65">
+            Bedrijfsgegevens en jouw rol binnen de organisatie.
+          </p>
+          <StaffProfileCenter
+            user={{
+              email: safeUser.email,
+              firstName: safeUser.firstName,
+              lastName: safeUser.lastName,
+              role: (user?.role ?? session.user.role) as string,
+              emailVerifiedAt: safeUser.emailVerifiedAt,
+              phone: safeUser.phone ?? "",
+              companyName: safeUser.companyName ?? "",
+              jobTitle: safeUser.jobTitle ?? "",
+              companyCity: safeUser.companyCity ?? "",
+              companyKvK: safeUser.companyKvK ?? "",
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-8">

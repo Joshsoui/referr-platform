@@ -30,6 +30,10 @@ export interface StoredUser {
   country?: string;
   iban?: string;
   ibanAccountName?: string;
+  companyName?: string;
+  jobTitle?: string;
+  companyCity?: string;
+  companyKvK?: string;
   stripeAccountId?: string;
   stripeOnboardingComplete?: boolean;
   stripeChargesEnabled?: boolean;
@@ -72,6 +76,10 @@ function mapPrismaUser(user: PrismaUser): StoredUser {
     country: user.country,
     iban: user.iban,
     ibanAccountName: user.ibanAccountName,
+    companyName: user.companyName,
+    jobTitle: user.jobTitle,
+    companyCity: user.companyCity,
+    companyKvK: user.companyKvK,
     stripeAccountId: user.stripeAccountId,
     stripeOnboardingComplete: user.stripeOnboardingComplete,
     stripeChargesEnabled: user.stripeChargesEnabled,
@@ -115,6 +123,10 @@ export function getPublicUser(user: StoredUser) {
     country: user.country ?? "Nederland",
     iban: user.iban ?? "",
     ibanAccountName: user.ibanAccountName ?? "",
+    companyName: user.companyName ?? "",
+    jobTitle: user.jobTitle ?? "",
+    companyCity: user.companyCity ?? "",
+    companyKvK: user.companyKvK ?? "",
     stripeAccountId: user.stripeAccountId ?? "",
     stripeOnboardingComplete: user.stripeOnboardingComplete ?? false,
     stripeChargesEnabled: user.stripeChargesEnabled ?? false,
@@ -220,6 +232,10 @@ export async function createUser(input: {
     country: "Nederland",
     iban: "",
     ibanAccountName: "",
+    companyName: "",
+    jobTitle: "",
+    companyCity: "",
+    companyKvK: "",
     stripeAccountId: "",
     stripeOnboardingComplete: false,
     stripeChargesEnabled: false,
@@ -321,6 +337,10 @@ export async function updateProfile(
     country?: string;
     iban?: string;
     ibanAccountName?: string;
+    companyName?: string;
+    jobTitle?: string;
+    companyCity?: string;
+    companyKvK?: string;
   }
 ): Promise<StoredUser | null> {
   const payload = {
@@ -334,6 +354,10 @@ export async function updateProfile(
     country: (data.country ?? "Nederland").trim(),
     iban: (data.iban ?? "").trim().toUpperCase(),
     ibanAccountName: (data.ibanAccountName ?? "").trim(),
+    companyName: (data.companyName ?? "").trim(),
+    jobTitle: (data.jobTitle ?? "").trim(),
+    companyCity: (data.companyCity ?? "").trim(),
+    companyKvK: (data.companyKvK ?? "").trim(),
   };
 
   if (hasDatabase()) {

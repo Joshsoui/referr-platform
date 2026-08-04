@@ -108,9 +108,9 @@ export function VacancyManager() {
           <Briefcase size={20} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-fk-navy">Vacatures beheren</h2>
+          <h2 className="text-xl font-bold text-fk-navy">Challenges beheren</h2>
           <p className="text-sm text-fk-navy/55">
-            Recruiters: stel difficulty in bij aanmaken of bewerken
+            Stel difficulty in bij aanmaken of bewerken — dat bepaalt de beloning
           </p>
         </div>
       </div>
@@ -217,7 +217,7 @@ export function VacancyManager() {
               setForm((prev) => ({ ...prev, description: e.target.value }))
             }
             className="min-h-24 w-full rounded-xl border border-fk-primary/20 px-3 py-2 text-sm"
-            placeholder="Beschrijf de vacature..."
+            placeholder="Beschrijf de challenge..."
           />
         </label>
 
@@ -227,7 +227,7 @@ export function VacancyManager() {
             className="inline-flex items-center gap-2 rounded-xl bg-fk-primary px-4 py-2 text-sm font-semibold text-white"
           >
             {editingId ? <Pencil size={16} /> : <Plus size={16} />}
-            {editingId ? "Vacature opslaan" : "Vacature toevoegen"}
+            {editingId ? "Challenge opslaan" : "Challenge toevoegen"}
           </button>
           {editingId && (
             <button

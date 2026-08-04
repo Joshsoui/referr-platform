@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import { LayoutGrid, Shield } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
+import { AdminSubNav } from "@/components/admin/AdminSubNav";
 import { TipReviewCard } from "@/components/admin/TipReviewCard";
-import { VacancyManager } from "@/components/admin/VacancyManager";
 import { getNextStatus, useScout } from "@/context/ScoutContext";
 import {
   getIntakeReward,
@@ -125,29 +125,17 @@ export default function AdminPage() {
               </div>
               <div>
                 <h1 className="text-3xl font-extrabold tracking-[-0.03em] text-fk-navy">
-                  Beheeromgeving
+                  Tips
                 </h1>
                 <p className="text-fk-navy/60">
-                  Tips beoordelen, challenges koppelen en beloningen toekennen
+                  Beoordeel tips, ken beloningen toe en volg de status
                 </p>
-                <div className="mt-2 flex flex-wrap gap-3 text-sm">
-                  <a
-                    href="/recruitment"
-                    className="font-medium text-fk-primary hover:underline"
-                  >
-                    Portal dashboard
-                  </a>
-                  <a
-                    href="/admin/payouts"
-                    className="font-medium text-fk-navy/55 hover:underline"
-                  >
-                    IBAN-uitbetalingen
-                  </a>
-                </div>
               </div>
             </div>
           </div>
         </FadeIn>
+
+        <AdminSubNav />
 
         <FadeIn delay={60}>
           <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -172,16 +160,12 @@ export default function AdminPage() {
           </div>
         </FadeIn>
 
-        <FadeIn delay={80}>
-          <VacancyManager />
-        </FadeIn>
-
         <FadeIn delay={100}>
-          <div className="mb-4 mt-10 flex flex-wrap items-center justify-between gap-3">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <LayoutGrid size={16} className="text-fk-navy/40" />
               <h2 className="text-lg font-bold tracking-[-0.02em] text-fk-navy">
-                Tips
+                Overzicht
               </h2>
               <span className="rounded-full bg-fk-navy/5 px-2 py-0.5 text-xs font-semibold text-fk-navy/55">
                 {visible.length}

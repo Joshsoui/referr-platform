@@ -408,32 +408,55 @@ export async function updateProfileAction(
   const session = await auth();
   if (!session?.user?.id) return { ok: false, message: "Niet ingelogd." };
 
+  const existing = await findUserById(session.user.id);
+  if (!existing) return { ok: false, message: "Gebruiker niet gevonden." };
+
   const firstName = String(formData.get("firstName") ?? "").trim();
   const lastName = String(formData.get("lastName") ?? "").trim();
   if (!firstName || !lastName) {
     return { ok: false, message: "Voor- en achternaam zijn verplicht." };
   }
 
+  const isStaffProfile = formData.get("profileKind") === "staff";
   const phone = String(formData.get("phone") ?? "").trim();
-  const street = String(formData.get("street") ?? "").trim();
-  const houseNumber = String(formData.get("houseNumber") ?? "").trim();
-  const postalCode = String(formData.get("postalCode") ?? "").trim();
-  const city = String(formData.get("city") ?? "").trim();
-  const country = String(formData.get("country") ?? "Nederland").trim();
-  const iban = String(formData.get("iban") ?? "").trim().toUpperCase();
-  const ibanAccountName = String(formData.get("ibanAccountName") ?? "").trim();
 
   await updateProfile(session.user.id, {
     firstName,
     lastName,
     phone,
-    street,
-    houseNumber,
-    postalCode,
-    city,
-    country,
-    iban,
-    ibanAccountName,
+    street: isStaffProfile
+      ? existing.street ?? ""
+      : String(formData.get("street") ?? "").trim(),
+    houseNumber: isStaffProfile
+      ? existing.houseNumber ?? ""
+      : String(formData.get("houseNumber") ?? "").trim(),
+    postalCode: isStaffProfile
+      ? existing.postalCode ?? ""
+      : String(formData.get("postalCode") ?? "").trim(),
+    city: isStaffProfile
+      ? existing.city ?? ""
+      : String(formData.get("city") ?? "").trim(),
+    country: isStaffProfile
+      ? existing.country ?? "Nederland"
+      : String(formData.get("country") ?? "Nederland").trim(),
+    iban: isStaffProfile
+      ? existing.iban ?? ""
+      : String(formData.get("iban") ?? "").trim().toUpperCase(),
+    ibanAccountName: isStaffProfile
+      ? existing.ibanAccountName ?? ""
+      : String(formData.get("ibanAccountName") ?? "").trim(),
+    companyName: isStaffProfile
+      ? String(formData.get("companyName") ?? "").trim()
+      : existing.companyName ?? "",
+    jobTitle: isStaffProfile
+      ? String(formData.get("jobTitle") ?? "").trim()
+      : existing.jobTitle ?? "",
+    companyCity: isStaffProfile
+      ? String(formData.get("companyCity") ?? "").trim()
+      : existing.companyCity ?? "",
+    companyKvK: isStaffProfile
+      ? String(formData.get("companyKvK") ?? "").trim()
+      : existing.companyKvK ?? "",
   });
   return { ok: true, message: "Profiel bijgewerkt." };
 }

@@ -21,10 +21,16 @@ export function PortalDashboardHeader() {
         </h1>
         <div className="mt-3 flex flex-wrap gap-3 text-sm">
           <Link href="/admin" className="font-medium text-fk-primary hover:underline">
-            Tips & challenges
+            Tips
+          </Link>
+          <Link
+            href="/admin/challenges"
+            className="font-medium text-fk-navy/55 hover:underline"
+          >
+            Challenges
           </Link>
           <Link href="/admin/payouts" className="font-medium text-fk-navy/55 hover:underline">
-            IBAN-uitbetalingen
+            Uitbetalingen
           </Link>
         </div>
       </div>
