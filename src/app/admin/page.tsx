@@ -1,36 +1,49 @@
 "use client";
 
-import { ArrowRight, Shield } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { LayoutGrid, Shield } from "lucide-react";
 import { FadeIn } from "@/components/animations/FadeIn";
-import { Badge } from "@/components/ui/Badge";
-import { Card } from "@/components/ui/Card";
+import { TipReviewCard } from "@/components/admin/TipReviewCard";
 import { VacancyManager } from "@/components/admin/VacancyManager";
-import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { getNextStatus, useScout } from "@/context/ScoutContext";
-import { CASH_STATUS_LABELS } from "@/lib/mockQualityRules";
-import { getConfidenceLabel } from "@/lib/scoring";
 import {
   getIntakeReward,
   getKeeperBonusReward,
   getMatchReward,
 } from "@/lib/vacancyRewards";
-import { formatCurrency, STATUS_LABELS } from "@/lib/xp";
 import type { CandidateStatus } from "@/types";
-import type { CashStatus } from "@/types/incentives";
 
-function statusVariant(
-  status: CandidateStatus
-): "default" | "success" | "warning" | "info" {
-  switch (status) {
-    case "proeftijd_gehaald":
+type TipFilter = "alle" | "nieuw" | "in_behandeling" | "beloning" | "geplaatst";
+
+const FILTERS: Array<{ id: TipFilter; label: string }> = [
+  { id: "alle", label: "Alle tips" },
+  { id: "nieuw", label: "Nieuw" },
+  { id: "in_behandeling", label: "In behandeling" },
+  { id: "beloning", label: "Beloning open" },
+  { id: "geplaatst", label: "Geplaatst" },
+];
+
+function matchesFilter(
+  status: CandidateStatus,
+  cashStatus: string,
+  approval: string,
+  filter: TipFilter
+): boolean {
+  switch (filter) {
+    case "nieuw":
+      return status === "nieuw" || approval === "pending";
+    case "in_behandeling":
+      return status === "intake_gepland" || status === "voorgesteld";
+    case "beloning":
+      return (
+        cashStatus.includes("in_behandeling") ||
+        cashStatus === "intake_goedgekeurd" ||
+        cashStatus === "plaatsing_goedgekeurd"
+      );
     case "geplaatst":
-      return "success";
-    case "intake_gepland":
-    case "voorgesteld":
-      return "info";
+      return status === "geplaatst" || status === "proeftijd_gehaald";
     default:
-      return "warning";
+      return true;
   }
 }
 
@@ -51,6 +64,36 @@ export default function AdminPage() {
   } = useScout();
   const [flashingId, setFlashingId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [filter, setFilter] = useState<TipFilter>("alle");
+
+  const stats = useMemo(() => {
+    const pendingApproval = candidates.filter(
+      (c) => c.referralApproval === "pending"
+    ).length;
+    const openReward = candidates.filter(
+      (c) =>
+        c.cashStatus.includes("in_behandeling") ||
+        c.cashStatus === "intake_goedgekeurd" ||
+        c.cashStatus === "plaatsing_goedgekeurd"
+    ).length;
+    const placed = candidates.filter(
+      (c) => c.status === "geplaatst" || c.status === "proeftijd_gehaald"
+    ).length;
+    return {
+      total: candidates.length,
+      pendingApproval,
+      openReward,
+      placed,
+    };
+  }, [candidates]);
+
+  const visible = useMemo(
+    () =>
+      candidates.filter((c) =>
+        matchesFilter(c.status, c.cashStatus, c.referralApproval, filter)
+      ),
+    [candidates, filter]
+  );
 
   async function handleStatusUpdate(id: string, status: CandidateStatus) {
     setUpdatingId(id);
@@ -68,27 +111,64 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1400px]">
+    <div className="relative min-h-screen overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_at_top,_rgba(255,77,89,0.08),_transparent_60%)]"
+      />
+      <div className="relative mx-auto max-w-[1400px]">
         <FadeIn>
-          <div className="mb-8 flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-fk-navy text-fk-white shadow-md">
-              <Shield size={22} />
-            </div>
-            <div>
-              <h1 className="text-3xl font-extrabold text-fk-navy">Beheeromgeving</h1>
-              <p className="text-fk-navy/60">
-                Beheer talenttips, beloningen en kwaliteit
-              </p>
-              <div className="mt-2 flex flex-wrap gap-3 text-sm">
-                <a href="/recruitment" className="font-medium text-fk-primary hover:underline">
-                  Portal dashboard
-                </a>
-                <a href="/admin/payouts" className="font-medium text-fk-navy/55 hover:underline">
-                  IBAN-uitbetalingen
-                </a>
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-fk-navy text-fk-white shadow-md">
+                <Shield size={22} />
+              </div>
+              <div>
+                <h1 className="text-3xl font-extrabold tracking-[-0.03em] text-fk-navy">
+                  Beheeromgeving
+                </h1>
+                <p className="text-fk-navy/60">
+                  Tips beoordelen, challenges koppelen en beloningen toekennen
+                </p>
+                <div className="mt-2 flex flex-wrap gap-3 text-sm">
+                  <a
+                    href="/recruitment"
+                    className="font-medium text-fk-primary hover:underline"
+                  >
+                    Portal dashboard
+                  </a>
+                  <a
+                    href="/admin/payouts"
+                    className="font-medium text-fk-navy/55 hover:underline"
+                  >
+                    IBAN-uitbetalingen
+                  </a>
+                </div>
               </div>
             </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={60}>
+          <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { label: "Tips totaal", value: stats.total },
+              { label: "Wacht op goedkeuring", value: stats.pendingApproval },
+              { label: "Beloning open", value: stats.openReward },
+              { label: "Geplaatst", value: stats.placed },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl border border-fk-navy/[0.06] bg-fk-white/90 px-4 py-3 shadow-sm backdrop-blur-sm"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-fk-navy/40">
+                  {item.label}
+                </p>
+                <p className="mt-1 text-2xl font-extrabold tracking-tight text-fk-navy">
+                  {item.value}
+                </p>
+              </div>
+            ))}
           </div>
         </FadeIn>
 
@@ -97,11 +177,48 @@ export default function AdminPage() {
         </FadeIn>
 
         <FadeIn delay={100}>
-          <div className="space-y-4">
-            {candidates.map((candidate) => {
+          <div className="mb-4 mt-10 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <LayoutGrid size={16} className="text-fk-navy/40" />
+              <h2 className="text-lg font-bold tracking-[-0.02em] text-fk-navy">
+                Tips
+              </h2>
+              <span className="rounded-full bg-fk-navy/5 px-2 py-0.5 text-xs font-semibold text-fk-navy/55">
+                {visible.length}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {FILTERS.map((item) => {
+                const active = filter === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setFilter(item.id)}
+                    className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                      active
+                        ? "bg-fk-navy text-white shadow-sm"
+                        : "bg-fk-white text-fk-navy/60 ring-1 ring-fk-navy/10 hover:text-fk-navy"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </FadeIn>
+
+        <div className="space-y-4">
+          {visible.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-fk-navy/15 bg-fk-white/70 px-6 py-14 text-center">
+              <p className="text-sm font-medium text-fk-navy/55">
+                Geen tips in deze filter.
+              </p>
+            </div>
+          ) : (
+            visible.map((candidate, index) => {
               const nextStatus = getNextStatus(candidate.status);
-              const isFlashing = flashingId === candidate.id;
-              const isUpdating = updatingId === candidate.id;
               const vacancy = vacancies.find(
                 (item) => item.id === candidate.vacancyId
               );
@@ -111,199 +228,59 @@ export default function AdminPage() {
               const retentionReward = getKeeperBonusReward(difficulty, xp);
 
               return (
-                <Card
+                <TipReviewCard
                   key={candidate.id}
-                  className={`p-0 overflow-hidden ${isFlashing ? "animate-row-flash" : ""}`}
-                >
-                  <div className="grid gap-0 lg:grid-cols-[1fr_auto]">
-                    <div className="space-y-4 p-5 sm:p-6">
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                          <h3 className="text-lg font-bold text-fk-navy">
-                            {candidate.name}
-                          </h3>
-                          <p className="text-sm text-fk-navy/55">
-                            Getipt door: {candidate.referredBy} · {candidate.sector}
-                          </p>
-                          {vacancy && (
-                            <div className="mt-2 flex flex-wrap items-center gap-2">
-                              <span className="text-xs text-fk-navy/45">
-                                Vacature: {vacancy.title}
-                              </span>
-                              <DifficultyBadge difficulty={vacancy.difficulty} size="sm" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          <Badge variant={statusVariant(candidate.status)}>
-                            {STATUS_LABELS[candidate.status]}
-                          </Badge>
-                          <Badge
-                            variant={
-                              candidate.referralApproval === "goedgekeurd"
-                                ? "success"
-                                : candidate.referralApproval === "afgekeurd"
-                                  ? "warning"
-                                  : "info"
-                            }
-                          >
-                            {candidate.referralApproval}
-                          </Badge>
-                          {candidate.duplicateStatus !== "uniek" && (
-                            <Badge variant="warning">
-                              {candidate.duplicateStatus}
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
-                        <div>
-                          <p className="text-xs font-semibold uppercase text-fk-navy/45">LinkedIn</p>
-                          <p className="truncate text-fk-navy">{candidate.linkedin || "—"}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs font-semibold uppercase text-fk-navy/45">Contact</p>
-                          <p className="text-fk-navy">{candidate.emailOrPhone || "—"}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs font-semibold uppercase text-fk-navy/45">Relatie</p>
-                          <p className="text-fk-navy">{candidate.relationship}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-4">
-                        <div>
-                          <p className="text-xs font-semibold uppercase text-fk-navy/45">
-                            Talent Confidence Score
-                          </p>
-                          <p className="font-bold text-fk-primary">
-                            {candidate.confidenceScore}/100 ·{" "}
-                            {getConfidenceLabel(candidate.confidenceScore)}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs font-semibold uppercase text-fk-navy/45">
-                            Beloning
-                          </p>
-                          <p className="font-medium text-fk-navy">
-                            {CASH_STATUS_LABELS[candidate.cashStatus]}
-                          </p>
-                        </div>
-                      </div>
-
-                      {candidate.recommendation && (
-                        <p className="rounded-xl bg-fk-light px-4 py-3 text-sm text-fk-navy/70">
-                          {candidate.recommendation}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col gap-2 border-t border-fk-primary/10 bg-fk-light/50 p-4 lg:w-72 lg:border-l lg:border-t-0">
-                      <p className="text-xs font-bold uppercase tracking-wider text-fk-secondary">
-                        Acties
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => flash(candidate.id, () => approveReferral(candidate.id))}
-                        className="rounded-lg bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-700"
-                      >
-                        Tip goedkeuren
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => flash(candidate.id, () => rejectReferral(candidate.id))}
-                        className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700"
-                      >
-                        Tip afkeuren
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => flash(candidate.id, () => markDuplicate(candidate.id))}
-                        className="rounded-lg border border-fk-primary/20 bg-fk-white px-3 py-2 text-xs font-semibold text-fk-navy"
-                      >
-                        Markeer als duplicate
-                      </button>
-                      <select
-                        value={candidate.vacancyId ?? ""}
-                        onChange={(e) =>
-                          assignCandidateVacancy(candidate.id, e.target.value)
-                        }
-                        className="rounded-lg border border-fk-primary/20 bg-fk-white px-2 py-2 text-xs"
-                      >
-                        <option value="">Koppel vacature...</option>
-                        {vacancies.map((item) => (
-                          <option key={item.id} value={item.id}>
-                            {item.title} ({item.difficulty})
-                          </option>
-                        ))}
-                      </select>
-                      <hr className="border-fk-primary/10" />
-                      <button
-                        type="button"
-                        onClick={() =>
-                          flash(candidate.id, () => {
-                            setCashStatus(candidate.id, "intake_in_behandeling");
-                            grantIntakeBonus(candidate.id);
-                          })
-                        }
-                        className="rounded-lg bg-fk-primary px-3 py-2 text-xs font-semibold text-white"
-                      >
-                        Ken beloning gesprek toe ({formatCurrency(conversationReward)})
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          flash(candidate.id, () => grantPlacementBonus(candidate.id))
-                        }
-                        className="rounded-lg bg-fk-primary px-3 py-2 text-xs font-semibold text-white"
-                      >
-                        Ken plaatsingsbeloning toe ({formatCurrency(placementReward)})
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          flash(candidate.id, () => grantRetentionBonus(candidate.id))
-                        }
-                        className="rounded-lg bg-fk-secondary px-3 py-2 text-xs font-semibold text-white"
-                      >
-                        Ken retentiebeloning toe ({formatCurrency(retentionReward)})
-                      </button>
-                      <select
-                        value={candidate.cashStatus}
-                        onChange={(e) =>
-                          setCashStatus(candidate.id, e.target.value as CashStatus)
-                        }
-                        className="rounded-lg border border-fk-primary/20 bg-fk-white px-2 py-2 text-xs"
-                      >
-                        {Object.entries(CASH_STATUS_LABELS).map(([value, label]) => (
-                          <option key={value} value={value}>
-                            {label}
-                          </option>
-                        ))}
-                      </select>
-                      {nextStatus && (
-                        <button
-                          type="button"
-                          disabled={isUpdating}
-                          onClick={() => handleStatusUpdate(candidate.id, nextStatus)}
-                          className="btn-press mt-auto inline-flex items-center justify-center gap-1.5 rounded-lg bg-fk-navy px-3 py-2 text-xs font-semibold text-white disabled:opacity-60"
-                        >
-                          {isUpdating ? "Bezig..." : (
-                            <>
-                              Status → {STATUS_LABELS[nextStatus]}
-                              <ArrowRight size={14} />
-                            </>
-                          )}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </Card>
+                  candidate={candidate}
+                  vacancy={vacancy}
+                  conversationReward={conversationReward}
+                  placementReward={placementReward}
+                  retentionReward={retentionReward}
+                  nextStatus={nextStatus}
+                  isFlashing={flashingId === candidate.id}
+                  isUpdating={updatingId === candidate.id}
+                  index={index}
+                  vacancies={vacancies}
+                  onApprove={() =>
+                    flash(candidate.id, () => approveReferral(candidate.id))
+                  }
+                  onReject={() =>
+                    flash(candidate.id, () => rejectReferral(candidate.id))
+                  }
+                  onDuplicate={() =>
+                    flash(candidate.id, () => markDuplicate(candidate.id))
+                  }
+                  onAssignVacancy={(vacancyId) =>
+                    assignCandidateVacancy(candidate.id, vacancyId)
+                  }
+                  onGrantConversation={() =>
+                    flash(candidate.id, () => {
+                      setCashStatus(candidate.id, "intake_in_behandeling");
+                      grantIntakeBonus(candidate.id);
+                    })
+                  }
+                  onGrantPlacement={() =>
+                    flash(candidate.id, () =>
+                      grantPlacementBonus(candidate.id)
+                    )
+                  }
+                  onGrantRetention={() =>
+                    flash(candidate.id, () =>
+                      grantRetentionBonus(candidate.id)
+                    )
+                  }
+                  onCashStatus={(status) =>
+                    setCashStatus(candidate.id, status)
+                  }
+                  onAdvanceStatus={() => {
+                    if (nextStatus) {
+                      void handleStatusUpdate(candidate.id, nextStatus);
+                    }
+                  }}
+                />
               );
-            })}
-          </div>
-        </FadeIn>
+            })
+          )}
+        </div>
       </div>
     </div>
   );
