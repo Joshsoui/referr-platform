@@ -1,6 +1,8 @@
+import bcrypt from "bcryptjs";
+import { getPrisma, hasDatabase } from "@/lib/db";
+import type { User as PrismaUser, UserRole as PrismaUserRole } from "@prisma/client";
 import { promises as fs } from "fs";
 import path from "path";
-import bcrypt from "bcryptjs";
 import { getDataDir } from "@/lib/dataDir";
 
 export type UserRole = "user" | "admin" | "recruiter";
@@ -42,7 +44,42 @@ const USERS_FILE = path.join(getDataDir(), "users.json");
 const TERMS_VERSION = "2026-07-28";
 const MARKETING_VERSION = "2026-07-28";
 
-async function ensureStore(): Promise<UserStore> {
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
+function mapPrismaUser(user: PrismaUser): StoredUser {
+  return {
+    id: user.id,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    passwordHash: user.passwordHash,
+    role: user.role as UserRole,
+    emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null,
+    marketingConsent: user.marketingConsent,
+    marketingConsentAt: user.marketingConsentAt?.toISOString() ?? null,
+    marketingConsentVersion: user.marketingConsentVersion,
+    termsAcceptedAt: user.termsAcceptedAt.toISOString(),
+    termsVersion: user.termsVersion,
+    createdAt: user.createdAt.toISOString(),
+    updatedAt: user.updatedAt.toISOString(),
+    phone: user.phone,
+    street: user.street,
+    houseNumber: user.houseNumber,
+    postalCode: user.postalCode,
+    city: user.city,
+    country: user.country,
+    iban: user.iban,
+    ibanAccountName: user.ibanAccountName,
+    stripeAccountId: user.stripeAccountId,
+    stripeOnboardingComplete: user.stripeOnboardingComplete,
+    stripeChargesEnabled: user.stripeChargesEnabled,
+    stripePayoutsEnabled: user.stripePayoutsEnabled,
+  };
+}
+
+async function ensureFileStore(): Promise<UserStore> {
   await fs.mkdir(getDataDir(), { recursive: true });
   try {
     const raw = await fs.readFile(USERS_FILE, "utf8");
@@ -54,13 +91,9 @@ async function ensureStore(): Promise<UserStore> {
   }
 }
 
-async function saveStore(store: UserStore): Promise<void> {
+async function saveFileStore(store: UserStore): Promise<void> {
   await fs.mkdir(getDataDir(), { recursive: true });
   await fs.writeFile(USERS_FILE, JSON.stringify(store, null, 2), "utf8");
-}
-
-function normalizeEmail(email: string): string {
-  return email.trim().toLowerCase();
 }
 
 export function getPublicUser(user: StoredUser) {
@@ -92,13 +125,21 @@ export function getPublicUser(user: StoredUser) {
 export async function findUserByEmail(
   email: string
 ): Promise<StoredUser | null> {
-  const store = await ensureStore();
   const normalized = normalizeEmail(email);
+  if (hasDatabase()) {
+    const user = await getPrisma().user.findUnique({ where: { email: normalized } });
+    return user ? mapPrismaUser(user) : null;
+  }
+  const store = await ensureFileStore();
   return store.users.find((u) => u.email === normalized) ?? null;
 }
 
 export async function findUserById(id: string): Promise<StoredUser | null> {
-  const store = await ensureStore();
+  if (hasDatabase()) {
+    const user = await getPrisma().user.findUnique({ where: { id } });
+    return user ? mapPrismaUser(user) : null;
+  }
+  const store = await ensureFileStore();
   return store.users.find((u) => u.id === id) ?? null;
 }
 
@@ -109,15 +150,35 @@ export async function createUser(input: {
   password: string;
   marketingConsent: boolean;
 }): Promise<StoredUser> {
-  const store = await ensureStore();
   const email = normalizeEmail(input.email);
+  const passwordHash = await bcrypt.hash(input.password, 12);
+  const now = new Date();
 
+  if (hasDatabase()) {
+    const existing = await getPrisma().user.findUnique({ where: { email } });
+    if (existing) throw new Error("EMAIL_TAKEN");
+    const user = await getPrisma().user.create({
+      data: {
+        email,
+        firstName: input.firstName.trim(),
+        lastName: input.lastName.trim(),
+        passwordHash,
+        role: "user",
+        marketingConsent: input.marketingConsent,
+        marketingConsentAt: input.marketingConsent ? now : null,
+        marketingConsentVersion: input.marketingConsent ? MARKETING_VERSION : null,
+        termsAcceptedAt: now,
+        termsVersion: TERMS_VERSION,
+      },
+    });
+    return mapPrismaUser(user);
+  }
+
+  const store = await ensureFileStore();
   if (store.users.some((u) => u.email === email)) {
     throw new Error("EMAIL_TAKEN");
   }
-
-  const now = new Date().toISOString();
-  const passwordHash = await bcrypt.hash(input.password, 12);
+  const iso = now.toISOString();
   const user: StoredUser = {
     id: crypto.randomUUID(),
     email,
@@ -127,12 +188,12 @@ export async function createUser(input: {
     role: "user",
     emailVerifiedAt: null,
     marketingConsent: input.marketingConsent,
-    marketingConsentAt: input.marketingConsent ? now : null,
+    marketingConsentAt: input.marketingConsent ? iso : null,
     marketingConsentVersion: input.marketingConsent ? MARKETING_VERSION : null,
-    termsAcceptedAt: now,
+    termsAcceptedAt: iso,
     termsVersion: TERMS_VERSION,
-    createdAt: now,
-    updatedAt: now,
+    createdAt: iso,
+    updatedAt: iso,
     phone: "",
     street: "",
     houseNumber: "",
@@ -146,9 +207,8 @@ export async function createUser(input: {
     stripeChargesEnabled: false,
     stripePayoutsEnabled: false,
   };
-
   store.users.push(user);
-  await saveStore(store);
+  await saveFileStore(store);
   return user;
 }
 
@@ -160,31 +220,61 @@ export async function verifyPassword(
 }
 
 export async function markEmailVerified(userId: string): Promise<void> {
-  const store = await ensureStore();
+  if (hasDatabase()) {
+    await getPrisma().user.update({
+      where: { id: userId },
+      data: { emailVerifiedAt: new Date() },
+    });
+    return;
+  }
+  const store = await ensureFileStore();
   const user = store.users.find((u) => u.id === userId);
   if (!user) return;
   user.emailVerifiedAt = new Date().toISOString();
   user.updatedAt = user.emailVerifiedAt;
-  await saveStore(store);
+  await saveFileStore(store);
 }
 
 export async function updatePassword(
   userId: string,
   newPassword: string
 ): Promise<void> {
-  const store = await ensureStore();
+  const passwordHash = await bcrypt.hash(newPassword, 12);
+  if (hasDatabase()) {
+    await getPrisma().user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    });
+    return;
+  }
+  const store = await ensureFileStore();
   const user = store.users.find((u) => u.id === userId);
   if (!user) throw new Error("USER_NOT_FOUND");
-  user.passwordHash = await bcrypt.hash(newPassword, 12);
+  user.passwordHash = passwordHash;
   user.updatedAt = new Date().toISOString();
-  await saveStore(store);
+  await saveFileStore(store);
 }
 
 export async function updateMarketingConsent(
   userId: string,
   consent: boolean
 ): Promise<StoredUser | null> {
-  const store = await ensureStore();
+  if (hasDatabase()) {
+    try {
+      const user = await getPrisma().user.update({
+        where: { id: userId },
+        data: {
+          marketingConsent: consent,
+          marketingConsentAt: consent ? new Date() : null,
+          marketingConsentVersion: consent ? MARKETING_VERSION : null,
+        },
+      });
+      return mapPrismaUser(user);
+    } catch {
+      return null;
+    }
+  }
+  const store = await ensureFileStore();
   const user = store.users.find((u) => u.id === userId);
   if (!user) return null;
   const now = new Date().toISOString();
@@ -192,7 +282,7 @@ export async function updateMarketingConsent(
   user.marketingConsentAt = consent ? now : null;
   user.marketingConsentVersion = consent ? MARKETING_VERSION : null;
   user.updatedAt = now;
-  await saveStore(store);
+  await saveFileStore(store);
   return user;
 }
 
@@ -211,30 +301,54 @@ export async function updateProfile(
     ibanAccountName?: string;
   }
 ): Promise<StoredUser | null> {
-  const store = await ensureStore();
+  const payload = {
+    firstName: data.firstName.trim(),
+    lastName: data.lastName.trim(),
+    phone: (data.phone ?? "").trim(),
+    street: (data.street ?? "").trim(),
+    houseNumber: (data.houseNumber ?? "").trim(),
+    postalCode: (data.postalCode ?? "").trim(),
+    city: (data.city ?? "").trim(),
+    country: (data.country ?? "Nederland").trim(),
+    iban: (data.iban ?? "").trim().toUpperCase(),
+    ibanAccountName: (data.ibanAccountName ?? "").trim(),
+  };
+
+  if (hasDatabase()) {
+    try {
+      const user = await getPrisma().user.update({
+        where: { id: userId },
+        data: payload,
+      });
+      return mapPrismaUser(user);
+    } catch {
+      return null;
+    }
+  }
+
+  const store = await ensureFileStore();
   const user = store.users.find((u) => u.id === userId);
   if (!user) return null;
-  user.firstName = data.firstName.trim();
-  user.lastName = data.lastName.trim();
-  user.phone = (data.phone ?? "").trim();
-  user.street = (data.street ?? "").trim();
-  user.houseNumber = (data.houseNumber ?? "").trim();
-  user.postalCode = (data.postalCode ?? "").trim();
-  user.city = (data.city ?? "").trim();
-  user.country = (data.country ?? "Nederland").trim();
-  user.iban = (data.iban ?? "").trim().toUpperCase();
-  user.ibanAccountName = (data.ibanAccountName ?? "").trim();
+  Object.assign(user, payload);
   user.updatedAt = new Date().toISOString();
-  await saveStore(store);
+  await saveFileStore(store);
   return user;
 }
 
 export async function deleteUser(userId: string): Promise<boolean> {
-  const store = await ensureStore();
+  if (hasDatabase()) {
+    try {
+      await getPrisma().user.delete({ where: { id: userId } });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  const store = await ensureFileStore();
   const before = store.users.length;
   store.users = store.users.filter((u) => u.id !== userId);
   if (store.users.length === before) return false;
-  await saveStore(store);
+  await saveFileStore(store);
   return true;
 }
 
@@ -247,7 +361,30 @@ export async function updateUserStripeAccount(
     stripePayoutsEnabled?: boolean;
   }
 ): Promise<StoredUser | null> {
-  const store = await ensureStore();
+  if (hasDatabase()) {
+    try {
+      const user = await getPrisma().user.update({
+        where: { id: userId },
+        data: {
+          stripeAccountId: input.stripeAccountId,
+          ...(typeof input.stripeOnboardingComplete === "boolean"
+            ? { stripeOnboardingComplete: input.stripeOnboardingComplete }
+            : {}),
+          ...(typeof input.stripeChargesEnabled === "boolean"
+            ? { stripeChargesEnabled: input.stripeChargesEnabled }
+            : {}),
+          ...(typeof input.stripePayoutsEnabled === "boolean"
+            ? { stripePayoutsEnabled: input.stripePayoutsEnabled }
+            : {}),
+        },
+      });
+      return mapPrismaUser(user);
+    } catch {
+      return null;
+    }
+  }
+
+  const store = await ensureFileStore();
   const user = store.users.find((u) => u.id === userId);
   if (!user) return null;
   user.stripeAccountId = input.stripeAccountId;
@@ -261,7 +398,7 @@ export async function updateUserStripeAccount(
     user.stripePayoutsEnabled = input.stripePayoutsEnabled;
   }
   user.updatedAt = new Date().toISOString();
-  await saveStore(store);
+  await saveFileStore(store);
   return user;
 }
 
@@ -269,18 +406,49 @@ export async function updateUserRoleByEmail(
   email: string,
   role: UserRole
 ): Promise<StoredUser | null> {
-  const store = await ensureStore();
   const normalized = normalizeEmail(email);
+  if (hasDatabase()) {
+    try {
+      const user = await getPrisma().user.update({
+        where: { email: normalized },
+        data: { role: role as PrismaUserRole },
+      });
+      return mapPrismaUser(user);
+    } catch {
+      return null;
+    }
+  }
+  const store = await ensureFileStore();
   const user = store.users.find((u) => u.email === normalized);
   if (!user) return null;
   user.role = role;
   user.updatedAt = new Date().toISOString();
-  await saveStore(store);
+  await saveFileStore(store);
   return user;
 }
 
 export async function listUsersWithPayoutDetails() {
-  const store = await ensureStore();
+  if (hasDatabase()) {
+    const users = await getPrisma().user.findMany({
+      where: { NOT: { iban: "" } },
+      orderBy: { lastName: "asc" },
+    });
+    return users.map((user) => ({
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      iban: user.iban,
+      ibanAccountName: user.ibanAccountName,
+      city: user.city,
+      postalCode: user.postalCode,
+      country: user.country,
+      updatedAt: user.updatedAt.toISOString(),
+    }));
+  }
+
+  const store = await ensureFileStore();
   return store.users
     .map((user) => ({
       id: user.id,
@@ -312,7 +480,9 @@ export async function exportUserData(userId: string) {
       marketingConsentAt: user.marketingConsentAt,
       marketingConsentVersion: user.marketingConsentVersion,
     },
-    note: "Account and tip/challenge records are stored server-side under DATA_DIR.",
+    note: hasDatabase()
+      ? "Accounts are stored in PostgreSQL."
+      : "Accounts are stored under DATA_DIR until DATABASE_URL is configured.",
   };
 }
 

@@ -7,13 +7,18 @@
   },
   "scripts": {
     "clean": "rm -rf .next out",
-    "build": "next build",
-    "render-build": "npm install --include=dev && next build",
+    "postinstall": "prisma generate",
+    "build": "prisma generate && next build",
+    "render-build": "npm install --include=dev && prisma generate && if [ -n \"$DATABASE_URL\" ]; then prisma migrate deploy; fi && next build",
     "start": "next start --hostname 0.0.0.0",
     "demo": "npm run clean && npm run build && npm run start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:push": "prisma db push"
   },
   "dependencies": {
+    "@prisma/client": "^6.19.3",
     "@tailwindcss/postcss": "^4.1.8",
     "@types/node": "^22.15.21",
     "@types/react": "^19.1.6",
@@ -34,7 +39,9 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@types/bcryptjs": "^2.4.6",
+    "dotenv": "^17.4.2",
     "eslint": "^9.27.0",
-    "eslint-config-next": "15.5.19"
+    "eslint-config-next": "15.5.19",
+    "prisma": "^6.19.3"
   }
 }

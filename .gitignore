@@ -37,3 +37,5 @@ next-env.d.ts
 .data/
 .env*.local
 .venv-brand/
+
+/src/generated/prisma

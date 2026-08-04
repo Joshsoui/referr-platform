@@ -1,8 +1,10 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { getDataDir } from "@/lib/dataDir";
+import { getPrisma, hasDatabase } from "@/lib/db";
 import { INITIAL_VACANCIES } from "@/lib/mockVacancies";
 import type { Vacancy, VacancyFormData } from "@/types/vacancy";
+import type { Vacancy as PrismaVacancy } from "@prisma/client";
 
 interface VacancyStore {
   vacancies: Vacancy[];
@@ -12,16 +14,30 @@ function filePath() {
   return path.join(getDataDir(), "vacancies.json");
 }
 
-async function readStore(): Promise<VacancyStore> {
+function mapVacancy(row: PrismaVacancy): Vacancy {
+  return {
+    id: row.id,
+    title: row.title,
+    sector: row.sector as Vacancy["sector"],
+    location: row.location,
+    latitude: row.latitude ?? undefined,
+    longitude: row.longitude ?? undefined,
+    postalCode: row.postalCode ?? undefined,
+    description: row.description,
+    difficulty: row.difficulty as Vacancy["difficulty"],
+    status: row.status as Vacancy["status"],
+    createdAt: row.createdAt.toISOString(),
+  };
+}
+
+async function readFileStore(): Promise<VacancyStore> {
   const dir = getDataDir();
   await fs.mkdir(dir, { recursive: true });
   const file = filePath();
   try {
     const raw = await fs.readFile(file, "utf8");
     const parsed = JSON.parse(raw) as VacancyStore;
-    if (!Array.isArray(parsed.vacancies)) {
-      throw new Error("invalid store");
-    }
+    if (!Array.isArray(parsed.vacancies)) throw new Error("invalid store");
     return parsed;
   } catch {
     const seeded: VacancyStore = { vacancies: [...INITIAL_VACANCIES] };
@@ -30,27 +46,77 @@ async function readStore(): Promise<VacancyStore> {
   }
 }
 
-async function saveStore(store: VacancyStore): Promise<void> {
-  const dir = getDataDir();
-  await fs.mkdir(dir, { recursive: true });
+async function saveFileStore(store: VacancyStore): Promise<void> {
+  await fs.mkdir(getDataDir(), { recursive: true });
   await fs.writeFile(filePath(), JSON.stringify(store, null, 2), "utf8");
 }
 
+async function ensureDbSeeded(): Promise<void> {
+  const prisma = getPrisma();
+  const count = await prisma.vacancy.count();
+  if (count > 0) return;
+  await prisma.vacancy.createMany({
+    data: INITIAL_VACANCIES.map((item) => ({
+      id: item.id,
+      title: item.title,
+      sector: item.sector,
+      location: item.location,
+      latitude: item.latitude ?? null,
+      longitude: item.longitude ?? null,
+      postalCode: item.postalCode ?? null,
+      description: item.description,
+      difficulty: item.difficulty,
+      status: item.status,
+      createdAt: new Date(item.createdAt),
+    })),
+  });
+}
+
 export async function listVacancies(): Promise<Vacancy[]> {
-  const store = await readStore();
+  if (hasDatabase()) {
+    await ensureDbSeeded();
+    const rows = await getPrisma().vacancy.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    return rows.map(mapVacancy);
+  }
+  const store = await readFileStore();
   return [...store.vacancies].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 }
 
 export async function findVacancyById(id: string): Promise<Vacancy | null> {
-  const store = await readStore();
+  if (hasDatabase()) {
+    await ensureDbSeeded();
+    const row = await getPrisma().vacancy.findUnique({ where: { id } });
+    return row ? mapVacancy(row) : null;
+  }
+  const store = await readFileStore();
   return store.vacancies.find((item) => item.id === id) ?? null;
 }
 
 export async function createVacancy(data: VacancyFormData): Promise<Vacancy | null> {
   if (!data.sector || !data.title.trim()) return null;
-  const store = await readStore();
+
+  if (hasDatabase()) {
+    const row = await getPrisma().vacancy.create({
+      data: {
+        title: data.title.trim(),
+        sector: data.sector,
+        location: data.location.trim(),
+        postalCode: data.postalCode?.trim() || null,
+        latitude: data.latitude ?? null,
+        longitude: data.longitude ?? null,
+        description: data.description.trim(),
+        difficulty: data.difficulty,
+        status: data.status,
+      },
+    });
+    return mapVacancy(row);
+  }
+
+  const store = await readFileStore();
   const vacancy: Vacancy = {
     id: crypto.randomUUID(),
     title: data.title.trim(),
@@ -65,7 +131,7 @@ export async function createVacancy(data: VacancyFormData): Promise<Vacancy | nu
     createdAt: new Date().toISOString(),
   };
   store.vacancies.unshift(vacancy);
-  await saveStore(store);
+  await saveFileStore(store);
   return vacancy;
 }
 
@@ -74,12 +140,34 @@ export async function updateVacancyById(
   data: VacancyFormData
 ): Promise<Vacancy | null> {
   if (!data.sector || !data.title.trim()) return null;
-  const store = await readStore();
+
+  if (hasDatabase()) {
+    try {
+      const row = await getPrisma().vacancy.update({
+        where: { id },
+        data: {
+          title: data.title.trim(),
+          sector: data.sector,
+          location: data.location.trim(),
+          postalCode: data.postalCode?.trim() || null,
+          latitude: data.latitude ?? null,
+          longitude: data.longitude ?? null,
+          description: data.description.trim(),
+          difficulty: data.difficulty,
+          status: data.status,
+        },
+      });
+      return mapVacancy(row);
+    } catch {
+      return null;
+    }
+  }
+
+  const store = await readFileStore();
   const index = store.vacancies.findIndex((item) => item.id === id);
   if (index < 0) return null;
-  const current = store.vacancies[index];
   const updated: Vacancy = {
-    ...current,
+    ...store.vacancies[index],
     title: data.title.trim(),
     sector: data.sector,
     location: data.location.trim(),
@@ -91,6 +179,6 @@ export async function updateVacancyById(
     status: data.status,
   };
   store.vacancies[index] = updated;
-  await saveStore(store);
+  await saveFileStore(store);
   return updated;
 }

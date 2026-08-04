@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  user
+  admin
+  recruiter
+}
+
+model User {
+  id                         String    @id @default(uuid())
+  email                      String    @unique
+  firstName                  String
+  lastName                   String
+  passwordHash               String
+  role                       UserRole  @default(user)
+  emailVerifiedAt            DateTime?
+  marketingConsent           Boolean   @default(false)
+  marketingConsentAt         DateTime?
+  marketingConsentVersion    String?
+  termsAcceptedAt            DateTime
+  termsVersion               String
+  phone                      String    @default("")
+  street                     String    @default("")
+  houseNumber                String    @default("")
+  postalCode                 String    @default("")
+  city                       String    @default("")
+  country                    String    @default("Nederland")
+  iban                       String    @default("")
+  ibanAccountName            String    @default("")
+  stripeAccountId            String    @default("")
+  stripeOnboardingComplete   Boolean   @default(false)
+  stripeChargesEnabled       Boolean   @default(false)
+  stripePayoutsEnabled       Boolean   @default(false)
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @updatedAt
+  tokens                     AuthToken[]
+}
+
+enum TokenPurpose {
+  email_verify
+  password_reset
+}
+
+model AuthToken {
+  id        String       @id @default(uuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  purpose   TokenPurpose
+  tokenHash String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime     @default(now())
+
+  @@index([tokenHash, purpose])
+  @@index([userId, purpose])
+}
+
+model Vacancy {
+  id          String   @id @default(uuid())
+  title       String
+  sector      String
+  location    String
+  latitude    Float?
+  longitude   Float?
+  postalCode  String?
+  description String
+  difficulty  String
+  status      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Candidate {
+  id                 String   @id @default(uuid())
+  name               String
+  emailOrPhone       String
+  linkedin           String?
+  role               String
+  sector             String
+  description        String?
+  recommendation     String?
+  reasonsJson        String   @default("[]")
+  relationship       String
+  cvUploaded         Boolean  @default(false)
+  referredBy         String
+  referredByUserId   String?
+  status             String
+  xpAwarded          Int      @default(0)
+  confidenceScore    Int      @default(0)
+  cashStatus         String
+  duplicateStatus    String
+  referralApproval   String
+  vacancyId          String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([referredByUserId])
+  @@index([vacancyId])
+  @@index([referralApproval])
+}

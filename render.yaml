@@ -2,14 +2,11 @@ services:
   - type: web
     name: referr-platform
     runtime: node
-    # Persistent disk requires a paid plan (starter+). Free disk is ephemeral.
-    plan: starter
+    # Free is fine for internal testing. Add a Postgres instance and set DATABASE_URL.
+    # Upgrade to starter + disk later if you also want file-based stores durable.
+    plan: free
     buildCommand: npm run render-build
     startCommand: npm start
-    disk:
-      name: referr-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
       - key: AUTH_SECRET
         sync: false
@@ -21,10 +18,12 @@ services:
         value: "true"
       - key: NEXT_PUBLIC_SITE_URL
         value: https://referr-platform.onrender.com
-      - key: DATA_DIR
-        value: /var/data
+      - key: DATABASE_URL
+        sync: false
       - key: ADMIN_BOOTSTRAP_TOKEN
         sync: false
-      # Keep Stripe parked for the pilot (manual IBAN payouts).
       - key: STRIPE_PAYOUTS_ENABLED
         value: "false"
+      # Optional fallback path when DATABASE_URL is unset (ephemeral on free).
+      - key: DATA_DIR
+        value: /tmp/referr-data
