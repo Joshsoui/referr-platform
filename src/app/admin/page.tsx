@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Shield, Zap } from "lucide-react";
+import { ArrowRight, Shield } from "lucide-react";
 import { useState } from "react";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { Badge } from "@/components/ui/Badge";
@@ -11,6 +11,7 @@ import { getNextStatus, useScout } from "@/context/ScoutContext";
 import { CASH_STATUS_LABELS } from "@/lib/mockQualityRules";
 import { getConfidenceLabel } from "@/lib/scoring";
 import {
+  getIntakeReward,
   getKeeperBonusReward,
   getMatchReward,
 } from "@/lib/vacancyRewards";
@@ -44,7 +45,6 @@ export default function AdminPage() {
     grantIntakeBonus,
     grantPlacementBonus,
     grantRetentionBonus,
-    revokeXp,
     vacancies,
     assignCandidateVacancy,
     xp,
@@ -78,7 +78,7 @@ export default function AdminPage() {
             <div>
               <h1 className="text-3xl font-extrabold text-fk-navy">Beheeromgeving</h1>
               <p className="text-fk-navy/60">
-                Beheer talenttips, XP, cash en kwaliteit
+                Beheer talenttips, beloningen en kwaliteit
               </p>
               <div className="mt-2 flex flex-wrap gap-3 text-sm">
                 <a href="/recruitment" className="font-medium text-fk-primary hover:underline">
@@ -105,12 +105,10 @@ export default function AdminPage() {
               const vacancy = vacancies.find(
                 (item) => item.id === candidate.vacancyId
               );
-              const keeperBonus = vacancy
-                ? getKeeperBonusReward(vacancy.difficulty, xp)
-                : getKeeperBonusReward("easy", xp);
-              const matchBonus = vacancy
-                ? getMatchReward(vacancy.difficulty, xp)
-                : getMatchReward("easy", xp);
+              const difficulty = vacancy?.difficulty ?? "easy";
+              const conversationReward = getIntakeReward(difficulty);
+              const placementReward = getMatchReward(difficulty, xp);
+              const retentionReward = getKeeperBonusReward(difficulty, xp);
 
               return (
                 <Card
@@ -185,14 +183,9 @@ export default function AdminPage() {
                           </p>
                         </div>
                         <div>
-                          <p className="text-xs font-semibold uppercase text-fk-navy/45">XP</p>
-                          <span className="inline-flex items-center gap-1 font-bold text-fk-primary">
-                            <Zap size={14} />
-                            {candidate.xpAwarded}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="text-xs font-semibold uppercase text-fk-navy/45">Cash</p>
+                          <p className="text-xs font-semibold uppercase text-fk-navy/45">
+                            Beloning
+                          </p>
                           <p className="font-medium text-fk-navy">
                             {CASH_STATUS_LABELS[candidate.cashStatus]}
                           </p>
@@ -256,7 +249,7 @@ export default function AdminPage() {
                         }
                         className="rounded-lg bg-fk-primary px-3 py-2 text-xs font-semibold text-white"
                       >
-                        Ken intakebonus toe
+                        Ken beloning gesprek toe ({formatCurrency(conversationReward)})
                       </button>
                       <button
                         type="button"
@@ -265,7 +258,7 @@ export default function AdminPage() {
                         }
                         className="rounded-lg bg-fk-primary px-3 py-2 text-xs font-semibold text-white"
                       >
-                        Ken matchbonus toe ({formatCurrency(matchBonus)})
+                        Ken plaatsingsbeloning toe ({formatCurrency(placementReward)})
                       </button>
                       <button
                         type="button"
@@ -274,7 +267,7 @@ export default function AdminPage() {
                         }
                         className="rounded-lg bg-fk-secondary px-3 py-2 text-xs font-semibold text-white"
                       >
-                        Ken {formatCurrency(keeperBonus)} Keeper Bonus toe
+                        Ken retentiebeloning toe ({formatCurrency(retentionReward)})
                       </button>
                       <select
                         value={candidate.cashStatus}
@@ -289,13 +282,6 @@ export default function AdminPage() {
                           </option>
                         ))}
                       </select>
-                      <button
-                        type="button"
-                        onClick={() => flash(candidate.id, () => revokeXp(candidate.id, 10))}
-                        className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800"
-                      >
-                        Trek XP in
-                      </button>
                       {nextStatus && (
                         <button
                           type="button"

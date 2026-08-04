@@ -19,7 +19,7 @@ export const XP_REWARDS = [
 ];
 
 export const CASH_REWARDS = [
-  { action: "Alleen introductie verstuurd", cash: 0, note: "Geen cash" },
+  { action: "Alleen introductie verstuurd", cash: 0, note: "Geen beloning" },
   { action: "Gesprek bereikt", cash: 25, note: "Vast bedrag" },
   { action: "Plaatsingsbeloning", cash: null, note: "Afhankelijk van vacature" },
   { action: "Retentiebeloning", cash: null, note: "Afhankelijk van vacature", highlight: true },

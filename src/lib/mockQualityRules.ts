@@ -7,7 +7,7 @@ export const FAIR_USE_RULES = [
   "Beloningen kunnen worden ingetrokken bij misbruik.",
   "De eerste geldige introductie krijgt prioriteit.",
   "referr bepaalt of een introductie geldig is.",
-  "Cash wordt pas uitgekeerd na controle.",
+  "Beloningen worden pas uitgekeerd na controle.",
 ];
 
 export const CASH_STATUS_LABELS: Record<string, string> = {
