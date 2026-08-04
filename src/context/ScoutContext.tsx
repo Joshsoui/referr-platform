@@ -226,6 +226,27 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     setActivities((prev) => [activity, ...prev]);
   }, [nextId]);
 
+  const persistReferralEvent = useCallback(
+    (input: {
+      candidateId: string;
+      candidateName: string;
+      type: "submitted" | "status_update" | "reward_update" | "approval_update";
+      title: string;
+      message: string;
+      status?: CandidateStatus;
+      cashStatus?: CashStatus;
+    }) => {
+      fetch("/api/referrals/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+      }).catch(() => {
+        // avoid blocking primary flow if timeline persistence fails
+      });
+    },
+    []
+  );
+
   const pushNotification = useCallback(
     (notification: Omit<AppNotification, "id">) => {
       idCounter.current += 1;
@@ -384,6 +405,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       candidate.xpAwarded = xpGain;
 
       setCandidates((prev) => [candidate, ...prev]);
+      persistReferralEvent({
+        candidateId: candidate.id,
+        candidateName: candidate.name,
+        type: "submitted",
+        title: "Tip ontvangen",
+        message: `${candidate.name} is toegevoegd en wacht op beoordeling.`,
+        status: candidate.status,
+        cashStatus: candidate.cashStatus,
+      });
 
       if (referrerName === CURRENT_USER) {
         awardXp(xpGain);
@@ -417,7 +447,14 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
 
       return candidate.confidenceScore;
     },
-    [addActivity, awardXp, nextId, pushNotification, updateLeaderboardXp]
+    [
+      addActivity,
+      awardXp,
+      nextId,
+      persistReferralEvent,
+      pushNotification,
+      updateLeaderboardXp,
+    ]
   );
 
   const submitCandidate = useCallback(
@@ -473,6 +510,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
             candidate.name,
             newStatus
           );
+          persistReferralEvent({
+            candidateId: candidate.id,
+            candidateName: candidate.name,
+            type: "status_update",
+            title: statusNotice.title,
+            message: statusNotice.message,
+            status: newStatus,
+            cashStatus: candidate.cashStatus,
+          });
           pushNotification({
             kind: statusNotice.kind,
             title: statusNotice.title,
@@ -494,6 +540,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [
       addActivity,
       awardXp,
+      persistReferralEvent,
       pushNotification,
       updateLeaderboardPlacements,
       updateLeaderboardXp,
@@ -509,6 +556,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       }));
 
       if (candidate?.referredBy === CURRENT_USER) {
+        persistReferralEvent({
+          candidateId: candidate.id,
+          candidateName: candidate.name,
+          type: "approval_update",
+          title: "Tip wordt bekeken",
+          message: `Je tip voor ${candidate.name} wordt nu beoordeeld.`,
+          status: candidate.status,
+          cashStatus: candidate.cashStatus,
+        });
         pushNotification({
           kind: "viewed",
           title: "Introductie bekeken",
@@ -516,7 +572,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         });
       }
     },
-    [candidates, pushNotification, updateCandidateInState]
+    [candidates, persistReferralEvent, pushNotification, updateCandidateInState]
   );
 
   const rejectReferral = useCallback(
@@ -529,6 +585,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       }));
 
       if (candidate?.referredBy === CURRENT_USER) {
+        persistReferralEvent({
+          candidateId: candidate.id,
+          candidateName: candidate.name,
+          type: "approval_update",
+          title: "Tip niet doorgegaan",
+          message: `Je tip voor ${candidate.name} is afgewezen.`,
+          status: candidate.status,
+          cashStatus: "afgekeurd",
+        });
         pushNotification({
           kind: "rejected",
           title: "Introductie niet geaccepteerd",
@@ -536,7 +601,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         });
       }
     },
-    [candidates, pushNotification, updateCandidateInState]
+    [candidates, persistReferralEvent, pushNotification, updateCandidateInState]
   );
 
   const markDuplicate = useCallback(
@@ -564,6 +629,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       ) {
         const cashNotice = getCashNotification(candidate.name, status);
         if (cashNotice) {
+          persistReferralEvent({
+            candidateId: candidate.id,
+            candidateName: candidate.name,
+            type: "reward_update",
+            title: cashNotice.title,
+            message: cashNotice.message,
+            status: candidate.status,
+            cashStatus: status,
+          });
           pushNotification({
             kind: cashNotice.kind,
             title: cashNotice.title,
@@ -572,7 +646,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         }
       }
     },
-    [candidates, pushNotification, updateCandidateInState]
+    [candidates, persistReferralEvent, pushNotification, updateCandidateInState]
   );
 
   const addVacancy = useCallback(
@@ -688,6 +762,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
           amount
         );
         if (cashNotice) {
+          persistReferralEvent({
+            candidateId: candidate.id,
+            candidateName: candidate.name,
+            type: "reward_update",
+            title: cashNotice.title,
+            message: cashNotice.message,
+            status: candidate.status,
+            cashStatus: "intake_goedgekeurd",
+          });
           pushNotification({
             kind: cashNotice.kind,
             title: cashNotice.title,
@@ -699,6 +782,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [
       candidates,
       getCandidateDifficulty,
+      persistReferralEvent,
       pushNotification,
       setCashStatus,
       updateLeaderboardReward,
@@ -732,6 +816,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
           amount
         );
         if (cashNotice) {
+          persistReferralEvent({
+            candidateId: candidate.id,
+            candidateName: candidate.name,
+            type: "reward_update",
+            title: cashNotice.title,
+            message: cashNotice.message,
+            status: candidate.status,
+            cashStatus: "plaatsing_goedgekeurd",
+          });
           pushNotification({
             kind: cashNotice.kind,
             title: cashNotice.title,
@@ -743,6 +836,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [
       candidates,
       getCandidateDifficulty,
+      persistReferralEvent,
       pushNotification,
       setCashStatus,
       updateLeaderboardReward,
@@ -776,6 +870,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
           amount
         );
         if (cashNotice) {
+          persistReferralEvent({
+            candidateId: candidate.id,
+            candidateName: candidate.name,
+            type: "reward_update",
+            title: cashNotice.title,
+            message: cashNotice.message,
+            status: candidate.status,
+            cashStatus: "retentie_goedgekeurd",
+          });
           pushNotification({
             kind: cashNotice.kind,
             title: cashNotice.title,
@@ -787,6 +890,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [
       candidates,
       getCandidateDifficulty,
+      persistReferralEvent,
       pushNotification,
       setCashStatus,
       updateLeaderboardReward,

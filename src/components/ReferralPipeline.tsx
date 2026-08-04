@@ -2,6 +2,7 @@
 
 import { ArrowRight, Euro, UserPlus } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -14,6 +15,18 @@ import {
   USER_JOURNEY_STEPS,
 } from "@/lib/recommendationStatus";
 import type { Candidate } from "@/types";
+import type { CandidateStatus } from "@/types";
+import type { CashStatus } from "@/types/incentives";
+
+interface ReferralEvent {
+  id: string;
+  candidateId: string;
+  title: string;
+  message: string;
+  createdAt: string;
+  status?: CandidateStatus;
+  cashStatus?: CashStatus;
+}
 
 function userStatusVariant(
   candidate: Candidate
@@ -91,6 +104,30 @@ interface ReferralPipelineProps {
 }
 
 export function ReferralPipeline({ candidates }: ReferralPipelineProps) {
+  const [eventsByCandidate, setEventsByCandidate] = useState<Record<string, ReferralEvent[]>>(
+    {}
+  );
+
+  useEffect(() => {
+    const ids = candidates.map((c) => c.id).filter(Boolean);
+    if (ids.length === 0) return;
+    const query = encodeURIComponent(ids.join(","));
+    fetch(`/api/referrals/events?candidateIds=${query}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        const events = (data as { events?: ReferralEvent[] } | null)?.events ?? [];
+        const grouped: Record<string, ReferralEvent[]> = {};
+        for (const event of events) {
+          grouped[event.candidateId] = grouped[event.candidateId] ?? [];
+          grouped[event.candidateId].push(event);
+        }
+        setEventsByCandidate(grouped);
+      })
+      .catch(() => {
+        // keep UI functional without timeline data
+      });
+  }, [candidates]);
+
   const sorted = [...candidates].sort((a, b) => {
     const aIndex = getUserJourneyIndex(a);
     const bIndex = getUserJourneyIndex(b);
@@ -147,6 +184,7 @@ export function ReferralPipeline({ candidates }: ReferralPipelineProps) {
           const statusLabel = getUserStatusLabel(candidate);
           const cashLabel = getUserCashLabel(candidate.cashStatus);
           const nextStep = getNextStepLabel(candidate);
+          const latestEvent = eventsByCandidate[candidate.id]?.[0];
 
           return (
             <div
@@ -190,6 +228,15 @@ export function ReferralPipeline({ candidates }: ReferralPipelineProps) {
                   </p>
                 )}
               </div>
+              {latestEvent && (
+                <div className="mt-3 rounded-lg bg-fk-light/50 px-3 py-2 text-xs text-fk-navy/65">
+                  <p className="font-semibold text-fk-navy">{latestEvent.title}</p>
+                  <p className="mt-0.5">{latestEvent.message}</p>
+                  <p className="mt-1 text-fk-navy/45">
+                    Laatste update: {formatRelativeTimeNl(latestEvent.createdAt)}
+                  </p>
+                </div>
+              )}
             </div>
           );
         })}

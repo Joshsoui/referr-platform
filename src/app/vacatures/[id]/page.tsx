@@ -27,6 +27,7 @@ export async function generateMetadata(
   const title = `${vacancy.title} in ${vacancy.location} · Challenge`;
   const description = `Ken jij iemand voor ${vacancy.title} in ${vacancy.location}? Tip diegene via Referr. Reward tot ${reward}.`;
   const canonicalPath = `/vacatures/${vacancy.id}`;
+  const ogImagePath = `/vacatures/${vacancy.id}/opengraph-image`;
 
   return {
     title,
@@ -37,13 +38,13 @@ export async function generateMetadata(
       description,
       type: "article",
       url: canonicalPath,
-      images: [{ url: "/brand/og.png", width: 1200, height: 630, alt: title }],
+      images: [{ url: ogImagePath, width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ["/brand/og.png"],
+      images: [ogImagePath],
     },
   };
 }
