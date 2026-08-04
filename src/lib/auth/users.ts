@@ -265,6 +265,20 @@ export async function updateUserStripeAccount(
   return user;
 }
 
+export async function updateUserRoleByEmail(
+  email: string,
+  role: UserRole
+): Promise<StoredUser | null> {
+  const store = await ensureStore();
+  const normalized = normalizeEmail(email);
+  const user = store.users.find((u) => u.email === normalized);
+  if (!user) return null;
+  user.role = role;
+  user.updatedAt = new Date().toISOString();
+  await saveStore(store);
+  return user;
+}
+
 export async function exportUserData(userId: string) {
   const user = await findUserById(userId);
   if (!user) return null;
