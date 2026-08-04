@@ -15,13 +15,14 @@ const landingChallenges = INITIAL_VACANCIES.filter((v) => v.status === "open").s
 );
 
 function InlineReferrLogo({ height = 14 }: { height?: number }) {
+  const width = Math.round(height * (837 / 286));
   return (
     <Image
-      src="/brand/referr-logo.svg"
+      src="/brand/referr-logo.png"
       alt="referr"
-      height={height}
-      width={Math.round(height * 3.75)}
-      unoptimized
+      height={height * 2}
+      width={width * 2}
+      quality={100}
       className="brand-logo-mark inline-block w-auto object-contain object-left"
       style={{ height: `${height}px`, width: "auto" }}
     />

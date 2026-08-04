@@ -11,14 +11,14 @@ import { PublicFooter } from "@/components/landing/PublicFooter";
 import Image from "next/image";
 
 function InlineLogo({ height = 28, className = "" }: { height?: number; className?: string }) {
-  const width = Math.round(height * 3.75);
+  const width = Math.round(height * (837 / 286));
   return (
     <Image
-      src="/brand/referr-logo.svg"
+      src="/brand/referr-logo.png"
       alt="referr"
-      height={height}
-      width={width}
-      unoptimized
+      height={height * 2}
+      width={width * 2}
+      quality={100}
       className={`brand-logo-mark inline-block h-[1em] w-auto object-contain align-baseline ${className}`}
       style={{ height: `${height}px`, width: "auto" }}
     />
