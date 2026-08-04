@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function ComingSoonExperience() {
   const reduced = useReducedMotion();
@@ -11,108 +11,58 @@ export function ComingSoonExperience() {
   return (
     <div className="coming-soon-surface relative flex min-h-[100dvh] items-center justify-center overflow-hidden px-6">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        {/* Opening curtain */}
-        <motion.div
-          className="coming-soon-curtain absolute inset-0"
-          initial={reduced ? false : { opacity: 1 }}
-          animate={{ opacity: 0 }}
-          transition={{ duration: 2.2, delay: 0.15, ease: EASE }}
-        />
-
-        {/* Central light bloom */}
-        <motion.div
-          className="coming-soon-bloom absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2"
-          initial={reduced ? false : { opacity: 0, scale: 0.15 }}
-          animate={{ opacity: [0, 0.95, 0.35], scale: [0.15, 1.05, 1.55] }}
-          transition={{ duration: 2.6, delay: 0.1, times: [0, 0.4, 1], ease: EASE }}
-        />
-
-        {/* Expanding ring */}
-        <motion.div
-          className="coming-soon-ring absolute left-1/2 top-[44%] -translate-x-1/2 -translate-y-1/2"
-          initial={reduced ? false : { opacity: 0.8, scale: 0.2 }}
-          animate={{ opacity: 0, scale: 2.6 }}
-          transition={{ duration: 2, delay: 0.7, ease: EASE }}
-        />
-
-        <div className="coming-soon-aurora coming-soon-aurora--a" />
-        <div className="coming-soon-aurora coming-soon-aurora--b" />
-        <div className="coming-soon-aurora coming-soon-aurora--c" />
-        <div className="coming-soon-vignette absolute inset-0" />
-        <div className="coming-soon-grain absolute inset-0" />
+        <div className="coming-soon-glow" />
+        <div className="coming-soon-orb coming-soon-orb--left" />
+        <div className="coming-soon-orb coming-soon-orb--right" />
       </div>
 
-      <div className="relative z-10 flex w-full max-w-4xl flex-col items-center text-center">
-        <motion.div
-          className="coming-soon-logo-wrap"
-          initial={
-            reduced
-              ? false
-              : { opacity: 0, scale: 1.28, filter: "blur(28px)", y: 18 }
-          }
-          animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
-          transition={{ duration: 2, delay: 0.85, ease: EASE }}
-        >
-          <div
-            className="coming-soon-logo-glow coming-soon-logo-glow--core"
-            aria-hidden
-          />
-          <div
-            className="coming-soon-logo-glow coming-soon-logo-glow--halo"
-            aria-hidden
-          />
-
-          <div className="coming-soon-logo-stage">
-            <Image
-              src="/brand/referr-logo.png"
-              alt="referr"
-              width={837}
-              height={286}
-              quality={100}
-              priority
-              className="brand-logo-mark coming-soon-logo h-auto w-[min(88vw,36rem)] object-contain"
-            />
-            <motion.span
-              className="coming-soon-sheen"
-              aria-hidden
-              initial={reduced ? false : { x: "-140%", opacity: 0 }}
-              animate={{
-                x: ["-140%", "140%"],
-                opacity: [0, 1, 0],
-              }}
-              transition={{
-                duration: 1.6,
-                delay: 2.35,
-                ease: EASE,
-                times: [0, 0.45, 1],
-                repeat: Infinity,
-                repeatDelay: 4.5,
-              }}
-            />
-          </div>
-        </motion.div>
-
+      <div className="relative z-10 flex w-full max-w-3xl flex-col items-center text-center">
         <motion.p
-          initial={
-            reduced ? false : { opacity: 0, y: 16, filter: "blur(12px)" }
-          }
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 1.2, delay: 2.15, ease: EASE }}
-          className="coming-soon-label mt-12 text-[11px] font-medium uppercase tracking-[0.46em] text-white/38 sm:text-xs"
+          initial={reduced ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.75, ease: EASE }}
+          className="text-[11px] font-semibold uppercase tracking-[0.22em] text-fk-primary"
         >
           Coming soon
         </motion.p>
 
-        <motion.p
-          initial={
-            reduced ? false : { opacity: 0, y: 18, filter: "blur(12px)" }
-          }
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 1.25, delay: 2.4, ease: EASE }}
-          className="mt-4 max-w-sm text-[15px] font-medium leading-relaxed text-white/52 sm:text-base"
+        <motion.div
+          className="coming-soon-mark mt-9 sm:mt-11"
+          initial={reduced ? false : { opacity: 0, y: 22, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1.1, delay: 0.08, ease: EASE }}
         >
-          Ken iemand. Maak het verschil.
+          <div className="coming-soon-mark-glow" aria-hidden />
+          <Image
+            src="/brand/referr-logo.png"
+            alt="referr"
+            width={837}
+            height={286}
+            quality={100}
+            priority
+            className="brand-logo-mark coming-soon-hero-logo relative h-auto w-[min(84vw,32rem)] object-contain"
+          />
+        </motion.div>
+
+        <motion.p
+          initial={reduced ? false : { opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.95, delay: 0.35, ease: EASE }}
+          className="mt-10 max-w-md text-lg font-medium leading-relaxed tracking-[-0.02em] text-fk-navy/55 sm:mt-12 sm:text-xl"
+        >
+          Ken iemand.{" "}
+          <span className="brand-wordmark font-bold">Maak het verschil.</span>
         </motion.p>
+
+        <motion.div
+          initial={reduced ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.65, ease: EASE }}
+          className="coming-soon-wait mt-14"
+          aria-hidden
+        >
+          <span className="coming-soon-wait-bar" />
+        </motion.div>
       </div>
     </div>
   );
