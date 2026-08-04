@@ -11,7 +11,6 @@ import {
   type ActionResult,
 } from "@/app/actions/auth";
 import { updateNotificationPreferencesAction } from "@/app/actions/notifications";
-import { createStripeOnboardingLinkAction } from "@/app/actions/stripe";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
@@ -20,7 +19,6 @@ const initial: ActionResult | null = null;
 export function PrivacyCenter({
   user,
   notificationPreferences,
-  stripeStatus,
 }: {
   user: {
     email: string;
@@ -38,10 +36,6 @@ export function PrivacyCenter({
     country: string;
     iban: string;
     ibanAccountName: string;
-    stripeAccountId: string;
-    stripeOnboardingComplete: boolean;
-    stripeChargesEnabled: boolean;
-    stripePayoutsEnabled: boolean;
   };
   notificationPreferences: {
     nearbyChallengesEnabled: boolean;
@@ -55,13 +49,6 @@ export function PrivacyCenter({
     postalCode: string;
     locationConsent: boolean;
   };
-  stripeStatus: {
-    configured: boolean;
-    connected: boolean;
-    onboardingComplete: boolean;
-    chargesEnabled: boolean;
-    payoutsEnabled: boolean;
-  } | null;
 }) {
   const [profileState, profileAction, profilePending] = useActionState(
     updateProfileAction,
@@ -181,9 +168,10 @@ export function PrivacyCenter({
             />
           </div>
           <div className="sm:col-span-2 mt-2 rounded-lg border border-fk-primary/10 bg-fk-light/40 p-3">
-            <p className="text-sm font-semibold text-fk-navy">Uitbetaling</p>
+            <p className="text-sm font-semibold text-fk-navy">Uitbetaling (handmatig)</p>
             <p className="mt-1 text-xs text-fk-navy/55">
-              Vul je rekeninggegevens in voor reward-uitbetalingen.
+              Vul je IBAN in. Rewards worden tijdens de pilot handmatig overgemaakt
+              door het bureau — geen automatische betalingskoppeling.
             </p>
           </div>
           <div>
@@ -222,39 +210,6 @@ export function PrivacyCenter({
               Opslaan
             </Button>
           </div>
-        </form>
-      </Card>
-
-      <Card className="border-fk-primary/10 p-5">
-        <h2 className="font-bold text-fk-navy">Uitbetaling via stripe</h2>
-        <p className="mt-2 text-sm text-fk-navy/65">
-          Koppel je uitbetalingsaccount om rewards veilig uit te betalen.
-        </p>
-        <div className="mt-3 rounded-lg border border-fk-primary/10 bg-fk-light/40 p-3 text-sm">
-          {!stripeStatus?.configured ? (
-            <p className="text-fk-navy/65">
-              stripe is nog niet geconfigureerd door beheer (STRIPE_SECRET_KEY ontbreekt).
-            </p>
-          ) : !stripeStatus.connected ? (
-            <p className="text-fk-navy/65">Nog niet gekoppeld.</p>
-          ) : (
-            <ul className="space-y-1 text-fk-navy/70">
-              <li>
-                Onboarding: {stripeStatus.onboardingComplete ? "voltooid" : "actie nodig"}
-              </li>
-              <li>
-                Ontvangen betalingen: {stripeStatus.chargesEnabled ? "actief" : "niet actief"}
-              </li>
-              <li>
-                Uitbetalingen: {stripeStatus.payoutsEnabled ? "actief" : "niet actief"}
-              </li>
-            </ul>
-          )}
-        </div>
-        <form action={createStripeOnboardingLinkAction} className="mt-3">
-          <Button type="submit" variant="secondary">
-            {stripeStatus?.connected ? "stripe onboarding opnieuw openen" : "koppel stripe account"}
-          </Button>
         </form>
       </Card>
 

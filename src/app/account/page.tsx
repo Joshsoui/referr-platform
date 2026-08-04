@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { findUserById } from "@/lib/auth/users";
 import { getNotificationPreferences } from "@/lib/notificationPreferencesStore";
-import { getStripeConnectionStatusAction } from "@/app/actions/stripe";
 import { PrivacyCenter } from "@/components/account/PrivacyCenter";
 
 export const metadata: Metadata = {
@@ -17,7 +16,6 @@ export default async function AccountPage() {
 
   const user = await findUserById(session.user.id);
   const notificationPreferences = await getNotificationPreferences(session.user.id);
-  const stripeStatus = await getStripeConnectionStatusAction();
   const safeUser = user ?? {
     email: session.user.email ?? "",
     firstName: session.user.firstName ?? "",
@@ -34,10 +32,6 @@ export default async function AccountPage() {
     country: "Nederland",
     iban: "",
     ibanAccountName: "",
-    stripeAccountId: "",
-    stripeOnboardingComplete: false,
-    stripeChargesEnabled: false,
-    stripePayoutsEnabled: false,
   };
 
   return (
@@ -64,13 +58,8 @@ export default async function AccountPage() {
             country: safeUser.country ?? "Nederland",
             iban: safeUser.iban ?? "",
             ibanAccountName: safeUser.ibanAccountName ?? "",
-            stripeAccountId: safeUser.stripeAccountId ?? "",
-            stripeOnboardingComplete: safeUser.stripeOnboardingComplete ?? false,
-            stripeChargesEnabled: safeUser.stripeChargesEnabled ?? false,
-            stripePayoutsEnabled: safeUser.stripePayoutsEnabled ?? false,
           }}
           notificationPreferences={notificationPreferences}
-          stripeStatus={stripeStatus}
         />
       </div>
     </div>
