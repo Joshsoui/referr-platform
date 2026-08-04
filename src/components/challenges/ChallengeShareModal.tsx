@@ -196,11 +196,13 @@ export function ChallengeShareModal({
             {vacancy.title}
           </h3>
           <p className="mt-1 text-sm text-fk-navy/55">{vacancy.location}</p>
-          <div className="mt-3 inline-flex items-center rounded-full bg-fk-white/90 px-3 py-1.5 text-xs font-semibold text-fk-navy shadow-sm ring-1 ring-fk-navy/[0.06]">
+          <div className="mt-3 inline-flex flex-wrap items-center rounded-full bg-fk-white/90 px-3 py-1.5 text-xs font-semibold text-fk-navy shadow-sm ring-1 ring-fk-navy/[0.06]">
             Tot{" "}
             <span className="ml-1 text-fk-primary">{formatCurrency(rewards.total)}</span>
             <span className="mx-1.5 text-fk-navy/30">·</span>
-            <span className="font-medium text-fk-navy/55">beloning</span>
+            <span className="font-medium text-fk-navy/55">
+              plaatsing + 2 mnd retentie
+            </span>
           </div>
         </div>
 
@@ -302,7 +304,7 @@ export function ChallengeShareModal({
                     </p>
                   </div>
                   <p className="absolute bottom-5 left-4 right-4 text-center text-xs font-semibold text-white/90">
-                    Tip iemand. Verdien een beloning.
+                    Tip iemand. Beloning bij plaatsing.
                   </p>
                 </div>
               </div>

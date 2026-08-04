@@ -62,14 +62,14 @@ const STEPS: HowItWorksStep[] = [
   },
   {
     title: "Ontvang rewards",
-    description: "Cash bij intake, match en Keeper Bonus.",
+    description: "Beloning bij plaatsing en na 2 maanden retentie.",
     icon: Banknote,
-    reward: "€25 – €925",
+    reward: "Tot €925",
   },
   {
     title: "Behaal Keeper Status",
     description:
-      "De grootste beloning: jouw kandidaat werkt na 1 maand nog succesvol via Finderz Keeperz.",
+      "De grootste beloning: jouw kandidaat werkt na 2 maanden nog succesvol.",
     icon: Crown,
     reward: "Tot €550 + 1000 XP",
     highlight: true,

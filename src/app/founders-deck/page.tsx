@@ -129,7 +129,7 @@ const TRUST_CARDS = [
   },
   {
     title: "Geen beloning voor alleen een naam",
-    desc: "Rewards ontstaan pas bij intake, match en Keeper Status — nooit bij een losse tip zonder vervolg.",
+    desc: "Rewards ontstaan pas bij plaatsing en retentie — nooit bij een losse tip zonder vervolg.",
     emoji: "🛡️",
     accent: "blue",
     badge: "Kwaliteit eerst",
@@ -302,7 +302,7 @@ const FUTURE_PILLARS = [
   },
   {
     title: "Cash Beloningen",
-    desc: "Echte waarde bij intake, match én Keeper Bonus — geen symbolische punten alleen.",
+    desc: "Echte waarde bij plaatsing én retentie na 2 maanden — geen beloning voor alleen een tip.",
     emoji: "💶",
     accent: "from-rose-500/15 to-pink-500/10 border-rose-200",
   },

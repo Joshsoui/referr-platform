@@ -26,7 +26,7 @@ export const STATUS_LABELS: Record<CandidateStatus, string> = {
 
 export const KEEPER_STATUS = {
   title: "Succesvolle plaatsing",
-  description: "Extra beloning wanneer de plaatsing standhoudt.",
+  description: "Extra beloning wanneer de kandidaat na 2 maanden nog in dienst is.",
   xpReward: 1000,
 };
 

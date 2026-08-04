@@ -3,6 +3,7 @@ import { applyCashLevelBonus, formatCurrency, getLevelForXp } from "@/lib/xp";
 import type { VacancyDifficulty } from "@/types/vacancy";
 
 export interface DifficultyCashRewards {
+  /** @deprecated Gesprekbeloning uitgeschakeld — altijd 0 */
   intake: number;
   match: number;
   keeper: number;
@@ -13,9 +14,10 @@ export const DIFFICULTY_CASH_REWARDS: Record<
   VacancyDifficulty,
   DifficultyCashRewards
 > = {
-  easy: { intake: 25, match: 150, keeper: 350, total: 525 },
-  hard: { intake: 25, match: 250, keeper: 450, total: 725 },
-  expert: { intake: 25, match: 350, keeper: 550, total: 925 },
+  // Alleen plaatsing + retentie (na 2 maanden). Geen gesprekbeloning.
+  easy: { intake: 0, match: 175, keeper: 350, total: 525 },
+  hard: { intake: 0, match: 275, keeper: 450, total: 725 },
+  expert: { intake: 0, match: 375, keeper: 550, total: 925 },
 };
 
 export const DIFFICULTY_META: Record<
@@ -42,7 +44,13 @@ export const DIFFICULTY_META: Record<
 export const KEEPER_BONUS = {
   title: "Retentiebeloning",
   description:
-    "De grootste beloning ontvang je wanneer jouw kandidaat na 1 maand nog succesvol werkzaam is.",
+    "De grootste beloning ontvang je wanneer jouw kandidaat na 2 maanden nog succesvol in dienst is.",
+};
+
+export const PLACEMENT_REWARD = {
+  title: "Plaatsingsbeloning",
+  description:
+    "Je ontvangt een beloning wanneer jouw tip succesvol wordt aangenomen.",
 };
 
 export function getDifficultyRewards(
@@ -57,8 +65,9 @@ export function getLevelCashBonusPercent(xp: number): number {
   return definition?.cashBonusPercent ?? 0;
 }
 
-export function getIntakeReward(difficulty: VacancyDifficulty = "easy"): number {
-  return getDifficultyRewards(difficulty).intake;
+/** Gesprekbeloning is uitgeschakeld. */
+export function getIntakeReward(_difficulty: VacancyDifficulty = "easy"): number {
+  return 0;
 }
 
 export function getMatchReward(

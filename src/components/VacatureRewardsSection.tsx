@@ -5,6 +5,7 @@ import {
   DIFFICULTY_CASH_REWARDS,
   DIFFICULTY_META,
   KEEPER_BONUS,
+  PLACEMENT_REWARD,
 } from "@/lib/vacancyRewards";
 import { formatCurrency } from "@/lib/xp";
 import type { VacancyDifficulty } from "@/types/vacancy";
@@ -19,9 +20,9 @@ export function VacatureRewardsSection() {
           <Banknote size={22} />
         </div>
         <div>
-          <h3 className="text-xl font-bold text-fk-navy">Vacaturebeloningen</h3>
+          <h3 className="text-xl font-bold text-fk-navy">Challengebeloningen</h3>
           <p className="text-sm text-fk-navy/55">
-            Hoe uitdagender de vacature, hoe hoger de beloning.
+            Beloning bij plaatsing, plus extra als de kandidaat 2 maanden blijft.
           </p>
         </div>
       </div>
@@ -44,17 +45,18 @@ export function VacatureRewardsSection() {
               </div>
 
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between text-fk-navy/70">
-                  <span>Gesprek bereikt</span>
-                  <span className="font-semibold text-fk-navy">
-                    {formatCurrency(rewards.intake)}
-                  </span>
-                </div>
-                <div className="flex justify-between text-fk-navy/70">
-                  <span>Plaatsingsbeloning</span>
-                  <span className="font-semibold text-emerald-700">
-                    {formatCurrency(rewards.match)}
-                  </span>
+                <div className="rounded-xl border border-fk-primary/15 bg-fk-white px-3 py-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-fk-navy">
+                      {PLACEMENT_REWARD.title}
+                    </span>
+                    <span className="text-lg font-extrabold text-emerald-700">
+                      {formatCurrency(rewards.match)}
+                    </span>
+                  </div>
+                  <p className="mt-1.5 text-xs leading-relaxed text-fk-navy/60">
+                    {PLACEMENT_REWARD.description}
+                  </p>
                 </div>
                 <div className="rounded-xl border-2 border-amber-200 bg-gradient-to-r from-amber-50 to-fk-white px-3 py-3">
                   <div className="flex items-center justify-between">
@@ -70,7 +72,7 @@ export function VacatureRewardsSection() {
                   </p>
                 </div>
                 <div className="flex justify-between border-t border-fk-primary/10 pt-2 font-semibold text-fk-navy">
-                  <span>Totaal</span>
+                  <span>Totaal mogelijk</span>
                   <span>{formatCurrency(rewards.total)}</span>
                 </div>
               </div>
@@ -80,9 +82,9 @@ export function VacatureRewardsSection() {
       </div>
 
       <p className="rounded-xl border border-fk-primary/15 bg-fk-primary-muted px-4 py-3 text-sm text-fk-navy/70">
-        Beloning voor een eerste gesprek is altijd {formatCurrency(25)} —
-        ongeacht vacature of reputatie. Reputatiebonus geldt alleen op
-        plaatsings- en retentiebeloning.
+        Geen beloning bij alleen een tip of gesprek. Uitbetaling bij succesvolle
+        plaatsing, en opnieuw als de kandidaat na 2 maanden nog in dienst is.
+        Reputatiebonus geldt op beide beloningen.
       </p>
     </Card>
   );

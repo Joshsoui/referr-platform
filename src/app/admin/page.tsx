@@ -7,7 +7,6 @@ import { AdminSubNav } from "@/components/admin/AdminSubNav";
 import { TipReviewCard } from "@/components/admin/TipReviewCard";
 import { getNextStatus, useScout } from "@/context/ScoutContext";
 import {
-  getIntakeReward,
   getKeeperBonusReward,
   getMatchReward,
 } from "@/lib/vacancyRewards";
@@ -55,7 +54,6 @@ export default function AdminPage() {
     rejectReferral,
     markDuplicate,
     setCashStatus,
-    grantIntakeBonus,
     grantPlacementBonus,
     grantRetentionBonus,
     vacancies,
@@ -207,7 +205,6 @@ export default function AdminPage() {
                 (item) => item.id === candidate.vacancyId
               );
               const difficulty = vacancy?.difficulty ?? "easy";
-              const conversationReward = getIntakeReward(difficulty);
               const placementReward = getMatchReward(difficulty, xp);
               const retentionReward = getKeeperBonusReward(difficulty, xp);
 
@@ -216,7 +213,6 @@ export default function AdminPage() {
                   key={candidate.id}
                   candidate={candidate}
                   vacancy={vacancy}
-                  conversationReward={conversationReward}
                   placementReward={placementReward}
                   retentionReward={retentionReward}
                   nextStatus={nextStatus}
@@ -235,12 +231,6 @@ export default function AdminPage() {
                   }
                   onAssignVacancy={(vacancyId) =>
                     assignCandidateVacancy(candidate.id, vacancyId)
-                  }
-                  onGrantConversation={() =>
-                    flash(candidate.id, () => {
-                      setCashStatus(candidate.id, "intake_in_behandeling");
-                      grantIntakeBonus(candidate.id);
-                    })
                   }
                   onGrantPlacement={() =>
                     flash(candidate.id, () =>

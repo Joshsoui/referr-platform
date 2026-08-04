@@ -20,9 +20,8 @@ export const XP_REWARDS = [
 
 export const CASH_REWARDS = [
   { action: "Alleen introductie verstuurd", cash: 0, note: "Geen beloning" },
-  { action: "Gesprek bereikt", cash: 25, note: "Vast bedrag" },
   { action: "Plaatsingsbeloning", cash: null, note: "Afhankelijk van vacature" },
-  { action: "Retentiebeloning", cash: null, note: "Afhankelijk van vacature", highlight: true },
+  { action: "Retentiebeloning (na 2 maanden)", cash: null, note: "Afhankelijk van vacature", highlight: true },
 ];
 
 export const MAX_CASH_PER_CANDIDATE = DIFFICULTY_CASH_REWARDS.expert.total;
@@ -36,7 +35,7 @@ export const LEVEL_CASH_MULTIPLIERS = [
 ];
 
 export const CASH_BONUS_NOTE =
-  "Reputatiebonus geldt op plaatsings- en retentiebeloning. Niet op de beloning voor een eerste gesprek.";
+  "Reputatiebonus geldt op plaatsings- en retentiebeloning. Geen beloning bij alleen een gesprek.";
 
 export const INITIAL_REWARD_SUMMARY = {
   cashEarned: 1250,

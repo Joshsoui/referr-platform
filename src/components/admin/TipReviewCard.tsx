@@ -40,16 +40,10 @@ function statusVariant(
 }
 
 function rewardStageIndex(cashStatus: CashStatus): number {
-  if (cashStatus === "retentie_goedgekeurd") return 3;
+  if (cashStatus === "retentie_goedgekeurd") return 2;
   if (
     cashStatus === "plaatsing_goedgekeurd" ||
     cashStatus === "plaatsing_in_behandeling"
-  ) {
-    return 2;
-  }
-  if (
-    cashStatus === "intake_goedgekeurd" ||
-    cashStatus === "intake_in_behandeling"
   ) {
     return 1;
   }
@@ -59,7 +53,6 @@ function rewardStageIndex(cashStatus: CashStatus): number {
 export function TipReviewCard({
   candidate,
   vacancy,
-  conversationReward,
   placementReward,
   retentionReward,
   nextStatus,
@@ -70,7 +63,6 @@ export function TipReviewCard({
   onReject,
   onDuplicate,
   onAssignVacancy,
-  onGrantConversation,
   onGrantPlacement,
   onGrantRetention,
   onCashStatus,
@@ -79,7 +71,6 @@ export function TipReviewCard({
 }: {
   candidate: Candidate;
   vacancy?: Vacancy;
-  conversationReward: number;
   placementReward: number;
   retentionReward: number;
   nextStatus: CandidateStatus | null;
@@ -91,7 +82,6 @@ export function TipReviewCard({
   onReject: () => void;
   onDuplicate: () => void;
   onAssignVacancy: (vacancyId: string) => void;
-  onGrantConversation: () => void;
   onGrantPlacement: () => void;
   onGrantRetention: () => void;
   onCashStatus: (status: CashStatus) => void;
@@ -102,12 +92,6 @@ export function TipReviewCard({
   const rewardIdx = rewardStageIndex(candidate.cashStatus);
   const rewardStages = [
     {
-      key: "gesprek",
-      label: "Gesprek",
-      amount: conversationReward,
-      onGrant: onGrantConversation,
-    },
-    {
       key: "plaatsing",
       label: "Plaatsing",
       amount: placementReward,
@@ -115,7 +99,7 @@ export function TipReviewCard({
     },
     {
       key: "retentie",
-      label: "Retentie",
+      label: "Retentie (2 mnd)",
       amount: retentionReward,
       onGrant: onGrantRetention,
     },
@@ -229,7 +213,7 @@ export function TipReviewCard({
           </div>
 
           {/* Meta */}
-          <div className="grid gap-2 sm:grid-cols-3">
+          <div className="grid gap-2 sm:grid-cols-2">
             <MetaChip
               icon={<Link2 size={14} />}
               label="LinkedIn"
@@ -282,9 +266,7 @@ export function TipReviewCard({
               </p>
               <p className="mt-1 text-xs text-fk-navy/50">
                 Potentieel{" "}
-                {formatCurrency(
-                  conversationReward + placementReward + retentionReward
-                )}
+                {formatCurrency(placementReward + retentionReward)}
               </p>
             </div>
           </div>
@@ -295,7 +277,7 @@ export function TipReviewCard({
               <Sparkles size={12} />
               Beloningsladder
             </p>
-            <div className="grid gap-2 sm:grid-cols-3">
+            <div className="grid gap-2 sm:grid-cols-2">
               {rewardStages.map((stage, i) => {
                 const unlocked = rewardIdx > i;
                 const active = rewardIdx === i;
