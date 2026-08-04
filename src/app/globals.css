@@ -1825,315 +1825,106 @@ html.fk-deck-theme main button.rounded-xl:hover {
 /* ── Coming soon (referr.nl) ── */
 .coming-soon-surface {
   background:
-    radial-gradient(ellipse 92% 72% at 50% 40%, rgba(255, 236, 230, 0.98), transparent 74%),
-    linear-gradient(168deg, #fff5f1 0%, #f6f3f1 40%, #ffe6e1 100%);
+    radial-gradient(ellipse 90% 70% at 50% 35%, #1a1010 0%, #0b0707 55%, #050303 100%);
+  color: #fff;
 }
 
-.coming-soon-void {
-  background: radial-gradient(ellipse 80% 70% at 50% 45%, #2a1210 0%, #120908 70%, #070404 100%);
-  z-index: 5;
-}
-
-.coming-soon-bloom {
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 170, 32, 0.55) 28%, rgba(255, 77, 89, 0.35) 52%, transparent 72%);
-  filter: blur(8px);
-  z-index: 1;
-  mix-blend-mode: screen;
-}
-
-.coming-soon-shockwave {
-  border: 1.5px solid rgba(255, 122, 48, 0.45);
-  box-shadow:
-    0 0 40px rgba(255, 77, 89, 0.25),
-    inset 0 0 30px rgba(255, 170, 32, 0.15);
-  z-index: 1;
-}
-
-.coming-soon-wash {
-  background:
-    radial-gradient(ellipse 72% 52% at 50% 52%, rgba(255, 77, 89, 0.2), transparent 66%),
-    radial-gradient(ellipse 48% 42% at 14% 28%, rgba(255, 122, 48, 0.18), transparent 58%),
-    radial-gradient(ellipse 42% 36% at 86% 22%, rgba(255, 170, 32, 0.16), transparent 55%);
-  animation: coming-soon-wash-breathe 7s ease-in-out infinite;
-}
-
-.coming-soon-flow {
-  background:
-    linear-gradient(
-      120deg,
-      transparent 0%,
-      rgba(255, 77, 89, 0.1) 22%,
-      rgba(255, 170, 32, 0.12) 48%,
-      rgba(255, 122, 48, 0.1) 72%,
-      transparent 100%
-    );
-  background-size: 220% 220%;
-  animation: coming-soon-bg-flow 10s ease-in-out infinite;
-  mix-blend-mode: soft-light;
-  opacity: 0.9;
-}
-
-.coming-soon-flare {
-  background:
-    conic-gradient(
-      from 210deg at 50% 42%,
-      transparent 0deg,
-      rgba(255, 77, 89, 0.1) 55deg,
-      transparent 110deg,
-      rgba(255, 170, 32, 0.09) 180deg,
-      transparent 240deg,
-      rgba(255, 122, 48, 0.11) 300deg,
-      transparent 360deg
-    );
-  animation: coming-soon-flare-spin 22s linear infinite;
-  opacity: 0.95;
-  mask-image: radial-gradient(ellipse 65% 55% at 50% 42%, black 10%, transparent 72%);
-}
-
-.coming-soon-rays {
-  background:
-    repeating-conic-gradient(
-      from 0deg at 50% 42%,
-      rgba(255, 255, 255, 0.045) 0deg 2deg,
-      transparent 2deg 18deg
-    );
-  mask-image: radial-gradient(ellipse 55% 48% at 50% 42%, black 0%, transparent 70%);
-  animation: coming-soon-rays-pulse 5.5s ease-in-out infinite;
-  opacity: 0.55;
-  mix-blend-mode: soft-light;
-}
-
-.coming-soon-orb {
+.coming-soon-aurora {
   position: absolute;
   border-radius: 50%;
-  filter: blur(64px);
+  filter: blur(80px);
   will-change: transform, opacity;
 }
 
-.coming-soon-orb--a {
-  width: min(82vw, 600px);
-  height: min(82vw, 600px);
-  top: 2%;
+.coming-soon-aurora--a {
+  width: min(95vw, 700px);
+  height: min(95vw, 700px);
+  top: 4%;
   left: 50%;
-  margin-left: calc(min(82vw, 600px) / -2);
-  background: radial-gradient(circle, rgba(255, 77, 89, 0.58) 0%, rgba(255, 77, 89, 0) 70%);
-  animation: coming-soon-orb-pulse 5.2s ease-in-out infinite;
+  translate: -50% 0;
+  background: radial-gradient(circle, rgba(255, 77, 89, 0.55) 0%, transparent 68%);
+  animation: coming-soon-aurora-pulse 6s ease-in-out infinite;
 }
 
-.coming-soon-orb--b {
-  width: min(62vw, 430px);
-  height: min(62vw, 430px);
-  bottom: 0%;
-  left: 2%;
-  background: radial-gradient(circle, rgba(255, 122, 48, 0.48) 0%, rgba(255, 122, 48, 0) 70%);
-  animation: coming-soon-orb-drift 11s ease-in-out infinite;
+.coming-soon-aurora--b {
+  width: min(75vw, 520px);
+  height: min(75vw, 520px);
+  bottom: -10%;
+  left: -10%;
+  background: radial-gradient(circle, rgba(255, 122, 48, 0.38) 0%, transparent 70%);
+  animation: coming-soon-aurora-drift 12s ease-in-out infinite;
 }
 
-.coming-soon-orb--c {
-  width: min(54vw, 370px);
-  height: min(54vw, 370px);
-  top: 12%;
-  right: -2%;
-  background: radial-gradient(circle, rgba(255, 170, 32, 0.4) 0%, rgba(255, 170, 32, 0) 70%);
-  animation: coming-soon-orb-drift 15s ease-in-out infinite reverse;
+.coming-soon-aurora--c {
+  width: min(65vw, 460px);
+  height: min(65vw, 460px);
+  top: 14%;
+  right: -12%;
+  background: radial-gradient(circle, rgba(255, 170, 32, 0.32) 0%, transparent 70%);
+  animation: coming-soon-aurora-drift 16s ease-in-out infinite reverse;
 }
 
-.coming-soon-orb--d {
-  width: min(46vw, 300px);
-  height: min(46vw, 300px);
-  top: 50%;
-  left: 60%;
-  background: radial-gradient(circle, rgba(255, 77, 89, 0.28) 0%, transparent 72%);
-  animation: coming-soon-orb-drift 9s ease-in-out infinite;
-  animation-delay: -2.5s;
-}
-
-.coming-soon-mesh {
-  opacity: 0.24;
-  background-image:
-    radial-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px);
-  background-size: 26px 26px;
-  mask-image: radial-gradient(ellipse 68% 58% at 50% 44%, black 18%, transparent 76%);
+.coming-soon-vignette {
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 45%, transparent 20%, rgba(0, 0, 0, 0.55) 100%);
 }
 
 .coming-soon-grain {
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 180px 180px;
-  mix-blend-mode: multiply;
+  mix-blend-mode: overlay;
 }
 
 .coming-soon-logo-wrap {
   position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
   isolation: isolate;
 }
 
 .coming-soon-logo-glow {
   position: absolute;
-  inset: 10% -12% 0;
+  inset: 5% -18% -10%;
   z-index: -1;
   border-radius: 999px;
   background:
-    radial-gradient(ellipse 70% 80% at 50% 55%, rgba(255, 77, 89, 0.42), transparent 70%),
-    radial-gradient(ellipse 50% 60% at 70% 45%, rgba(255, 170, 32, 0.28), transparent 68%);
-  filter: blur(30px);
-  animation: coming-soon-glow-breathe 4.2s ease-in-out infinite;
-}
-
-.coming-soon-logo-stage {
-  position: relative;
-  overflow: hidden;
-  border-radius: 0.2em;
+    radial-gradient(ellipse 60% 70% at 50% 50%, rgba(255, 77, 89, 0.45), transparent 70%),
+    radial-gradient(ellipse 45% 55% at 72% 45%, rgba(255, 170, 32, 0.28), transparent 68%);
+  filter: blur(36px);
+  animation: coming-soon-glow-breathe 5.5s ease-in-out infinite;
 }
 
 .coming-soon-logo {
-  animation: coming-soon-logo-breathe 5s ease-in-out infinite;
-  filter: drop-shadow(0 14px 36px rgba(255, 77, 89, 0.28));
+  animation: coming-soon-logo-float 6s ease-in-out infinite;
+  filter: drop-shadow(0 20px 50px rgba(255, 77, 89, 0.35));
 }
 
-.coming-soon-logo-sheen {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    105deg,
-    transparent 34%,
-    rgba(255, 255, 255, 0.55) 48%,
-    transparent 62%
-  );
-  mix-blend-mode: soft-light;
+@keyframes coming-soon-aurora-pulse {
+  0%, 100% { opacity: 0.45; transform: scale(0.92); }
+  50% { opacity: 1; transform: scale(1.16); }
 }
 
-.coming-soon-underline {
-  position: relative;
-  margin-top: 0.85rem;
-  height: 3px;
-  width: min(58vw, 17rem);
-  border-radius: 999px;
-  overflow: hidden;
-  background: rgba(255, 77, 89, 0.12);
-  transform-origin: center;
-}
-
-.coming-soon-underline-core {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, #ff4d59 20%, #ffaa20 50%, #ff4d59 80%, transparent);
-  background-size: 200% 100%;
-  animation: coming-soon-underline-flow 3.2s ease-in-out infinite;
-}
-
-.coming-soon-underline-spark {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 28%;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
-  transform: translate(-40%, -50%);
-  animation: coming-soon-underline-spark 3.2s ease-in-out infinite;
-}
-
-.coming-soon-label {
-  animation: coming-soon-label-fade 4s ease-in-out infinite;
-}
-
-.coming-soon-pulse {
-  animation: coming-soon-dot-pulse 2.4s ease-in-out infinite;
-  box-shadow: 0 0 0 0 rgba(255, 77, 89, 0.45);
-}
-
-@keyframes coming-soon-wash-breathe {
-  0%, 100% { opacity: 0.75; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.08); }
-}
-
-@keyframes coming-soon-bg-flow {
-  0% { background-position: 0% 40%; opacity: 0.7; }
-  50% { background-position: 100% 60%; opacity: 1; }
-  100% { background-position: 0% 40%; opacity: 0.7; }
-}
-
-@keyframes coming-soon-flare-spin {
-  from { transform: rotate(0deg) scale(1.08); }
-  to { transform: rotate(360deg) scale(1.08); }
-}
-
-@keyframes coming-soon-rays-pulse {
-  0%, 100% { opacity: 0.35; transform: scale(1) rotate(0deg); }
-  50% { opacity: 0.7; transform: scale(1.06) rotate(8deg); }
-}
-
-@keyframes coming-soon-orb-pulse {
-  0%, 100% { opacity: 0.55; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.18); }
-}
-
-@keyframes coming-soon-orb-drift {
-  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-  40% { transform: translate(6%, -8%) scale(1.14); opacity: 0.95; }
-  70% { transform: translate(-5%, 6%) scale(0.92); opacity: 0.7; }
+@keyframes coming-soon-aurora-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+  50% { transform: translate(5%, -8%) scale(1.14); opacity: 0.95; }
 }
 
 @keyframes coming-soon-glow-breathe {
-  0%, 100% { opacity: 0.65; transform: scale(0.94); }
-  50% { opacity: 1; transform: scale(1.1); }
+  0%, 100% { opacity: 0.5; transform: scale(0.92); }
+  50% { opacity: 1; transform: scale(1.12); }
 }
 
-@keyframes coming-soon-logo-breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-}
-
-@keyframes coming-soon-underline-flow {
-  0%, 100% { background-position: 0% 50%; opacity: 0.75; }
-  50% { background-position: 100% 50%; opacity: 1; }
-}
-
-@keyframes coming-soon-underline-spark {
-  0% { transform: translate(-50%, -50%); opacity: 0; }
-  15% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { transform: translate(320%, -50%); opacity: 0; }
-}
-
-@keyframes coming-soon-label-fade {
-  0%, 100% { opacity: 0.55; letter-spacing: 0.32em; }
-  50% { opacity: 0.95; letter-spacing: 0.38em; }
-}
-
-@keyframes coming-soon-dot-pulse {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 77, 89, 0.45); }
-  70% { transform: scale(1.2); box-shadow: 0 0 0 16px rgba(255, 77, 89, 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 77, 89, 0); }
+@keyframes coming-soon-logo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .coming-soon-wash,
-  .coming-soon-flow,
-  .coming-soon-flare,
-  .coming-soon-rays,
-  .coming-soon-orb,
+  .coming-soon-aurora,
   .coming-soon-logo-glow,
-  .coming-soon-logo,
-  .coming-soon-underline-core,
-  .coming-soon-underline-spark,
-  .coming-soon-label,
-  .coming-soon-pulse {
+  .coming-soon-logo {
     animation: none !important;
-  }
-
-  .coming-soon-logo-sheen,
-  .coming-soon-underline-spark,
-  .coming-soon-void,
-  .coming-soon-bloom,
-  .coming-soon-shockwave {
-    display: none;
   }
 }
