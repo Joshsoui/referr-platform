@@ -21,6 +21,7 @@ function InlineReferrLogo({ height = 14 }: { height?: number }) {
       alt="referr"
       height={height}
       width={Math.round(height * 3.75)}
+      unoptimized
       className="brand-logo-mark inline-block w-auto object-contain object-left"
       style={{ height: `${height}px`, width: "auto" }}
     />
