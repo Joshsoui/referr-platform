@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { getDataDir } from "@/lib/dataDir";
-import { getPrisma, hasDatabase } from "@/lib/db";
+import { getPrisma, hasDatabase, tryPrisma } from "@/lib/db";
 import { INITIAL_CANDIDATES } from "@/lib/mock-data";
 import type { Candidate, CandidateFormData, CandidateStatus } from "@/types";
 import type {
@@ -110,11 +110,11 @@ async function ensureDbSeeded(): Promise<void> {
 
 export async function listCandidates(): Promise<Candidate[]> {
   if (hasDatabase()) {
-    await ensureDbSeeded();
-    const rows = await getPrisma().candidate.findMany({
-      orderBy: { createdAt: "desc" },
+    const rows = await tryPrisma(async (prisma) => {
+      await ensureDbSeeded();
+      return prisma.candidate.findMany({ orderBy: { createdAt: "desc" } });
     });
-    return rows.map(mapCandidate);
+    if (rows) return rows.map(mapCandidate);
   }
   const store = await readFileStore();
   return [...store.candidates].sort(
@@ -124,9 +124,12 @@ export async function listCandidates(): Promise<Candidate[]> {
 
 export async function findCandidateById(id: string): Promise<Candidate | null> {
   if (hasDatabase()) {
-    await ensureDbSeeded();
-    const row = await getPrisma().candidate.findUnique({ where: { id } });
-    return row ? mapCandidate(row) : null;
+    const row = await tryPrisma(async (prisma) => {
+      await ensureDbSeeded();
+      return prisma.candidate.findUnique({ where: { id } });
+    });
+    if (row) return mapCandidate(row);
+    if (hasDatabase()) return null;
   }
   const store = await readFileStore();
   return store.candidates.find((item) => item.id === id) ?? null;
@@ -167,8 +170,8 @@ export async function createCandidate(input: {
   };
 
   if (hasDatabase()) {
-    const row = await getPrisma().candidate.create({ data: payload });
-    return mapCandidate(row);
+    const row = await tryPrisma((prisma) => prisma.candidate.create({ data: payload }));
+    if (row) return mapCandidate(row);
   }
 
   const store = await readFileStore();
@@ -214,8 +217,8 @@ export async function updateCandidateById(
   patch: CandidatePatch
 ): Promise<Candidate | null> {
   if (hasDatabase()) {
-    try {
-      const row = await getPrisma().candidate.update({
+    const row = await tryPrisma((prisma) =>
+      prisma.candidate.update({
         where: { id },
         data: {
           ...(patch.status ? { status: patch.status } : {}),
@@ -233,11 +236,10 @@ export async function updateCandidateById(
             ? { xpAwarded: patch.xpAwarded }
             : {}),
         },
-      });
-      return mapCandidate(row);
-    } catch {
-      return null;
-    }
+      })
+    );
+    if (row) return mapCandidate(row);
+    if (hasDatabase()) return null;
   }
 
   const store = await readFileStore();

@@ -14,8 +14,32 @@ export default async function AccountPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/inloggen?next=/account");
 
-  const user = await findUserById(session.user.id);
-  const notificationPreferences = await getNotificationPreferences(session.user.id);
+  let user = null;
+  try {
+    user = await findUserById(session.user.id);
+  } catch (error) {
+    console.error("[account] findUserById failed", error);
+  }
+
+  let notificationPreferences;
+  try {
+    notificationPreferences = await getNotificationPreferences(session.user.id);
+  } catch (error) {
+    console.error("[account] getNotificationPreferences failed", error);
+    notificationPreferences = {
+      nearbyChallengesEnabled: true,
+      referralUpdatesEnabled: true,
+      rewardUpdatesEnabled: true,
+      closingSoonEnabled: true,
+      emailEnabled: true,
+      pushEnabled: false,
+      radiusKm: 25 as const,
+      city: "",
+      postalCode: "",
+      locationConsent: false,
+    };
+  }
+
   const safeUser = user ?? {
     email: session.user.email ?? "",
     firstName: session.user.firstName ?? "",

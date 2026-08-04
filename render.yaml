@@ -2,8 +2,7 @@ services:
   - type: web
     name: referr-platform
     runtime: node
-    # Free is fine for internal testing. Add a Postgres instance and set DATABASE_URL.
-    # Upgrade to starter + disk later if you also want file-based stores durable.
+    # Free is fine for internal testing with Supabase Postgres.
     plan: free
     buildCommand: npm run render-build
     startCommand: npm start
@@ -18,12 +17,15 @@ services:
         value: "true"
       - key: NEXT_PUBLIC_SITE_URL
         value: https://referr-platform.onrender.com
+      # Supabase Session pooler URI (port 5432) — works from Render IPv4
       - key: DATABASE_URL
+        sync: false
+      # Same Session pooler URI (or Direct if you have IPv4). Used by Prisma migrate.
+      - key: DIRECT_URL
         sync: false
       - key: ADMIN_BOOTSTRAP_TOKEN
         sync: false
       - key: STRIPE_PAYOUTS_ENABLED
         value: "false"
-      # Optional fallback path when DATABASE_URL is unset (ephemeral on free).
       - key: DATA_DIR
         value: /tmp/referr-data

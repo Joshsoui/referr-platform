@@ -11,7 +11,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 function InlineBrand({ height = 14 }: { height?: number }) {
   return (
     <Image
-      src="/brand/referr-logo.png"
+      src="/brand/referr-logo.svg"
       alt="referr"
       height={height}
       width={Math.round(height * 3.75)}

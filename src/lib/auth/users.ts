@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { getPrisma, hasDatabase } from "@/lib/db";
+import { hasDatabase, tryPrisma } from "@/lib/db";
 import type { User as PrismaUser, UserRole as PrismaUserRole } from "@prisma/client";
 import { promises as fs } from "fs";
 import path from "path";
@@ -127,8 +127,12 @@ export async function findUserByEmail(
 ): Promise<StoredUser | null> {
   const normalized = normalizeEmail(email);
   if (hasDatabase()) {
-    const user = await getPrisma().user.findUnique({ where: { email: normalized } });
-    return user ? mapPrismaUser(user) : null;
+    const user = await tryPrisma((prisma) =>
+      prisma.user.findUnique({ where: { email: normalized } })
+    );
+    if (user) return mapPrismaUser(user);
+    // If Prisma is healthy but user missing, don't fall through to file.
+    if (hasDatabase()) return null;
   }
   const store = await ensureFileStore();
   return store.users.find((u) => u.email === normalized) ?? null;
@@ -136,8 +140,11 @@ export async function findUserByEmail(
 
 export async function findUserById(id: string): Promise<StoredUser | null> {
   if (hasDatabase()) {
-    const user = await getPrisma().user.findUnique({ where: { id } });
-    return user ? mapPrismaUser(user) : null;
+    const user = await tryPrisma((prisma) =>
+      prisma.user.findUnique({ where: { id } })
+    );
+    if (user) return mapPrismaUser(user);
+    if (hasDatabase()) return null;
   }
   const store = await ensureFileStore();
   return store.users.find((u) => u.id === id) ?? null;
@@ -155,23 +162,31 @@ export async function createUser(input: {
   const now = new Date();
 
   if (hasDatabase()) {
-    const existing = await getPrisma().user.findUnique({ where: { email } });
+    const existing = await tryPrisma((prisma) =>
+      prisma.user.findUnique({ where: { email } })
+    );
     if (existing) throw new Error("EMAIL_TAKEN");
-    const user = await getPrisma().user.create({
-      data: {
-        email,
-        firstName: input.firstName.trim(),
-        lastName: input.lastName.trim(),
-        passwordHash,
-        role: "user",
-        marketingConsent: input.marketingConsent,
-        marketingConsentAt: input.marketingConsent ? now : null,
-        marketingConsentVersion: input.marketingConsent ? MARKETING_VERSION : null,
-        termsAcceptedAt: now,
-        termsVersion: TERMS_VERSION,
-      },
-    });
-    return mapPrismaUser(user);
+
+    const created = await tryPrisma((prisma) =>
+      prisma.user.create({
+        data: {
+          email,
+          firstName: input.firstName.trim(),
+          lastName: input.lastName.trim(),
+          passwordHash,
+          role: "user",
+          marketingConsent: input.marketingConsent,
+          marketingConsentAt: input.marketingConsent ? now : null,
+          marketingConsentVersion: input.marketingConsent
+            ? MARKETING_VERSION
+            : null,
+          termsAcceptedAt: now,
+          termsVersion: TERMS_VERSION,
+        },
+      })
+    );
+    if (created) return mapPrismaUser(created);
+    // fall through to file store if Prisma unavailable
   }
 
   const store = await ensureFileStore();
@@ -221,11 +236,13 @@ export async function verifyPassword(
 
 export async function markEmailVerified(userId: string): Promise<void> {
   if (hasDatabase()) {
-    await getPrisma().user.update({
-      where: { id: userId },
-      data: { emailVerifiedAt: new Date() },
-    });
-    return;
+    const updated = await tryPrisma((prisma) =>
+      prisma.user.update({
+        where: { id: userId },
+        data: { emailVerifiedAt: new Date() },
+      })
+    );
+    if (updated || hasDatabase()) return;
   }
   const store = await ensureFileStore();
   const user = store.users.find((u) => u.id === userId);
@@ -241,11 +258,14 @@ export async function updatePassword(
 ): Promise<void> {
   const passwordHash = await bcrypt.hash(newPassword, 12);
   if (hasDatabase()) {
-    await getPrisma().user.update({
-      where: { id: userId },
-      data: { passwordHash },
-    });
-    return;
+    const updated = await tryPrisma((prisma) =>
+      prisma.user.update({
+        where: { id: userId },
+        data: { passwordHash },
+      })
+    );
+    if (updated) return;
+    if (hasDatabase()) throw new Error("USER_NOT_FOUND");
   }
   const store = await ensureFileStore();
   const user = store.users.find((u) => u.id === userId);
@@ -260,19 +280,18 @@ export async function updateMarketingConsent(
   consent: boolean
 ): Promise<StoredUser | null> {
   if (hasDatabase()) {
-    try {
-      const user = await getPrisma().user.update({
+    const user = await tryPrisma((prisma) =>
+      prisma.user.update({
         where: { id: userId },
         data: {
           marketingConsent: consent,
           marketingConsentAt: consent ? new Date() : null,
           marketingConsentVersion: consent ? MARKETING_VERSION : null,
         },
-      });
-      return mapPrismaUser(user);
-    } catch {
-      return null;
-    }
+      })
+    );
+    if (user) return mapPrismaUser(user);
+    if (hasDatabase()) return null;
   }
   const store = await ensureFileStore();
   const user = store.users.find((u) => u.id === userId);
@@ -315,15 +334,14 @@ export async function updateProfile(
   };
 
   if (hasDatabase()) {
-    try {
-      const user = await getPrisma().user.update({
+    const user = await tryPrisma((prisma) =>
+      prisma.user.update({
         where: { id: userId },
         data: payload,
-      });
-      return mapPrismaUser(user);
-    } catch {
-      return null;
-    }
+      })
+    );
+    if (user) return mapPrismaUser(user);
+    if (hasDatabase()) return null;
   }
 
   const store = await ensureFileStore();
@@ -337,12 +355,11 @@ export async function updateProfile(
 
 export async function deleteUser(userId: string): Promise<boolean> {
   if (hasDatabase()) {
-    try {
-      await getPrisma().user.delete({ where: { id: userId } });
-      return true;
-    } catch {
-      return false;
-    }
+    const deleted = await tryPrisma((prisma) =>
+      prisma.user.delete({ where: { id: userId } })
+    );
+    if (deleted) return true;
+    if (hasDatabase()) return false;
   }
   const store = await ensureFileStore();
   const before = store.users.length;
@@ -362,8 +379,8 @@ export async function updateUserStripeAccount(
   }
 ): Promise<StoredUser | null> {
   if (hasDatabase()) {
-    try {
-      const user = await getPrisma().user.update({
+    const user = await tryPrisma((prisma) =>
+      prisma.user.update({
         where: { id: userId },
         data: {
           stripeAccountId: input.stripeAccountId,
@@ -377,11 +394,10 @@ export async function updateUserStripeAccount(
             ? { stripePayoutsEnabled: input.stripePayoutsEnabled }
             : {}),
         },
-      });
-      return mapPrismaUser(user);
-    } catch {
-      return null;
-    }
+      })
+    );
+    if (user) return mapPrismaUser(user);
+    if (hasDatabase()) return null;
   }
 
   const store = await ensureFileStore();
@@ -408,15 +424,14 @@ export async function updateUserRoleByEmail(
 ): Promise<StoredUser | null> {
   const normalized = normalizeEmail(email);
   if (hasDatabase()) {
-    try {
-      const user = await getPrisma().user.update({
+    const user = await tryPrisma((prisma) =>
+      prisma.user.update({
         where: { email: normalized },
         data: { role: role as PrismaUserRole },
-      });
-      return mapPrismaUser(user);
-    } catch {
-      return null;
-    }
+      })
+    );
+    if (user) return mapPrismaUser(user);
+    if (hasDatabase()) return null;
   }
   const store = await ensureFileStore();
   const user = store.users.find((u) => u.email === normalized);
@@ -429,23 +444,27 @@ export async function updateUserRoleByEmail(
 
 export async function listUsersWithPayoutDetails() {
   if (hasDatabase()) {
-    const users = await getPrisma().user.findMany({
-      where: { NOT: { iban: "" } },
-      orderBy: { lastName: "asc" },
-    });
-    return users.map((user) => ({
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      phone: user.phone,
-      iban: user.iban,
-      ibanAccountName: user.ibanAccountName,
-      city: user.city,
-      postalCode: user.postalCode,
-      country: user.country,
-      updatedAt: user.updatedAt.toISOString(),
-    }));
+    const users = await tryPrisma((prisma) =>
+      prisma.user.findMany({
+        where: { NOT: { iban: "" } },
+        orderBy: { lastName: "asc" },
+      })
+    );
+    if (users) {
+      return users.map((user) => ({
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        iban: user.iban,
+        ibanAccountName: user.ibanAccountName,
+        city: user.city,
+        postalCode: user.postalCode,
+        country: user.country,
+        updatedAt: user.updatedAt.toISOString(),
+      }));
+    }
   }
 
   const store = await ensureFileStore();

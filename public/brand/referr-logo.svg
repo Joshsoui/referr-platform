@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 140" role="img" aria-label="referr">
+  <defs>
+    <linearGradient id="referrWordmark" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF4D59"/>
+      <stop offset="55%" stop-color="#FF7A30"/>
+      <stop offset="100%" stop-color="#FFAA20"/>
+    </linearGradient>
+  </defs>
+  <text
+    x="0"
+    y="102"
+    fill="url(#referrWordmark)"
+    font-family="ui-rounded, 'SF Pro Rounded', 'Nunito', 'Avenir Next Rounded', 'Segoe UI', system-ui, sans-serif"
+    font-size="112"
+    font-weight="800"
+    letter-spacing="-4"
+  >referr</text>
+</svg>

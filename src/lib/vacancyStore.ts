@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { getDataDir } from "@/lib/dataDir";
-import { getPrisma, hasDatabase } from "@/lib/db";
+import { getPrisma, hasDatabase, tryPrisma } from "@/lib/db";
 import { INITIAL_VACANCIES } from "@/lib/mockVacancies";
 import type { Vacancy, VacancyFormData } from "@/types/vacancy";
 import type { Vacancy as PrismaVacancy } from "@prisma/client";
@@ -74,11 +74,11 @@ async function ensureDbSeeded(): Promise<void> {
 
 export async function listVacancies(): Promise<Vacancy[]> {
   if (hasDatabase()) {
-    await ensureDbSeeded();
-    const rows = await getPrisma().vacancy.findMany({
-      orderBy: { createdAt: "desc" },
+    const rows = await tryPrisma(async (prisma) => {
+      await ensureDbSeeded();
+      return prisma.vacancy.findMany({ orderBy: { createdAt: "desc" } });
     });
-    return rows.map(mapVacancy);
+    if (rows) return rows.map(mapVacancy);
   }
   const store = await readFileStore();
   return [...store.vacancies].sort(
@@ -88,9 +88,12 @@ export async function listVacancies(): Promise<Vacancy[]> {
 
 export async function findVacancyById(id: string): Promise<Vacancy | null> {
   if (hasDatabase()) {
-    await ensureDbSeeded();
-    const row = await getPrisma().vacancy.findUnique({ where: { id } });
-    return row ? mapVacancy(row) : null;
+    const row = await tryPrisma(async (prisma) => {
+      await ensureDbSeeded();
+      return prisma.vacancy.findUnique({ where: { id } });
+    });
+    if (row) return mapVacancy(row);
+    if (hasDatabase()) return null;
   }
   const store = await readFileStore();
   return store.vacancies.find((item) => item.id === id) ?? null;
@@ -100,20 +103,22 @@ export async function createVacancy(data: VacancyFormData): Promise<Vacancy | nu
   if (!data.sector || !data.title.trim()) return null;
 
   if (hasDatabase()) {
-    const row = await getPrisma().vacancy.create({
-      data: {
-        title: data.title.trim(),
-        sector: data.sector,
-        location: data.location.trim(),
-        postalCode: data.postalCode?.trim() || null,
-        latitude: data.latitude ?? null,
-        longitude: data.longitude ?? null,
-        description: data.description.trim(),
-        difficulty: data.difficulty,
-        status: data.status,
-      },
-    });
-    return mapVacancy(row);
+    const row = await tryPrisma((prisma) =>
+      prisma.vacancy.create({
+        data: {
+          title: data.title.trim(),
+          sector: data.sector,
+          location: data.location.trim(),
+          postalCode: data.postalCode?.trim() || null,
+          latitude: data.latitude ?? null,
+          longitude: data.longitude ?? null,
+          description: data.description.trim(),
+          difficulty: data.difficulty,
+          status: data.status,
+        },
+      })
+    );
+    if (row) return mapVacancy(row);
   }
 
   const store = await readFileStore();
@@ -142,8 +147,8 @@ export async function updateVacancyById(
   if (!data.sector || !data.title.trim()) return null;
 
   if (hasDatabase()) {
-    try {
-      const row = await getPrisma().vacancy.update({
+    const row = await tryPrisma((prisma) =>
+      prisma.vacancy.update({
         where: { id },
         data: {
           title: data.title.trim(),
@@ -156,11 +161,10 @@ export async function updateVacancyById(
           difficulty: data.difficulty,
           status: data.status,
         },
-      });
-      return mapVacancy(row);
-    } catch {
-      return null;
-    }
+      })
+    );
+    if (row) return mapVacancy(row);
+    if (hasDatabase()) return null;
   }
 
   const store = await readFileStore();

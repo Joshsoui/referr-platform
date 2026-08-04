@@ -14,7 +14,7 @@ function InlineLogo({ height = 28, className = "" }: { height?: number; classNam
   const width = Math.round(height * 3.75);
   return (
     <Image
-      src="/brand/referr-logo.png"
+      src="/brand/referr-logo.svg"
       alt="referr"
       height={height}
       width={width}

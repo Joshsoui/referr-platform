@@ -18,15 +18,18 @@ export function BrandLogo({
   priority = false,
   invertOnDark = false,
 }: BrandLogoProps) {
-  // Transparent wordmark ~3.7:1 after crop
+  // Transparent SVG wordmark ~3.7:1
   const width = Math.round(height * 3.75);
   const img = (
     <Image
-      src="/brand/referr-logo.png"
+      src="/brand/referr-logo.svg"
       alt="referr"
       height={height}
       width={width}
-      className={`brand-logo-mark h-auto w-auto object-contain object-left ${invertOnDark ? "brightness-[1.8] contrast-[0.9]" : ""} ${className}`}
+      unoptimized
+      className={`brand-logo-mark h-auto w-auto object-contain object-left ${
+        invertOnDark ? "brightness-0 invert" : ""
+      } ${className}`}
       style={{ height, width: "auto", maxWidth: "100%" }}
       priority={priority}
     />
