@@ -10,8 +10,8 @@ import { ChallengeCard } from "@/components/VacancyCard";
 import { Card } from "@/components/ui/Card";
 import { useScout } from "@/context/ScoutContext";
 import { CURRENT_USER } from "@/lib/mock-data";
+import { getReferralActionHint, getReferralStatusLabel } from "@/lib/recommendationStatus";
 import { formatCurrency } from "@/lib/xp";
-import type { Candidate } from "@/types";
 
 const LAST_VISIT_KEY = "referr-last-visit";
 
@@ -43,14 +43,6 @@ export default function DashboardPage() {
     openVacancies.length > 0
       ? `Er zijn ${openVacancies.length} challenges die je nu kunt delen.`
       : "Er staan nu even geen nieuwe challenges open.";
-
-  const statusLabelMap: Record<Candidate["status"], string> = {
-    nieuw: "Tip ontvangen",
-    intake_gepland: "Wordt bekeken",
-    voorgesteld: "In gesprek",
-    geplaatst: "Aangenomen",
-    proeftijd_gehaald: "Uitbetaald",
-  };
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-8">
@@ -148,7 +140,8 @@ export default function DashboardPage() {
               <div className="space-y-3">
                 {myReferrals.slice(0, 5).map((referral) => {
                   const vacancy = vacancies.find((item) => item.id === referral.vacancyId);
-                  const status = statusLabelMap[referral.status];
+                  const status = getReferralStatusLabel(referral);
+                  const hint = getReferralActionHint(referral);
                   return (
                     <div
                       key={referral.id}
@@ -164,6 +157,9 @@ export default function DashboardPage() {
                         {vacancy?.title ?? "Challenge"} · update{" "}
                         {new Date(referral.createdAt).toLocaleDateString("nl-NL")}
                       </p>
+                      {hint && (
+                        <p className="mt-1 text-xs text-fk-navy/55">{hint}</p>
+                      )}
                     </div>
                   );
                 })}

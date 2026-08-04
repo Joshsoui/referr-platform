@@ -8,10 +8,11 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { formatRelativeTimeNl } from "@/lib/activityMoments";
 import {
+  getReferralActionHint,
   getNextStepLabel,
+  getReferralStatusLabel,
   getUserCashLabel,
   getUserJourneyIndex,
-  getUserStatusLabel,
   USER_JOURNEY_STEPS,
 } from "@/lib/recommendationStatus";
 import type { Candidate } from "@/types";
@@ -181,10 +182,11 @@ export function ReferralPipeline({ candidates }: ReferralPipelineProps) {
 
       <div className="space-y-4 p-6 sm:p-8">
         {sorted.map((candidate) => {
-          const statusLabel = getUserStatusLabel(candidate);
+          const statusLabel = getReferralStatusLabel(candidate);
           const cashLabel = getUserCashLabel(candidate.cashStatus);
           const nextStep = getNextStepLabel(candidate);
           const latestEvent = eventsByCandidate[candidate.id]?.[0];
+          const actionHint = getReferralActionHint(candidate);
 
           return (
             <div
@@ -226,6 +228,9 @@ export function ReferralPipeline({ candidates }: ReferralPipelineProps) {
                   <p className="font-medium text-emerald-700">
                     Traject afgerond — alle stappen doorlopen
                   </p>
+                )}
+                {actionHint && (
+                  <p className="mt-1 text-xs text-fk-navy/55">{actionHint}</p>
                 )}
               </div>
               {latestEvent && (
