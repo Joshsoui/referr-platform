@@ -44,7 +44,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
               href="/aandragen"
               className="inline-flex items-center gap-2 rounded-xl border border-fk-navy/10 bg-fk-white px-4 py-2.5 text-sm font-semibold text-fk-navy transition hover:border-fk-primary/20"
             >
-              Bekijk mijn introducties
+              Bekijk mijn tips
             </Link>
           </div>
         </Card>

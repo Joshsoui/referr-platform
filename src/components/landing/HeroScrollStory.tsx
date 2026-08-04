@@ -15,7 +15,7 @@ function InlineBrand({ height = 14 }: { height?: number }) {
       alt="referr"
       height={height}
       width={Math.round(height * 3.75)}
-      className="inline-block h-[1em] w-auto object-contain align-baseline"
+      className="brand-logo-mark inline-block h-[1em] w-auto object-contain align-baseline"
       style={{ height: `${height}px`, width: "auto" }}
     />
   );

@@ -55,6 +55,53 @@ export function getUserStatusLabel(candidate: Candidate): string {
   return labels[candidate.status];
 }
 
+export function getReferralStatusLabel(candidate: Candidate): string {
+  if (candidate.referralApproval === "afgekeurd") return "Niet doorgegaan";
+  if (candidate.status === "nieuw" && candidate.referralApproval === "pending") {
+    return "Tip ontvangen";
+  }
+  if (candidate.status === "nieuw" && candidate.referralApproval === "goedgekeurd") {
+    return "Wordt bekeken";
+  }
+  if (candidate.status === "intake_gepland") return "Wordt bekeken";
+  if (candidate.status === "voorgesteld") return "In gesprek";
+  if (candidate.status === "geplaatst") return "Aangenomen";
+  if (candidate.status === "proeftijd_gehaald") {
+    return candidate.cashStatus === "retentie_goedgekeurd"
+      ? "Uitbetaald"
+      : "Reward in behandeling";
+  }
+  return "Tip ontvangen";
+}
+
+export function getReferralActionHint(candidate: Candidate): string | null {
+  if (candidate.referralApproval === "afgekeurd") {
+    return "Deze tip is afgesloten. Je kunt direct een nieuwe challenge delen.";
+  }
+  if (candidate.status === "nieuw" && candidate.referralApproval === "pending") {
+    return "We beoordelen de tip. Je ontvangt een update zodra het profiel is bekeken.";
+  }
+  if (candidate.status === "nieuw" && candidate.referralApproval === "goedgekeurd") {
+    return "Profiel wordt gedeeld met de partner. Je hoeft nu niets te doen.";
+  }
+  if (candidate.status === "intake_gepland") {
+    return "Kennismaking wordt ingepland. Je krijgt bericht zodra er beweging is.";
+  }
+  if (candidate.status === "voorgesteld") {
+    return "Kandidaat is in gesprek. Volgende update volgt na terugkoppeling.";
+  }
+  if (candidate.status === "geplaatst") {
+    return "Plaatsing is rond. Reward wordt nu verwerkt.";
+  }
+  if (candidate.status === "proeftijd_gehaald") {
+    if (candidate.cashStatus === "retentie_goedgekeurd") {
+      return "Reward is uitbetaald.";
+    }
+    return "Plaatsing is bevestigd. Reward wordt afgerond.";
+  }
+  return null;
+}
+
 export function getUserCashLabel(cashStatus: CashStatus): string | null {
   switch (cashStatus) {
     case "geen_cash":

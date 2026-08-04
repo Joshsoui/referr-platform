@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { findUserById } from "@/lib/auth/users";
+import { getNotificationPreferences } from "@/lib/notificationPreferencesStore";
 import { PrivacyCenter } from "@/components/account/PrivacyCenter";
 
 export const metadata: Metadata = {
@@ -15,6 +16,7 @@ export default async function AccountPage() {
 
   const user = await findUserById(session.user.id);
   if (!user) redirect("/inloggen");
+  const notificationPreferences = await getNotificationPreferences(session.user.id);
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-8">
@@ -33,6 +35,7 @@ export default async function AccountPage() {
             createdAt: user.createdAt,
             termsAcceptedAt: user.termsAcceptedAt,
           }}
+          notificationPreferences={notificationPreferences}
         />
       </div>
     </div>

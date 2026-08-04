@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -30,6 +31,7 @@ import {
 import { INITIAL_VACANCIES } from "@/lib/mockVacancies";
 import type { Challenge } from "@/types/gamification";
 import type { AppNotification } from "@/types/notifications";
+import { useSession } from "next-auth/react";
 import {
   getIntakeReward,
   getKeeperBonusReward,
@@ -95,6 +97,8 @@ interface ScoutContextValue {
   grantPlacementBonus: (id: string) => void;
   grantRetentionBonus: (id: string) => void;
   revokeXp: (id: string, amount: number) => void;
+  markNotificationRead: (id: string) => void;
+  markAllNotificationsRead: () => void;
 }
 
 const ScoutContext = createContext<ScoutContextValue | null>(null);
@@ -150,7 +154,30 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
   const [referralProfile, setReferralProfile] = useState(CURRENT_SCOUT_REFERRAL);
   const [rewards, setRewards] = useState<RewardSummary>(INITIAL_REWARD_SUMMARY);
   const [vacancies, setVacancies] = useState<Vacancy[]>(INITIAL_VACANCIES);
+  const { data: session } = useSession();
   const idCounter = useRef(0);
+
+  useEffect(() => {
+    const sessionUserId = session?.user?.id;
+    if (!sessionUserId) return;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/notifications");
+        if (!res.ok) return;
+        const data = (await res.json()) as { notifications?: AppNotification[] };
+        if (cancelled) return;
+        if (data.notifications) setNotifications(data.notifications);
+      } catch {
+        // ignore fetch errors
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.user?.id]);
 
   const getCandidateDifficulty = useCallback(
     (candidate: Candidate) => {
@@ -199,16 +226,127 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     setActivities((prev) => [activity, ...prev]);
   }, [nextId]);
 
-  const pushNotification = useCallback(
-    (notification: Omit<AppNotification, "id">) => {
-      idCounter.current += 1;
-      setNotifications((prev) => [
-        ...prev,
-        { ...notification, id: idCounter.current },
-      ]);
+  const persistReferralEvent = useCallback(
+    (input: {
+      candidateId: string;
+      candidateName: string;
+      type: "submitted" | "status_update" | "reward_update" | "approval_update";
+      title: string;
+      message: string;
+      status?: CandidateStatus;
+      cashStatus?: CashStatus;
+    }) => {
+      fetch("/api/referrals/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+      }).catch(() => {
+        // avoid blocking primary flow if timeline persistence fails
+      });
     },
     []
   );
+
+  const pushNotification = useCallback(
+    (notification: Omit<AppNotification, "id">) => {
+      idCounter.current += 1;
+      setNotifications((prev) => {
+        const duplicate = prev.find(
+          (item) =>
+            item.kind === notification.kind &&
+            item.title === notification.title &&
+            item.message === notification.message &&
+            !item.readAt
+        );
+        if (duplicate) return prev;
+        return [
+          ...prev,
+          {
+            ...notification,
+            id: String(idCounter.current),
+            createdAt: new Date().toISOString(),
+            readAt: null,
+          },
+        ];
+      });
+
+      // Persist server-side so the notification center survives refresh.
+      const dedupeKey = `${notification.kind}:${notification.title}:${notification.message}`;
+      fetch("/api/notifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          kind: notification.kind,
+          title: notification.title,
+          message: notification.message,
+          link: notification.link,
+          dedupeKey,
+        }),
+      })
+        .then((r) => r.ok ? r.json() : null)
+        .then(() => fetch("/api/notifications"))
+        .then((r) => (r && r.ok ? r.json() : null))
+        .then((data) => {
+          const notifications =
+            (data as { notifications?: AppNotification[] } | null)?.notifications ??
+            undefined;
+          if (notifications) setNotifications(notifications);
+        })
+        .catch(() => {
+          // ignore persistence errors
+        });
+    },
+    []
+  );
+
+  const markNotificationRead = useCallback((id: string) => {
+    setNotifications((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, readAt: item.readAt ?? new Date().toISOString() }
+          : item
+      )
+    );
+
+    fetch("/api/notifications/mark-read", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    })
+      .then(() => fetch("/api/notifications"))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        const notifications =
+          (data as { notifications?: AppNotification[] } | null)
+            ?.notifications ?? undefined;
+        if (notifications) setNotifications(notifications);
+      })
+      .catch(() => {
+        // ignore
+      });
+  }, []);
+
+  const markAllNotificationsRead = useCallback(() => {
+    const now = new Date().toISOString();
+    setNotifications((prev) =>
+      prev.map((item) => ({ ...item, readAt: item.readAt ?? now }))
+    );
+
+    fetch("/api/notifications/mark-all-read", {
+      method: "POST",
+    })
+      .then(() => fetch("/api/notifications"))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        const notifications =
+          (data as { notifications?: AppNotification[] } | null)
+            ?.notifications ?? undefined;
+        if (notifications) setNotifications(notifications);
+      })
+      .catch(() => {
+        // ignore
+      });
+  }, []);
 
   const updateLeaderboardCurrentUser = useCallback(
     (updater: (scout: Scout) => Scout) => {
@@ -267,6 +405,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       candidate.xpAwarded = xpGain;
 
       setCandidates((prev) => [candidate, ...prev]);
+      persistReferralEvent({
+        candidateId: candidate.id,
+        candidateName: candidate.name,
+        type: "submitted",
+        title: "Tip ontvangen",
+        message: `${candidate.name} is toegevoegd en wacht op beoordeling.`,
+        status: candidate.status,
+        cashStatus: candidate.cashStatus,
+      });
 
       if (referrerName === CURRENT_USER) {
         awardXp(xpGain);
@@ -300,7 +447,14 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
 
       return candidate.confidenceScore;
     },
-    [addActivity, awardXp, nextId, pushNotification, updateLeaderboardXp]
+    [
+      addActivity,
+      awardXp,
+      nextId,
+      persistReferralEvent,
+      pushNotification,
+      updateLeaderboardXp,
+    ]
   );
 
   const submitCandidate = useCallback(
@@ -356,6 +510,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
             candidate.name,
             newStatus
           );
+          persistReferralEvent({
+            candidateId: candidate.id,
+            candidateName: candidate.name,
+            type: "status_update",
+            title: statusNotice.title,
+            message: statusNotice.message,
+            status: newStatus,
+            cashStatus: candidate.cashStatus,
+          });
           pushNotification({
             kind: statusNotice.kind,
             title: statusNotice.title,
@@ -377,6 +540,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [
       addActivity,
       awardXp,
+      persistReferralEvent,
       pushNotification,
       updateLeaderboardPlacements,
       updateLeaderboardXp,
@@ -392,6 +556,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       }));
 
       if (candidate?.referredBy === CURRENT_USER) {
+        persistReferralEvent({
+          candidateId: candidate.id,
+          candidateName: candidate.name,
+          type: "approval_update",
+          title: "Tip wordt bekeken",
+          message: `Je tip voor ${candidate.name} wordt nu beoordeeld.`,
+          status: candidate.status,
+          cashStatus: candidate.cashStatus,
+        });
         pushNotification({
           kind: "viewed",
           title: "Introductie bekeken",
@@ -399,7 +572,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         });
       }
     },
-    [candidates, pushNotification, updateCandidateInState]
+    [candidates, persistReferralEvent, pushNotification, updateCandidateInState]
   );
 
   const rejectReferral = useCallback(
@@ -412,6 +585,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       }));
 
       if (candidate?.referredBy === CURRENT_USER) {
+        persistReferralEvent({
+          candidateId: candidate.id,
+          candidateName: candidate.name,
+          type: "approval_update",
+          title: "Tip niet doorgegaan",
+          message: `Je tip voor ${candidate.name} is afgewezen.`,
+          status: candidate.status,
+          cashStatus: "afgekeurd",
+        });
         pushNotification({
           kind: "rejected",
           title: "Introductie niet geaccepteerd",
@@ -419,7 +601,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         });
       }
     },
-    [candidates, pushNotification, updateCandidateInState]
+    [candidates, persistReferralEvent, pushNotification, updateCandidateInState]
   );
 
   const markDuplicate = useCallback(
@@ -447,6 +629,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       ) {
         const cashNotice = getCashNotification(candidate.name, status);
         if (cashNotice) {
+          persistReferralEvent({
+            candidateId: candidate.id,
+            candidateName: candidate.name,
+            type: "reward_update",
+            title: cashNotice.title,
+            message: cashNotice.message,
+            status: candidate.status,
+            cashStatus: status,
+          });
           pushNotification({
             kind: cashNotice.kind,
             title: cashNotice.title,
@@ -455,7 +646,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         }
       }
     },
-    [candidates, pushNotification, updateCandidateInState]
+    [candidates, persistReferralEvent, pushNotification, updateCandidateInState]
   );
 
   const addVacancy = useCallback(
@@ -467,14 +658,52 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
         title: data.title,
         sector: data.sector,
         location: data.location,
+        postalCode: data.postalCode || undefined,
+        latitude: data.latitude,
+        longitude: data.longitude,
         description: data.description,
         difficulty: data.difficulty,
         status: data.status,
         createdAt: new Date().toISOString(),
       };
       setVacancies((prev) => [vacancy, ...prev]);
+
+      if (
+        typeof vacancy.latitude === "number" &&
+        typeof vacancy.longitude === "number"
+      ) {
+        fetch("/api/notifications/nearby", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            vacancyId: vacancy.id,
+            title: vacancy.title,
+            location: vacancy.location,
+            difficulty: vacancy.difficulty,
+            latitude: vacancy.latitude,
+            longitude: vacancy.longitude,
+          }),
+        }).catch(() => {
+          // ignore notification errors
+        });
+
+        // Refresh the in-app list for the currently signed-in user.
+        if (session?.user?.id) {
+          fetch("/api/notifications")
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => {
+              const notifications =
+                (data as { notifications?: AppNotification[] } | null)
+                  ?.notifications ?? undefined;
+              if (notifications) setNotifications(notifications);
+            })
+            .catch(() => {
+              // ignore notification errors
+            });
+        }
+      }
     },
-    []
+    [session?.user?.id]
   );
 
   const updateVacancy = useCallback((id: string, data: VacancyFormData) => {
@@ -487,6 +716,9 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
               title: data.title,
               sector: data.sector as Vacancy["sector"],
               location: data.location,
+              postalCode: data.postalCode || undefined,
+              latitude: data.latitude,
+              longitude: data.longitude,
               description: data.description,
               difficulty: data.difficulty,
               status: data.status,
@@ -530,6 +762,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
           amount
         );
         if (cashNotice) {
+          persistReferralEvent({
+            candidateId: candidate.id,
+            candidateName: candidate.name,
+            type: "reward_update",
+            title: cashNotice.title,
+            message: cashNotice.message,
+            status: candidate.status,
+            cashStatus: "intake_goedgekeurd",
+          });
           pushNotification({
             kind: cashNotice.kind,
             title: cashNotice.title,
@@ -541,6 +782,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [
       candidates,
       getCandidateDifficulty,
+      persistReferralEvent,
       pushNotification,
       setCashStatus,
       updateLeaderboardReward,
@@ -574,6 +816,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
           amount
         );
         if (cashNotice) {
+          persistReferralEvent({
+            candidateId: candidate.id,
+            candidateName: candidate.name,
+            type: "reward_update",
+            title: cashNotice.title,
+            message: cashNotice.message,
+            status: candidate.status,
+            cashStatus: "plaatsing_goedgekeurd",
+          });
           pushNotification({
             kind: cashNotice.kind,
             title: cashNotice.title,
@@ -585,6 +836,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [
       candidates,
       getCandidateDifficulty,
+      persistReferralEvent,
       pushNotification,
       setCashStatus,
       updateLeaderboardReward,
@@ -618,6 +870,15 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
           amount
         );
         if (cashNotice) {
+          persistReferralEvent({
+            candidateId: candidate.id,
+            candidateName: candidate.name,
+            type: "reward_update",
+            title: cashNotice.title,
+            message: cashNotice.message,
+            status: candidate.status,
+            cashStatus: "retentie_goedgekeurd",
+          });
           pushNotification({
             kind: cashNotice.kind,
             title: cashNotice.title,
@@ -629,6 +890,7 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
     [
       candidates,
       getCandidateDifficulty,
+      persistReferralEvent,
       pushNotification,
       setCashStatus,
       updateLeaderboardReward,
@@ -689,6 +951,8 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       grantPlacementBonus,
       grantRetentionBonus,
       revokeXp,
+      markNotificationRead,
+      markAllNotificationsRead,
     }),
     [
       xp,
@@ -718,6 +982,8 @@ export function ScoutProvider({ children }: { children: ReactNode }) {
       grantPlacementBonus,
       grantRetentionBonus,
       revokeXp,
+      markNotificationRead,
+      markAllNotificationsRead,
     ]
   );
 

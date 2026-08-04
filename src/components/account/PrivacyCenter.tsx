@@ -10,6 +10,7 @@ import {
   logoutAction,
   type ActionResult,
 } from "@/app/actions/auth";
+import { updateNotificationPreferencesAction } from "@/app/actions/notifications";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
@@ -17,6 +18,7 @@ const initial: ActionResult | null = null;
 
 export function PrivacyCenter({
   user,
+  notificationPreferences,
 }: {
   user: {
     email: string;
@@ -26,6 +28,18 @@ export function PrivacyCenter({
     marketingConsent: boolean;
     createdAt: string;
     termsAcceptedAt: string;
+  };
+  notificationPreferences: {
+    nearbyChallengesEnabled: boolean;
+    referralUpdatesEnabled: boolean;
+    rewardUpdatesEnabled: boolean;
+    closingSoonEnabled: boolean;
+    emailEnabled: boolean;
+    pushEnabled: boolean;
+    radiusKm: 10 | 25 | 50 | 100;
+    city: string;
+    postalCode: string;
+    locationConsent: boolean;
   };
 }) {
   const [profileState, profileAction, profilePending] = useActionState(
@@ -40,6 +54,8 @@ export function PrivacyCenter({
   const [marketingMsg, setMarketingMsg] = useState<string | null>(null);
   const [exportMsg, setExportMsg] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [notifyPrefs, setNotifyPrefs] = useState(notificationPreferences);
+  const [notifyMsg, setNotifyMsg] = useState<string | null>(null);
 
   return (
     <div className="mt-8 space-y-6">
@@ -91,6 +107,114 @@ export function PrivacyCenter({
             </Button>
           </div>
         </form>
+      </Card>
+
+      <Card className="border-fk-primary/10 p-5">
+        <h2 className="font-bold text-fk-navy">Notificaties</h2>
+        <p className="mt-1 text-sm text-fk-navy/60">
+          Kies welke updates je wil ontvangen.
+        </p>
+        <div className="mt-4 space-y-2 text-sm">
+          {[
+            ["nearbyChallengesEnabled", "Nieuwe challenge in mijn buurt"],
+            ["referralUpdatesEnabled", "Statusupdate van mijn referral"],
+            ["rewardUpdatesEnabled", "Nieuwe reward of uitbetaling"],
+            ["closingSoonEnabled", "Challenge sluit binnenkort"],
+            ["emailEnabled", "E-mailnotificaties"],
+            ["pushEnabled", "Pushnotificaties (indien ondersteund)"],
+          ].map(([key, label]) => (
+            <label key={key} className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={Boolean(notifyPrefs[key as keyof typeof notifyPrefs])}
+                onChange={(event) =>
+                  setNotifyPrefs((prev) => ({
+                    ...prev,
+                    [key]: event.target.checked,
+                  }))
+                }
+              />
+              <span>{label}</span>
+            </label>
+          ))}
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <label className="text-sm">
+            <span className="mb-1 block text-xs font-semibold uppercase text-fk-navy/45">
+              Woonplaats
+            </span>
+            <input
+              value={notifyPrefs.city}
+              onChange={(event) =>
+                setNotifyPrefs((prev) => ({ ...prev, city: event.target.value }))
+              }
+              className="w-full rounded-lg border border-fk-primary/20 px-3 py-2"
+            />
+          </label>
+          <label className="text-sm">
+            <span className="mb-1 block text-xs font-semibold uppercase text-fk-navy/45">
+              Postcode
+            </span>
+            <input
+              value={notifyPrefs.postalCode}
+              onChange={(event) =>
+                setNotifyPrefs((prev) => ({ ...prev, postalCode: event.target.value }))
+              }
+              className="w-full rounded-lg border border-fk-primary/20 px-3 py-2"
+            />
+          </label>
+          <label className="text-sm">
+            <span className="mb-1 block text-xs font-semibold uppercase text-fk-navy/45">
+              Afstand
+            </span>
+            <select
+              value={notifyPrefs.radiusKm}
+              onChange={(event) =>
+                setNotifyPrefs((prev) => ({
+                  ...prev,
+                  radiusKm: Number(event.target.value) as 10 | 25 | 50 | 100,
+                }))
+              }
+              className="w-full rounded-lg border border-fk-primary/20 px-3 py-2"
+            >
+              <option value={10}>10 km</option>
+              <option value={25}>25 km</option>
+              <option value={50}>50 km</option>
+              <option value={100}>100 km</option>
+            </select>
+          </label>
+          <label className="mt-6 flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={notifyPrefs.locationConsent}
+              onChange={(event) =>
+                setNotifyPrefs((prev) => ({
+                  ...prev,
+                  locationConsent: event.target.checked,
+                }))
+              }
+            />
+            Locatiegebaseerde notificaties toestaan
+          </label>
+        </div>
+        <Button
+          className="mt-4"
+          onClick={() => {
+            if (typeof window !== "undefined") {
+              window.localStorage.setItem(
+                "referr-notification-preferences",
+                JSON.stringify(notifyPrefs)
+              );
+            }
+            startTransition(async () => {
+              const result = await updateNotificationPreferencesAction(notifyPrefs);
+              setNotifyMsg(result.message ?? null);
+            });
+          }}
+        >
+          Notificatievoorkeuren opslaan
+        </Button>
+        {notifyMsg && <p className="mt-2 text-xs text-fk-navy/60">{notifyMsg}</p>}
       </Card>
 
       <Card className="border-fk-primary/10 p-5">

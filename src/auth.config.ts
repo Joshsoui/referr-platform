@@ -45,7 +45,19 @@ export const authConfig = {
         return Response.redirect(login);
       }
 
-      if (pathname.startsWith("/admin") && auth?.user?.role !== "admin") {
+      if (
+        pathname.startsWith("/admin") &&
+        auth?.user?.role !== "admin" &&
+        auth?.user?.role !== "recruiter"
+      ) {
+        return Response.redirect(new URL("/dashboard", request.nextUrl));
+      }
+
+      if (
+        pathname.startsWith("/recruitment") &&
+        auth?.user?.role !== "admin" &&
+        auth?.user?.role !== "recruiter"
+      ) {
         return Response.redirect(new URL("/dashboard", request.nextUrl));
       }
 
@@ -64,7 +76,7 @@ export const authConfig = {
     session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.role = token.role as "user" | "admin";
+        session.user.role = token.role as "user" | "admin" | "recruiter";
         session.user.firstName = token.firstName as string;
         session.user.lastName = token.lastName as string;
         session.user.emailVerifiedAt = (token.emailVerifiedAt as string | null) ?? null;

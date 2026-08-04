@@ -12,6 +12,9 @@ const EMPTY_FORM: VacancyFormData = {
   title: "",
   sector: "",
   location: "",
+  postalCode: "",
+  latitude: undefined,
+  longitude: undefined,
   description: "",
   difficulty: "easy",
   status: "open",
@@ -31,6 +34,9 @@ export function VacancyManager() {
       title: vacancy.title,
       sector: vacancy.sector,
       location: vacancy.location,
+      postalCode: vacancy.postalCode ?? "",
+      latitude: vacancy.latitude,
+      longitude: vacancy.longitude,
       description: vacancy.description,
       difficulty: vacancy.difficulty,
       status: vacancy.status,
@@ -42,14 +48,54 @@ export function VacancyManager() {
     setForm(EMPTY_FORM);
   }
 
-  function handleSubmit(event: React.FormEvent) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!form.title || !form.sector || !form.location) return;
 
+    let latitude: number | undefined = form.latitude;
+    let longitude: number | undefined = form.longitude;
+
+    if (
+      typeof latitude !== "number" ||
+      typeof longitude !== "number" ||
+      !Number.isFinite(latitude) ||
+      !Number.isFinite(longitude)
+    ) {
+      const query = `${form.postalCode ? `${form.postalCode} ` : ""}${
+        form.location
+      }`.trim();
+
+      try {
+        const res = await fetch("/api/geocode", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query }),
+        });
+
+        if (res.ok) {
+          const data = (await res.json()) as {
+            latitude?: number;
+            longitude?: number;
+          };
+          if (typeof data.latitude === "number") latitude = data.latitude;
+          if (typeof data.longitude === "number") longitude = data.longitude;
+        }
+      } catch {
+        // ignore geocoding errors; vacancy will just not trigger nearby notifications
+      }
+    }
+
+    const submitData: VacancyFormData = {
+      ...form,
+      postalCode: form.postalCode || undefined,
+      latitude,
+      longitude,
+    };
+
     if (editingId) {
-      updateVacancy(editingId, form);
+      updateVacancy(editingId, submitData);
     } else {
-      addVacancy(form);
+      addVacancy(submitData);
     }
 
     resetForm();
@@ -111,6 +157,20 @@ export function VacancyManager() {
             className="w-full rounded-xl border border-fk-primary/20 px-3 py-2 text-sm"
             placeholder="Bijv. Utrecht"
             required
+          />
+        </label>
+
+        <label className="block">
+          <span className="mb-1 block text-sm font-semibold text-fk-navy">
+            Postcode (optioneel)
+          </span>
+          <input
+            value={form.postalCode ?? ""}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, postalCode: e.target.value }))
+            }
+            className="w-full rounded-xl border border-fk-primary/20 px-3 py-2 text-sm"
+            placeholder="Bijv. 3511"
           />
         </label>
 
