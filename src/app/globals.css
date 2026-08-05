@@ -1822,128 +1822,193 @@ html.fk-deck-theme main button.rounded-xl:hover {
 
 
 
-/* ── Coming soon (referr.nl) — Apple-ad phone teaser ── */
+/* ── Coming soon (referr.nl) — 3D Apple-ad phone ── */
 .cs-studio-light {
   position: absolute;
-  inset: -20% -10% auto;
-  height: 70%;
+  inset: -25% -15% auto;
+  height: 75%;
   background:
-    radial-gradient(ellipse 55% 50% at 50% 35%, rgba(255, 77, 89, 0.14), transparent 60%),
-    radial-gradient(ellipse 40% 35% at 30% 20%, rgba(255, 170, 32, 0.08), transparent 55%),
-    radial-gradient(ellipse 40% 35% at 70% 25%, rgba(255, 122, 48, 0.07), transparent 55%);
-  filter: blur(2px);
-  animation: cs-light-breathe 10s ease-in-out infinite;
+    radial-gradient(ellipse 50% 45% at 48% 30%, rgba(255, 255, 255, 0.9), transparent 55%),
+    radial-gradient(ellipse 45% 40% at 55% 40%, rgba(255, 77, 89, 0.16), transparent 60%),
+    radial-gradient(ellipse 35% 30% at 35% 25%, rgba(255, 170, 32, 0.1), transparent 55%);
+  animation: cs-light-breathe 11s ease-in-out infinite;
+}
+
+.cs-studio-spot {
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  width: min(70vw, 480px);
+  height: min(70vw, 480px);
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(255, 122, 48, 0.12), transparent 68%);
+  filter: blur(20px);
 }
 
 .cs-studio-floor {
   position: absolute;
   left: 50%;
-  bottom: 8%;
-  width: min(80vw, 520px);
-  height: 120px;
+  bottom: 4%;
+  width: min(90vw, 640px);
+  height: 160px;
   transform: translateX(-50%);
-  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.08), transparent 70%);
-  filter: blur(18px);
+  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.1), transparent 68%);
+  filter: blur(22px);
 }
 
 .cs-phone-stage {
   position: relative;
-  perspective: 1200px;
+  perspective: 1800px;
+  perspective-origin: 50% 40%;
 }
 
 .cs-phone {
   position: relative;
-  width: min(74vw, 300px);
-  animation: cs-phone-float 7s ease-in-out infinite;
+  width: min(70vw, 290px);
+  margin: 0 auto;
   transform-style: preserve-3d;
+  animation: cs-phone-float 8s ease-in-out infinite;
 }
 
 .cs-phone-shadow {
   position: absolute;
-  left: 6%;
-  right: 6%;
-  bottom: -8%;
-  height: 22%;
+  left: 12%;
+  right: 2%;
+  bottom: -4%;
+  height: 16%;
   border-radius: 50%;
   background: radial-gradient(
     ellipse at center,
-    rgba(15, 23, 42, 0.42) 0%,
-    rgba(15, 23, 42, 0.14) 42%,
-    transparent 72%
+    rgba(15, 23, 42, 0.45) 0%,
+    rgba(15, 23, 42, 0.16) 40%,
+    transparent 70%
   );
-  filter: blur(18px);
-  animation: cs-shadow-breathe 7s ease-in-out infinite;
+  filter: blur(20px);
+  transform: translateZ(-40px) rotateX(80deg) scaleX(1.1);
+  animation: cs-shadow-breathe 8s ease-in-out infinite;
 }
 
-.cs-phone-body {
+.cs-phone-3d {
   position: relative;
-  border-radius: 3.15rem;
-  padding: 0.72rem;
+  transform: rotateY(-26deg) rotateX(10deg) rotateZ(1deg);
+  transform-style: preserve-3d;
+}
+
+.cs-phone-edge {
+  position: absolute;
+  top: 1.2%;
+  bottom: 1.2%;
+  right: -11px;
+  width: 14px;
+  border-radius: 2px;
   background:
     linear-gradient(
-      160deg,
-      #6e6e74 0%,
-      #3d3d42 12%,
-      #1a1a1d 32%,
-      #0a0a0c 52%,
-      #1f1f23 72%,
-      #4a4a50 88%,
-      #7a7a82 100%
+      180deg,
+      #9a9aa2 0%,
+      #5c5c64 8%,
+      #2a2a30 22%,
+      #141418 45%,
+      #1c1c22 68%,
+      #4a4a52 88%,
+      #8a8a92 100%
     );
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.22) inset,
-    0 1.5px 0 rgba(255, 255, 255, 0.28) inset,
-    0 -2px 0 rgba(0, 0, 0, 0.55) inset,
-    0 2px 3px rgba(255, 255, 255, 0.08),
-    0 32px 64px -18px rgba(15, 23, 42, 0.58),
-    0 56px 100px -40px rgba(255, 77, 89, 0.28),
-    0 12px 28px rgba(15, 23, 42, 0.22);
+    inset 1px 0 0 rgba(255, 255, 255, 0.25),
+    inset -1px 0 0 rgba(0, 0, 0, 0.5),
+    4px 0 12px rgba(0, 0, 0, 0.25);
+  transform: translateZ(-6px) rotateY(18deg);
+  transform-origin: left center;
 }
 
-.cs-phone-side {
+.cs-phone-face {
+  position: relative;
+  transform: translateZ(8px);
+  transform-style: preserve-3d;
+}
+
+.cs-phone-buttons {
   position: absolute;
-  width: 3.5px;
-  border-radius: 2px;
-  background: linear-gradient(180deg, #8a8a92, #3a3a40 35%, #1c1c20 65%, #5a5a62);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.cs-phone-buttons span {
+  display: block;
+  width: 3px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, #6a6a72, #2a2a30 40%, #1a1a1e);
   box-shadow:
-    0 0 0 0.5px rgba(255, 255, 255, 0.12),
-    1px 0 2px rgba(0, 0, 0, 0.25);
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    1px 0 2px rgba(0, 0, 0, 0.35);
 }
 
-.cs-phone-side--left {
-  left: -1.5px;
-  top: 17%;
-  height: 11%;
+.cs-phone-buttons--left {
+  left: -2px;
+  top: 16%;
 }
 
-.cs-phone-side--left::before {
+.cs-phone-buttons--left span:nth-child(1) {
+  height: 1.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.cs-phone-buttons--left span:nth-child(2),
+.cs-phone-buttons--left span:nth-child(3) {
+  height: 2.1rem;
+}
+
+.cs-phone-buttons--right {
+  right: -2px;
+  top: 26%;
+}
+
+.cs-phone-buttons--right span {
+  height: 3.2rem;
+}
+
+.cs-phone-titanium {
+  position: relative;
+  border-radius: 3.2rem;
+  padding: 0.78rem;
+  background:
+    linear-gradient(
+      145deg,
+      #c8c8ce 0%,
+      #8e8e96 8%,
+      #3a3a40 20%,
+      #16161a 38%,
+      #0a0a0c 52%,
+      #1e1e24 68%,
+      #5a5a62 84%,
+      #b0b0b8 100%
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.55),
+    inset 1.5px 0 0 rgba(255, 255, 255, 0.18),
+    inset -1px 0 0 rgba(0, 0, 0, 0.4),
+    0 24px 48px -12px rgba(15, 23, 42, 0.5),
+    0 40px 80px -28px rgba(255, 77, 89, 0.28),
+    0 8px 20px rgba(15, 23, 42, 0.25);
+}
+
+.cs-phone-titanium::before {
   content: "";
   position: absolute;
-  left: 0;
-  top: 145%;
-  width: 3.5px;
-  height: 190%;
-  border-radius: 2px;
-  background: inherit;
-  box-shadow: inherit;
-}
-
-.cs-phone-side--left::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 400%;
-  width: 3.5px;
-  height: 150%;
-  border-radius: 2px;
-  background: inherit;
-  box-shadow: inherit;
-}
-
-.cs-phone-side--right {
-  right: -1.5px;
-  top: 27%;
-  height: 15%;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.05) 18%,
+    transparent 40%,
+    transparent 70%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  mix-blend-mode: soft-light;
 }
 
 .cs-phone-bezel {
@@ -1952,38 +2017,49 @@ html.fk-deck-theme main button.rounded-xl:hover {
   border-radius: 2.55rem;
   background: #050506;
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.9),
-    0 0 0 2.5px rgba(255, 255, 255, 0.06);
+    0 0 0 1px rgba(0, 0, 0, 0.95),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 .cs-phone-island {
   position: absolute;
   top: 0.95rem;
   left: 50%;
-  z-index: 3;
+  z-index: 4;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  width: 6rem;
-  height: 1.7rem;
-  padding-right: 0.6rem;
+  gap: 0.45rem;
+  width: 6.2rem;
+  height: 1.75rem;
+  padding: 0 0.65rem 0 0.85rem;
   transform: translateX(-50%);
   border-radius: 999px;
   background: #050506;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
-    0 3px 8px rgba(0, 0, 0, 0.4);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 4px 10px rgba(0, 0, 0, 0.45);
 }
 
-.cs-phone-island-camera {
-  width: 0.62rem;
-  height: 0.62rem;
+.cs-phone-speaker {
+  flex: 1;
+  height: 0.28rem;
+  max-width: 2.4rem;
+  margin-right: auto;
+  border-radius: 999px;
+  background: #121216;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+}
+
+.cs-phone-camera {
+  width: 0.68rem;
+  height: 0.68rem;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 32% 32%, #4a5a7a 0%, #1a2438 42%, #07090f 100%);
+    radial-gradient(circle at 30% 30%, #5a6a8a 0%, #1a2840 40%, #06080e 100%);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    inset 0 0 3px rgba(80, 120, 200, 0.35);
+    0 0 0 1.5px rgba(255, 255, 255, 0.08),
+    inset 0 0 4px rgba(100, 140, 220, 0.35);
 }
 
 .cs-phone-screen {
@@ -1993,67 +2069,117 @@ html.fk-deck-theme main button.rounded-xl:hover {
   justify-content: center;
   aspect-ratio: 9 / 19.5;
   background:
-    radial-gradient(ellipse 85% 58% at 50% 44%, #fff8f7 0%, #ffffff 42%, #f6f4f3 100%);
+    radial-gradient(ellipse 90% 60% at 50% 45%, #fff9f8 0%, #ffffff 50%, #f3f1f0 100%);
 }
 
-.cs-phone-screen::after {
-  content: "";
+.cs-phone-screen-glow {
   position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background: linear-gradient(
-    125deg,
-    rgba(255, 255, 255, 0.55) 0%,
-    rgba(255, 255, 255, 0.08) 28%,
-    transparent 48%,
-    transparent 100%
+  inset: 18% 10%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 77, 89, 0.16),
+    transparent 70%
   );
-  mix-blend-mode: soft-light;
-}
-
-.cs-phone-screen-wash {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 55% 38% at 50% 48%, rgba(255, 77, 89, 0.12), transparent 72%);
+  filter: blur(16px);
   animation: cs-screen-pulse 5.5s ease-in-out infinite;
 }
 
 .cs-phone-logo {
   z-index: 1;
-  filter: drop-shadow(0 10px 28px rgba(255, 77, 89, 0.22));
+  filter: drop-shadow(0 12px 30px rgba(255, 77, 89, 0.25));
   animation: cs-logo-breathe 5.5s ease-in-out infinite;
 }
 
+.cs-phone-glass {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      122deg,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(255, 255, 255, 0.18) 16%,
+      rgba(255, 255, 255, 0.02) 32%,
+      transparent 48%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.12) 0%,
+      transparent 18%,
+      transparent 82%,
+      rgba(0, 0, 0, 0.04) 100%
+    );
+}
+
+.cs-phone-reflection {
+  position: absolute;
+  left: 4%;
+  right: -4%;
+  top: 96%;
+  height: 28%;
+  overflow: hidden;
+  pointer-events: none;
+  transform: rotateY(-26deg) rotateX(10deg);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent 75%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent 75%);
+  opacity: 0.45;
+}
+
+.cs-phone-reflection-inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  height: 360%;
+  padding-top: 28%;
+  border-radius: 3.2rem;
+  background:
+    linear-gradient(145deg, #2a2a30 0%, #121216 40%, #1a1a1e 100%);
+  transform: scaleY(-1);
+  opacity: 0.55;
+  filter: blur(0.5px);
+}
+
 @keyframes cs-light-breathe {
-  0%, 100% { opacity: 0.75; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.03); }
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.04); }
 }
 
 @keyframes cs-phone-float {
-  0%, 100% { transform: translateY(0) rotateX(2deg); }
-  50% { transform: translateY(-14px) rotateX(2deg); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16px); }
 }
 
 @keyframes cs-shadow-breathe {
-  0%, 100% { opacity: 0.85; transform: scaleX(1); }
-  50% { opacity: 0.55; transform: scaleX(0.92); }
+  0%, 100% { opacity: 0.9; transform: translateZ(-40px) rotateX(80deg) scaleX(1.05); }
+  50% { opacity: 0.55; transform: translateZ(-40px) rotateX(80deg) scaleX(0.92); }
 }
 
 @keyframes cs-screen-pulse {
-  0%, 100% { opacity: 0.55; }
+  0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
 
 @keyframes cs-logo-breathe {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
+  50% { transform: scale(1.035); }
 }
 
 @media (min-width: 640px) {
   .cs-phone {
-    width: min(52vw, 320px);
+    width: min(48vw, 310px);
+  }
+}
+
+@media (max-width: 639px) {
+  .cs-phone-3d {
+    transform: rotateY(-18deg) rotateX(8deg);
+  }
+
+  .cs-phone-reflection {
+    transform: rotateY(-18deg) rotateX(8deg);
+    height: 22%;
   }
 }
 
@@ -2061,7 +2187,7 @@ html.fk-deck-theme main button.rounded-xl:hover {
   .cs-studio-light,
   .cs-phone,
   .cs-phone-shadow,
-  .cs-phone-screen-wash,
+  .cs-phone-screen-glow,
   .cs-phone-logo {
     animation: none !important;
   }
