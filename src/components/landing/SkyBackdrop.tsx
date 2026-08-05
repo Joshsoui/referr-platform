@@ -76,6 +76,7 @@ export function SkyBackdrop({ reduced }: SkyBackdropProps) {
         />
       </div>
 
+      <div className="cs-sky-brand-field" />
       <div className="cs-sky-brand-tint" />
       <div className="cs-sky-brand-wash" />
       <div className="cs-sky-brand-glow" />
