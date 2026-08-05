@@ -6,13 +6,13 @@ import { DustAtmosphere } from "./DustAtmosphere";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-const line = {
-  hidden: { opacity: 0, y: 36, filter: "blur(14px)" },
+const payoffLine = {
+  hidden: { opacity: 0, y: 32, filter: "blur(12px)" },
   show: (i: number) => ({
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
-    transition: { duration: 1.1, delay: 0.35 + i * 0.14, ease: EASE },
+    transition: { duration: 1.05, delay: 0.3 + i * 0.12, ease: EASE },
   }),
 };
 
@@ -20,28 +20,28 @@ export function ComingSoonExperience() {
   const reduced = useReducedMotion();
 
   return (
-    <div className="cs-apple relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden px-6">
+    <div className="cs-apple relative flex min-h-[100dvh] flex-col overflow-hidden">
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="cs-apple-base" />
-        <div className="cs-apple-smoke cs-apple-smoke--a" />
-        <div className="cs-apple-smoke cs-apple-smoke--b" />
-        <div className="cs-apple-smoke cs-apple-smoke--c" />
-        <div className="cs-apple-spotlight" />
-        <div className="cs-apple-vignette" />
-        <div className="cs-apple-grain" />
+        <div className="cs-sky-base" />
+        <div className="cs-sky-cloud cs-sky-cloud--a" />
+        <div className="cs-sky-cloud cs-sky-cloud--b" />
+        <div className="cs-sky-cloud cs-sky-cloud--c" />
+        <div className="cs-sky-cloud cs-sky-cloud--d" />
+        <div className="cs-sky-glow" />
+        <div className="cs-sky-haze" />
       </div>
 
       {!reduced && (
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <DustAtmosphere reduced={false} />
+          <DustAtmosphere reduced={false} variant="sky" />
         </div>
       )}
 
-      <div className="relative z-10 flex w-full max-w-4xl flex-col items-center text-center">
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-8 pt-16 text-center">
         <motion.div
           initial={reduced ? false : { opacity: 0, y: -8, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.9, delay: 0.05, ease: EASE }}
+          transition={{ duration: 0.85, delay: 0.05, ease: EASE }}
           className="cs-apple-logo"
         >
           <Image
@@ -51,54 +51,44 @@ export function ComingSoonExperience() {
             height={286}
             quality={100}
             priority
-            className="brand-logo-mark h-auto w-[4.5rem] object-contain opacity-90 sm:w-[5.25rem]"
+            className="brand-logo-mark h-auto w-[4.25rem] object-contain sm:w-[4.75rem]"
           />
         </motion.div>
 
         <motion.h1
           initial={reduced ? false : "hidden"}
           animate={reduced ? false : "show"}
-          className="cs-apple-headline mt-7 sm:mt-9"
-          aria-label="Coming soon"
+          className="cs-apple-payoff mt-8 max-w-lg text-balance sm:mt-10 sm:max-w-2xl"
         >
           <motion.span
             custom={0}
-            variants={reduced ? undefined : line}
+            variants={reduced ? undefined : payoffLine}
             initial={reduced ? false : "hidden"}
             animate={reduced ? false : "show"}
-            className="cs-apple-headline-line block"
+            className="block text-fk-navy"
           >
-            Coming
+            Ken iemand.
           </motion.span>
           <motion.span
             custom={1}
-            variants={reduced ? undefined : line}
+            variants={reduced ? undefined : payoffLine}
             initial={reduced ? false : "hidden"}
             animate={reduced ? false : "show"}
-            className="cs-apple-headline-line cs-apple-headline-accent block"
+            className="brand-wordmark block"
           >
-            soon
+            Maak het verschil.
           </motion.span>
         </motion.h1>
-
-        <motion.p
-          initial={reduced ? false : { opacity: 0, y: 16, filter: "blur(10px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 1, delay: 0.75, ease: EASE }}
-          className="mt-6 max-w-md text-[15px] font-medium leading-relaxed tracking-[-0.01em] text-white/48 sm:mt-8 sm:text-base"
-        >
-          Ken iemand.{" "}
-          <span className="text-white/72">Maak het verschil.</span>
-        </motion.p>
-
-        <motion.div
-          initial={reduced ? false : { opacity: 0, scaleX: 0.2 }}
-          animate={{ opacity: 1, scaleX: 1 }}
-          transition={{ duration: 1.2, delay: 1, ease: EASE }}
-          className="cs-apple-shine mt-10 sm:mt-12"
-          aria-hidden
-        />
       </div>
+
+      <motion.p
+        initial={reduced ? false : { opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.85, ease: EASE }}
+        className="cs-apple-kicker relative z-10 pb-[max(1.75rem,env(safe-area-inset-bottom))] text-center"
+      >
+        coming soon
+      </motion.p>
     </div>
   );
 }
