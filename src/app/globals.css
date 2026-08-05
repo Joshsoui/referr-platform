@@ -1853,71 +1853,76 @@ html.fk-deck-theme main button.rounded-xl:hover {
 
 .cs-phone {
   position: relative;
-  width: min(72vw, 280px);
+  width: min(74vw, 300px);
   animation: cs-phone-float 7s ease-in-out infinite;
   transform-style: preserve-3d;
 }
 
 .cs-phone-shadow {
   position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: -6%;
-  height: 18%;
+  left: 6%;
+  right: 6%;
+  bottom: -8%;
+  height: 22%;
   border-radius: 50%;
   background: radial-gradient(
     ellipse at center,
-    rgba(15, 23, 42, 0.35) 0%,
-    rgba(15, 23, 42, 0.12) 45%,
+    rgba(15, 23, 42, 0.42) 0%,
+    rgba(15, 23, 42, 0.14) 42%,
     transparent 72%
   );
-  filter: blur(16px);
+  filter: blur(18px);
   animation: cs-shadow-breathe 7s ease-in-out infinite;
 }
 
 .cs-phone-body {
   position: relative;
-  border-radius: 3rem;
-  padding: 0.55rem;
+  border-radius: 3.15rem;
+  padding: 0.72rem;
   background:
     linear-gradient(
-      145deg,
-      #3a3a3e 0%,
-      #1c1c1f 28%,
-      #0c0c0e 55%,
-      #222226 78%,
-      #4a4a50 100%
+      160deg,
+      #6e6e74 0%,
+      #3d3d42 12%,
+      #1a1a1d 32%,
+      #0a0a0c 52%,
+      #1f1f23 72%,
+      #4a4a50 88%,
+      #7a7a82 100%
     );
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.12) inset,
-    0 1px 0 rgba(255, 255, 255, 0.18) inset,
-    0 -1px 0 rgba(0, 0, 0, 0.5) inset,
-    0 28px 60px -20px rgba(15, 23, 42, 0.55),
-    0 48px 90px -36px rgba(255, 77, 89, 0.22),
-    0 8px 24px rgba(15, 23, 42, 0.2);
+    0 0 0 1px rgba(255, 255, 255, 0.22) inset,
+    0 1.5px 0 rgba(255, 255, 255, 0.28) inset,
+    0 -2px 0 rgba(0, 0, 0, 0.55) inset,
+    0 2px 3px rgba(255, 255, 255, 0.08),
+    0 32px 64px -18px rgba(15, 23, 42, 0.58),
+    0 56px 100px -40px rgba(255, 77, 89, 0.28),
+    0 12px 28px rgba(15, 23, 42, 0.22);
 }
 
 .cs-phone-side {
   position: absolute;
-  width: 3px;
+  width: 3.5px;
   border-radius: 2px;
-  background: linear-gradient(180deg, #5a5a60, #2a2a2e 40%, #1a1a1e 70%, #3a3a40);
-  box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, #8a8a92, #3a3a40 35%, #1c1c20 65%, #5a5a62);
+  box-shadow:
+    0 0 0 0.5px rgba(255, 255, 255, 0.12),
+    1px 0 2px rgba(0, 0, 0, 0.25);
 }
 
 .cs-phone-side--left {
-  left: -1px;
-  top: 18%;
-  height: 12%;
+  left: -1.5px;
+  top: 17%;
+  height: 11%;
 }
 
 .cs-phone-side--left::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 140%;
-  width: 3px;
-  height: 180%;
+  top: 145%;
+  width: 3.5px;
+  height: 190%;
   border-radius: 2px;
   background: inherit;
   box-shadow: inherit;
@@ -1927,56 +1932,58 @@ html.fk-deck-theme main button.rounded-xl:hover {
   content: "";
   position: absolute;
   left: 0;
-  top: 380%;
-  width: 3px;
-  height: 140%;
+  top: 400%;
+  width: 3.5px;
+  height: 150%;
   border-radius: 2px;
   background: inherit;
   box-shadow: inherit;
 }
 
 .cs-phone-side--right {
-  right: -1px;
-  top: 28%;
-  height: 16%;
+  right: -1.5px;
+  top: 27%;
+  height: 15%;
 }
 
 .cs-phone-bezel {
   position: relative;
   overflow: hidden;
   border-radius: 2.55rem;
-  background: #000;
+  background: #050506;
   box-shadow:
-    0 0 0 1.5px rgba(0, 0, 0, 0.85),
-    0 0 0 2px rgba(255, 255, 255, 0.04);
+    0 0 0 1px rgba(0, 0, 0, 0.9),
+    0 0 0 2.5px rgba(255, 255, 255, 0.06);
 }
 
 .cs-phone-island {
   position: absolute;
-  top: 0.85rem;
+  top: 0.95rem;
   left: 50%;
   z-index: 3;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  width: 5.6rem;
-  height: 1.55rem;
-  padding-right: 0.55rem;
+  width: 6rem;
+  height: 1.7rem;
+  padding-right: 0.6rem;
   transform: translateX(-50%);
   border-radius: 999px;
-  background: #0a0a0c;
+  background: #050506;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-    0 2px 6px rgba(0, 0, 0, 0.35);
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
 .cs-phone-island-camera {
-  width: 0.55rem;
-  height: 0.55rem;
+  width: 0.62rem;
+  height: 0.62rem;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 35% 35%, #3a4a6a 0%, #1a2030 45%, #0a0c12 100%);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+    radial-gradient(circle at 32% 32%, #4a5a7a 0%, #1a2438 42%, #07090f 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 0 3px rgba(80, 120, 200, 0.35);
 }
 
 .cs-phone-screen {
@@ -1986,20 +1993,36 @@ html.fk-deck-theme main button.rounded-xl:hover {
   justify-content: center;
   aspect-ratio: 9 / 19.5;
   background:
-    radial-gradient(ellipse 80% 55% at 50% 42%, rgba(255, 241, 243, 0.95), transparent 65%),
-    linear-gradient(180deg, #ffffff 0%, #f7f5f4 48%, #fff1f3 100%);
+    radial-gradient(ellipse 85% 58% at 50% 44%, #fff8f7 0%, #ffffff 42%, #f6f4f3 100%);
+}
+
+.cs-phone-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.08) 28%,
+    transparent 48%,
+    transparent 100%
+  );
+  mix-blend-mode: soft-light;
 }
 
 .cs-phone-screen-wash {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 40% at 50% 48%, rgba(255, 77, 89, 0.1), transparent 70%);
+    radial-gradient(ellipse 55% 38% at 50% 48%, rgba(255, 77, 89, 0.12), transparent 72%);
   animation: cs-screen-pulse 5.5s ease-in-out infinite;
 }
 
 .cs-phone-logo {
-  filter: drop-shadow(0 8px 24px rgba(255, 77, 89, 0.18));
+  z-index: 1;
+  filter: drop-shadow(0 10px 28px rgba(255, 77, 89, 0.22));
   animation: cs-logo-breathe 5.5s ease-in-out infinite;
 }
 
@@ -2030,7 +2053,7 @@ html.fk-deck-theme main button.rounded-xl:hover {
 
 @media (min-width: 640px) {
   .cs-phone {
-    width: min(58vw, 300px);
+    width: min(52vw, 320px);
   }
 }
 
