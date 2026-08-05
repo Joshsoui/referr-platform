@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ff4d59",
-  colorScheme: "light",
+  themeColor: "#000000",
+  colorScheme: "dark",
 };
 
 export default function ComingSoonPage() {

@@ -45,7 +45,7 @@ export function ComingSoonExperience() {
           initial={reduced ? false : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, delay: 0.45, ease: EASE }}
-          className="brand-wordmark cs-editorial-kicker mt-8 sm:mt-10"
+          className="cs-editorial-kicker mt-8 text-white sm:mt-10"
         >
           coming soon
         </motion.p>
