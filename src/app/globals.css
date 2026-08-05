@@ -1832,15 +1832,16 @@ html.fk-deck-theme main button.rounded-xl:hover {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    ellipse 90% 80% at 50% 44%,
-    #ffaa20 0%,
-    #ff7a30 14%,
-    #ff4d59 30%,
-    #e03e48 42%,
-    #a82a35 55%,
-    #5c151c 72%,
-    #1a0608 88%,
-    #000000 100%
+    ellipse 100% 90% at 50% 48%,
+    #000000 0%,
+    #050102 28%,
+    #120406 42%,
+    #3a1018 58%,
+    #7a2430 72%,
+    #c43845 84%,
+    #ff4d59 92%,
+    #ff7a30 97%,
+    #ffaa20 100%
   );
 }
 
@@ -1848,25 +1849,14 @@ html.fk-deck-theme main button.rounded-xl:hover {
   position: absolute;
   inset: 0;
   background: radial-gradient(
-    ellipse 55% 45% at 50% 42%,
-    rgba(255, 170, 32, 0.35) 0%,
-    rgba(255, 122, 48, 0.15) 45%,
-    transparent 72%
-  );
-  animation: cs-brand-glow-pulse 14s ease-in-out infinite alternate;
-}
-
-.cs-sky-vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse 78% 72% at 50% 48%,
+    ellipse 105% 95% at 50% 50%,
     transparent 0%,
-    transparent 38%,
-    rgba(0, 0, 0, 0.45) 68%,
-    rgba(0, 0, 0, 0.92) 100%
+    transparent 52%,
+    rgba(255, 77, 89, 0.12) 72%,
+    rgba(255, 122, 48, 0.22) 88%,
+    rgba(255, 170, 32, 0.18) 100%
   );
-  pointer-events: none;
+  animation: cs-brand-glow-pulse 16s ease-in-out infinite alternate;
 }
 
 .cs-editorial-logo {
