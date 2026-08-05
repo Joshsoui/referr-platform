@@ -5,14 +5,34 @@ import { motion, useReducedMotion } from "framer-motion";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-function HeroPhone() {
+export function ComingSoonExperience() {
+  const reduced = useReducedMotion();
+
   return (
-    <div className="cs-phone-wrap">
-      <div className="vision-phone-glow cs-phone-glow" aria-hidden />
-      <div className="vision-phone cs-phone">
-        <div className="vision-phone-frame">
-          <div className="vision-phone-notch" aria-hidden />
-          <div className="cs-phone-screen">
+    <div className="cs-stage relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden px-6">
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="cs-stage-glow" />
+        <div className="cs-stage-floor" />
+      </div>
+
+      <div className="relative z-10 flex w-full max-w-3xl flex-col items-center text-center">
+        <motion.p
+          initial={reduced ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.1, ease: EASE }}
+          className="text-[11px] font-semibold uppercase tracking-[0.32em] text-fk-primary"
+        >
+          Coming soon
+        </motion.p>
+
+        <motion.div
+          initial={reduced ? false : { opacity: 0, y: 28, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1.15, delay: 0.2, ease: EASE }}
+          className="cs-logo-hero mt-8 sm:mt-10"
+        >
+          <div className="cs-logo-hero-glow" aria-hidden />
+          <div className="cs-logo-hero-stage">
             <Image
               src="/brand/referr-logo.png"
               alt="referr"
@@ -20,52 +40,21 @@ function HeroPhone() {
               height={286}
               quality={100}
               priority
-              className="brand-logo-mark cs-phone-logo h-auto w-[78%] max-w-[11rem] object-contain"
+              className="brand-logo-mark cs-logo-hero-mark h-auto w-full object-contain"
             />
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export function ComingSoonExperience() {
-  const reduced = useReducedMotion();
-
-  return (
-    <div className="landing-surface relative flex min-h-[100dvh] items-center justify-center overflow-hidden px-6">
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="hero-light-glow cs-atmosphere" />
-      </div>
-
-      <div className="relative z-10 flex w-full max-w-sm flex-col items-center text-center">
-        <motion.div
-          initial={reduced ? false : { opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, ease: EASE }}
-          className="w-full"
-        >
-          <HeroPhone />
         </motion.div>
 
-        <motion.p
-          initial={reduced ? false : { opacity: 0, y: 12 }}
+        <motion.h1
+          initial={reduced ? false : { opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.35, ease: EASE }}
-          className="mt-8 text-[11px] font-semibold uppercase tracking-[0.28em] text-fk-primary"
+          transition={{ duration: 0.95, delay: 0.55, ease: EASE }}
+          className="mt-10 max-w-lg text-balance text-[1.65rem] font-bold leading-[1.12] tracking-[-0.04em] text-fk-navy sm:mt-12 sm:max-w-xl sm:text-4xl"
         >
-          Coming soon
-        </motion.p>
-
-        <motion.p
-          initial={reduced ? false : { opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.85, delay: 0.5, ease: EASE }}
-          className="mt-3 max-w-xs text-[17px] font-medium leading-relaxed tracking-[-0.02em] text-fk-navy/55 sm:max-w-sm sm:text-lg"
-        >
-          Ken iemand.{" "}
-          <span className="brand-wordmark font-bold">Maak het verschil.</span>
-        </motion.p>
+          Ken iemand.
+          <br />
+          <span className="brand-wordmark">Maak het verschil.</span>
+        </motion.h1>
       </div>
     </div>
   );
