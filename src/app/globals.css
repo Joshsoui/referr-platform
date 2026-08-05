@@ -1822,108 +1822,72 @@ html.fk-deck-theme main button.rounded-xl:hover {
 
 
 
-/* ── Coming soon (referr.nl) — photoreal iPhone mock ── */
-.cs-studio-light {
-  position: absolute;
-  inset: -20% -10% auto;
-  height: 70%;
-  background:
-    radial-gradient(ellipse 55% 50% at 50% 28%, rgba(255, 255, 255, 0.85), transparent 58%),
-    radial-gradient(ellipse 45% 40% at 50% 40%, rgba(255, 77, 89, 0.12), transparent 62%),
-    radial-gradient(ellipse 35% 30% at 30% 22%, rgba(255, 170, 32, 0.08), transparent 55%);
-  animation: cs-light-breathe 12s ease-in-out infinite;
+/* ── Coming soon (referr.nl) — vision phone teaser ── */
+.cs-atmosphere {
+  animation: cs-atmosphere-drift 16s ease-in-out infinite alternate;
 }
 
-.cs-studio-floor {
-  position: absolute;
-  left: 50%;
-  bottom: 6%;
-  width: min(85vw, 560px);
-  height: 140px;
-  transform: translateX(-50%);
-  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.09), transparent 70%);
-  filter: blur(20px);
-}
-
-.cs-photo-stage {
+.cs-phone-wrap {
   position: relative;
-  max-width: 420px;
   margin: 0 auto;
-  animation: cs-phone-float 8s ease-in-out infinite;
+  width: min(68vw, 250px);
 }
 
-.cs-photo-phone {
-  position: relative;
+.cs-phone-glow {
+  top: 42%;
+  height: 65%;
+  width: 120%;
+}
+
+.cs-phone {
   width: 100%;
 }
 
-.cs-photo-shadow {
-  position: absolute;
-  left: 18%;
-  right: 12%;
-  bottom: 4%;
-  height: 10%;
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(15, 23, 42, 0.35),
-    transparent 70%
-  );
-  filter: blur(16px);
-  z-index: 0;
-  animation: cs-shadow-breathe 8s ease-in-out infinite;
-}
-
-.cs-photo-device {
+.cs-phone-screen {
   position: relative;
-  z-index: 1;
-  filter: drop-shadow(0 28px 50px rgba(15, 23, 42, 0.28));
-}
-
-.cs-photo-logo-slot {
-  position: absolute;
-  z-index: 2;
-  top: 34.5%;
-  left: 24.5%;
-  width: 46%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: perspective(900px) rotateY(-19deg) rotateX(5deg) skewY(-1.5deg);
-  transform-origin: center center;
+  overflow: hidden;
+  border-radius: 1.95rem;
+  aspect-ratio: 9 / 19.2;
+  padding: 2.4rem 1rem 1.25rem;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% 46%, #fff8f7 0%, #ffffff 55%, #f4f2f1 100%);
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04);
+}
+
+.cs-phone-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   pointer-events: none;
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    transparent 35%,
+    transparent 100%
+  );
 }
 
-.cs-photo-logo {
-  filter: drop-shadow(0 8px 20px rgba(255, 77, 89, 0.22));
-  animation: cs-logo-breathe 5.5s ease-in-out infinite;
+.cs-phone-logo {
+  position: relative;
+  z-index: 1;
 }
 
-@keyframes cs-light-breathe {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
+@keyframes cs-atmosphere-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.85; }
+  to { transform: translate3d(0, 12px, 0) scale(1.02); opacity: 1; }
 }
 
-@keyframes cs-phone-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
-
-@keyframes cs-shadow-breathe {
-  0%, 100% { opacity: 0.85; transform: scaleX(1); }
-  50% { opacity: 0.55; transform: scaleX(0.92); }
-}
-
-@keyframes cs-logo-breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
+@media (min-width: 640px) {
+  .cs-phone-wrap {
+    width: min(42vw, 270px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cs-studio-light,
-  .cs-photo-stage,
-  .cs-photo-shadow,
-  .cs-photo-logo {
+  .cs-atmosphere {
     animation: none !important;
   }
 }
