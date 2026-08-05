@@ -1822,223 +1822,75 @@ html.fk-deck-theme main button.rounded-xl:hover {
 
 
 
-/* ── Coming soon (referr.nl) — realistic sky + horizon glow ── */
+/* ── Coming soon (referr.nl) — photo sky + brand glow ── */
 .cs-apple {
   background: #1a4f8c;
   color: #fff;
 }
 
-.cs-sky-base {
+.cs-sky-photo {
+  position: absolute;
+  inset: -6%;
+  will-change: transform;
+}
+
+.cs-sky-photo-img {
+  animation: cs-sky-drift 28s ease-in-out infinite alternate;
+}
+
+.cs-sky-brand-tint {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     180deg,
-    #0a2d5c 0%,
-    #134a82 18%,
-    #1f5f9e 38%,
-    #3d84c4 58%,
-    #6aaddf 78%,
-    #8ec4ea 100%
+    rgba(10, 45, 92, 0.42) 0%,
+    rgba(30, 90, 150, 0.18) 35%,
+    rgba(255, 120, 70, 0.12) 58%,
+    rgba(255, 77, 89, 0.22) 78%,
+    rgba(255, 154, 60, 0.18) 100%
   );
+  mix-blend-mode: multiply;
 }
 
-.cs-sky-zenith {
+.cs-sky-brand-wash {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    ellipse 120% 70% at 50% -5%,
-    rgba(0, 0, 0, 0.22) 0%,
-    transparent 55%
-  );
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 58%, rgba(255, 100, 65, 0.38), transparent 62%),
+    radial-gradient(ellipse 80% 50% at 30% 45%, rgba(255, 77, 89, 0.15), transparent 55%),
+    radial-gradient(ellipse 70% 45% at 75% 50%, rgba(255, 154, 60, 0.12), transparent 50%);
+  mix-blend-mode: soft-light;
+  animation: cs-brand-wash-pulse 14s ease-in-out infinite alternate;
 }
 
-.cs-sky-layer {
-  position: absolute;
-  inset: 0;
-  will-change: transform;
-}
-
-.cs-cloud-cluster {
-  position: absolute;
-  filter: blur(1px);
-}
-
-.cs-cloud-cluster span {
-  position: absolute;
-  display: block;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.15);
-}
-
-.cs-cloud-cluster--high {
-  left: -8%;
-  top: 11%;
-  width: 72vw;
-  height: 18vw;
-  max-width: 36rem;
-  max-height: 8rem;
-  animation: cs-cloud-drift-a 52s ease-in-out infinite alternate;
-}
-
-.cs-cloud-cluster--high span:nth-child(1) {
-  left: 0;
-  top: 28%;
-  width: 38%;
-  height: 72%;
-  opacity: 0.55;
-}
-
-.cs-cloud-cluster--high span:nth-child(2) {
-  left: 22%;
-  top: 8%;
-  width: 34%;
-  height: 88%;
-  opacity: 0.62;
-}
-
-.cs-cloud-cluster--high span:nth-child(3) {
-  left: 48%;
-  top: 22%;
-  width: 30%;
-  height: 70%;
-  opacity: 0.5;
-}
-
-.cs-cloud-cluster--high span:nth-child(4) {
-  left: 68%;
-  top: 35%;
-  width: 26%;
-  height: 58%;
-  opacity: 0.42;
-}
-
-.cs-cloud-cluster--mid {
-  right: -12%;
-  top: 26%;
-  width: 58vw;
-  height: 14vw;
-  max-width: 30rem;
-  max-height: 6.5rem;
-  animation: cs-cloud-drift-b 44s ease-in-out infinite alternate;
-}
-
-.cs-cloud-cluster--mid span:nth-child(1) {
-  left: 10%;
-  top: 20%;
-  width: 42%;
-  height: 80%;
-  opacity: 0.38;
-}
-
-.cs-cloud-cluster--mid span:nth-child(2) {
-  left: 38%;
-  top: 5%;
-  width: 36%;
-  height: 90%;
-  opacity: 0.45;
-}
-
-.cs-cloud-cluster--mid span:nth-child(3) {
-  left: 62%;
-  top: 28%;
-  width: 30%;
-  height: 65%;
-  opacity: 0.32;
-}
-
-.cs-cloud-cluster--far {
-  left: 12%;
-  top: 42%;
-  width: 48vw;
-  height: 10vw;
-  max-width: 24rem;
-  max-height: 4.5rem;
-  opacity: 0.55;
-  animation: cs-cloud-drift-c 38s ease-in-out infinite alternate;
-}
-
-.cs-cloud-cluster--far span:nth-child(1) {
-  left: 0;
-  top: 15%;
-  width: 55%;
-  height: 85%;
-  opacity: 0.28;
-}
-
-.cs-cloud-cluster--far span:nth-child(2) {
-  left: 42%;
-  top: 0;
-  width: 48%;
-  height: 100%;
-  opacity: 0.22;
-}
-
-.cs-sky-horizon {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 52%;
-  height: 48%;
-  will-change: transform;
-}
-
-.cs-sky-horizon-warm {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(255, 160, 90, 0.08) 18%,
-    rgba(255, 120, 70, 0.22) 38%,
-    rgba(255, 77, 89, 0.28) 52%,
-    rgba(255, 140, 80, 0.18) 68%,
-    rgba(120, 180, 220, 0.35) 88%,
-    rgba(142, 196, 234, 0.55) 100%
-  );
-}
-
-.cs-sky-horizon-glow {
+.cs-sky-brand-glow {
   position: absolute;
   left: 50%;
-  top: 28%;
-  width: min(140vw, 56rem);
-  height: min(42vw, 16rem);
-  transform: translateX(-50%);
+  top: 48%;
+  width: min(130vw, 50rem);
+  height: min(65vw, 24rem);
+  transform: translate(-50%, -50%);
   background: radial-gradient(
-    ellipse 100% 80% at 50% 50%,
-    rgba(255, 100, 65, 0.38) 0%,
-    rgba(255, 77, 89, 0.2) 40%,
+    ellipse at center,
+    rgba(255, 90, 70, 0.45) 0%,
+    rgba(255, 77, 89, 0.25) 38%,
     transparent 72%
   );
-  filter: blur(24px);
-  animation: cs-horizon-glow-pulse 14s ease-in-out infinite alternate;
-}
-
-.cs-sky-haze {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 28%;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.06) 100%
-  );
+  filter: blur(32px);
+  mix-blend-mode: screen;
+  animation: cs-brand-glow-pulse 12s ease-in-out infinite alternate;
 }
 
 .cs-sky-depth {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 90% 50% at 50% 100%, rgba(255, 255, 255, 0.06), transparent 55%),
-    linear-gradient(180deg, transparent 45%, rgba(10, 45, 92, 0.08) 100%);
+    radial-gradient(ellipse 90% 55% at 50% 0%, rgba(0, 0, 0, 0.28), transparent 55%),
+    linear-gradient(180deg, transparent 55%, rgba(10, 45, 92, 0.15) 100%);
 }
 
 .cs-apple-logo {
-  filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.22));
-  cursor: default;
+  filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.28));
 }
 
 .cs-apple-payoff {
@@ -2046,7 +1898,7 @@ html.fk-deck-theme main button.rounded-xl:hover {
   font-weight: 700;
   line-height: 1.02;
   letter-spacing: -0.04em;
-  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.18);
+  text-shadow: 0 2px 32px rgba(0, 0, 0, 0.25);
 }
 
 .cs-apple-kicker {
@@ -2054,36 +1906,32 @@ html.fk-deck-theme main button.rounded-xl:hover {
   font-weight: 600;
   letter-spacing: 0.28em;
   text-transform: lowercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.5);
 }
 
-@keyframes cs-cloud-drift-a {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(5%, 1.5%, 0); }
+@keyframes cs-sky-drift {
+  from { transform: scale(1.05); }
+  to { transform: scale(1.1) translate3d(-1%, -0.5%, 0); }
 }
 
-@keyframes cs-cloud-drift-b {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-6%, 1%, 0); }
+@keyframes cs-brand-wash-pulse {
+  from { opacity: 0.85; }
+  to { opacity: 1; }
 }
 
-@keyframes cs-cloud-drift-c {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(4%, -1%, 0); }
-}
-
-@keyframes cs-horizon-glow-pulse {
-  from { opacity: 0.75; transform: translateX(-50%) scale(1); }
-  to { opacity: 1; transform: translateX(-50%) scale(1.04); }
+@keyframes cs-brand-glow-pulse {
+  from { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cs-cloud-cluster,
-  .cs-sky-horizon-glow {
+  .cs-sky-photo-img,
+  .cs-sky-brand-wash,
+  .cs-sky-brand-glow {
     animation: none !important;
   }
 
-  .cs-sky-layer {
+  .cs-sky-photo {
     transform: none !important;
   }
 }
