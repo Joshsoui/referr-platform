@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
+import { SkyBackdrop } from "./SkyBackdrop";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -20,23 +21,14 @@ export function ComingSoonExperience() {
 
   return (
     <div className="cs-apple relative flex min-h-[100dvh] flex-col overflow-hidden">
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="cs-sky-base" />
-        <div className="cs-sky-cloud cs-sky-cloud--a" />
-        <div className="cs-sky-cloud cs-sky-cloud--b" />
-        <div className="cs-sky-cloud cs-sky-cloud--c" />
-        <div className="cs-sky-brand-glow" />
-        <div className="cs-sky-brand-glow cs-sky-brand-glow--warm" />
-        <div className="cs-sky-flare cs-sky-flare--left" />
-        <div className="cs-sky-flare cs-sky-flare--right" />
-        <div className="cs-sky-depth" />
-      </div>
+      <SkyBackdrop reduced={!!reduced} />
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-8 pt-16 text-center">
         <motion.div
           initial={reduced ? false : { opacity: 0, y: -8, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.85, delay: 0.05, ease: EASE }}
+          whileHover={reduced ? undefined : { scale: 1.04 }}
           className="cs-apple-logo"
         >
           <Image
@@ -82,7 +74,16 @@ export function ComingSoonExperience() {
         transition={{ duration: 0.8, delay: 0.85, ease: EASE }}
         className="cs-apple-kicker relative z-10 pb-[max(1.75rem,env(safe-area-inset-bottom))] text-center"
       >
-        coming soon
+        <motion.span
+          animate={reduced ? undefined : { opacity: [0.4, 0.7, 0.4] }}
+          transition={
+            reduced
+              ? undefined
+              : { duration: 3.5, repeat: Infinity, ease: "easeInOut" }
+          }
+        >
+          coming soon
+        </motion.span>
       </motion.p>
     </div>
   );
