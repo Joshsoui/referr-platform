@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 type Offset = { x: number; y: number };
@@ -16,8 +17,8 @@ function useSkyParallax(reduced: boolean) {
       const x = (clientX / window.innerWidth - 0.5) * 2;
       const y = (clientY / window.innerHeight - 0.5) * 2;
       target.current = {
-        x: Math.max(-1, Math.min(1, x)) * 18,
-        y: Math.max(-1, Math.min(1, y)) * 10,
+        x: Math.max(-1, Math.min(1, x)) * 14,
+        y: Math.max(-1, Math.min(1, y)) * 8,
       };
     };
 
@@ -28,8 +29,8 @@ function useSkyParallax(reduced: boolean) {
 
     const tick = () => {
       setOffset((prev) => ({
-        x: prev.x + (target.current.x - prev.x) * 0.06,
-        y: prev.y + (target.current.y - prev.y) * 0.06,
+        x: prev.x + (target.current.x - prev.x) * 0.05,
+        y: prev.y + (target.current.y - prev.y) * 0.05,
       }));
       frame.current = requestAnimationFrame(tick);
     };
@@ -55,48 +56,29 @@ type SkyBackdropProps = {
 export function SkyBackdrop({ reduced }: SkyBackdropProps) {
   const offset = useSkyParallax(reduced);
 
-  const layer = (depth: number) =>
-    reduced
-      ? undefined
-      : {
-          transform: `translate3d(${offset.x * depth}px, ${offset.y * depth}px, 0)`,
-        };
+  const parallax = reduced
+    ? undefined
+    : {
+        transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(1.08)`,
+      };
 
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0">
-      <div className="cs-sky-base" />
-      <div className="cs-sky-zenith" />
-
-      <div className="cs-sky-layer" style={layer(0.35)}>
-        <div className="cs-cloud-cluster cs-cloud-cluster--high">
-          <span />
-          <span />
-          <span />
-          <span />
-        </div>
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="cs-sky-photo" style={parallax}>
+        <Image
+          src="/images/coming-soon-sky.jpg"
+          alt=""
+          fill
+          priority
+          quality={90}
+          sizes="100vw"
+          className="cs-sky-photo-img object-cover object-center"
+        />
       </div>
 
-      <div className="cs-sky-layer" style={layer(0.55)}>
-        <div className="cs-cloud-cluster cs-cloud-cluster--mid">
-          <span />
-          <span />
-          <span />
-        </div>
-      </div>
-
-      <div className="cs-sky-layer" style={layer(0.2)}>
-        <div className="cs-cloud-cluster cs-cloud-cluster--far">
-          <span />
-          <span />
-        </div>
-      </div>
-
-      <div className="cs-sky-horizon" style={layer(0.15)}>
-        <div className="cs-sky-horizon-warm" />
-        <div className="cs-sky-horizon-glow" />
-      </div>
-
-      <div className="cs-sky-haze" />
+      <div className="cs-sky-brand-tint" />
+      <div className="cs-sky-brand-wash" />
+      <div className="cs-sky-brand-glow" />
       <div className="cs-sky-depth" />
     </div>
   );
