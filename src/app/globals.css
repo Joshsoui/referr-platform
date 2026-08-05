@@ -1901,44 +1901,40 @@ html.fk-deck-theme main button.rounded-xl:hover {
     linear-gradient(180deg, transparent 60%, rgba(80, 20, 25, 0.12) 100%);
 }
 
-.cs-editorial-hero {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 0.5rem 0.75rem;
-}
-
-.cs-editorial-word {
-  font-size: clamp(2.75rem, 12vw, 5.5rem);
-  font-weight: 700;
-  line-height: 0.92;
-  letter-spacing: -0.04em;
-  color: rgba(255, 255, 255, 0.97);
-  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.15);
-}
-
-.cs-editorial-word--left {
-  text-align: right;
-}
-
-.cs-editorial-word--right {
-  text-align: left;
+.cs-sky-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 75% 70% at 50% 48%,
+    transparent 0%,
+    transparent 42%,
+    rgba(0, 0, 0, 0.35) 72%,
+    rgba(0, 0, 0, 0.72) 100%
+  );
+  pointer-events: none;
 }
 
 .cs-editorial-logo {
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.25));
 }
 
-.cs-editorial-tagline {
-  font-size: clamp(0.875rem, 3.2vw, 1rem);
-  font-weight: 600;
-  line-height: 1.45;
-  letter-spacing: -0.01em;
-  color: rgba(255, 255, 255, 0.88);
-  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+.cs-editorial-hero {
+  font-size: clamp(2.75rem, 12vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.18);
+}
+
+.cs-editorial-kicker {
+  font-size: clamp(1.35rem, 5.5vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: lowercase;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.15);
 }
 
 .cs-editorial-email {
@@ -1952,25 +1948,6 @@ html.fk-deck-theme main button.rounded-xl:hover {
 
 .cs-editorial-email:hover {
   color: rgba(255, 255, 255, 0.62);
-}
-
-@media (max-width: 380px) {
-  .cs-editorial-hero {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    text-align: center;
-    gap: 0.35rem;
-  }
-
-  .cs-editorial-word--left,
-  .cs-editorial-word--right {
-    text-align: center;
-  }
-
-  .cs-editorial-logo {
-    order: -1;
-    margin-bottom: 0.25rem;
-  }
 }
 
 @keyframes cs-sky-drift {

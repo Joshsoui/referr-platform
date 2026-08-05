@@ -81,6 +81,7 @@ export function SkyBackdrop({ reduced }: SkyBackdropProps) {
       <div className="cs-sky-brand-wash" />
       <div className="cs-sky-brand-glow" />
       <div className="cs-sky-depth" />
+      <div className="cs-sky-vignette" />
     </div>
   );
 }
