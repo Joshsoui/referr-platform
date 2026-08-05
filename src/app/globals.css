@@ -1822,377 +1822,108 @@ html.fk-deck-theme main button.rounded-xl:hover {
 
 
 
-/* ── Coming soon (referr.nl) — 3D Apple-ad phone ── */
+/* ── Coming soon (referr.nl) — photoreal iPhone mock ── */
 .cs-studio-light {
   position: absolute;
-  inset: -25% -15% auto;
-  height: 75%;
+  inset: -20% -10% auto;
+  height: 70%;
   background:
-    radial-gradient(ellipse 50% 45% at 48% 30%, rgba(255, 255, 255, 0.9), transparent 55%),
-    radial-gradient(ellipse 45% 40% at 55% 40%, rgba(255, 77, 89, 0.16), transparent 60%),
-    radial-gradient(ellipse 35% 30% at 35% 25%, rgba(255, 170, 32, 0.1), transparent 55%);
-  animation: cs-light-breathe 11s ease-in-out infinite;
-}
-
-.cs-studio-spot {
-  position: absolute;
-  left: 50%;
-  top: 18%;
-  width: min(70vw, 480px);
-  height: min(70vw, 480px);
-  transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(255, 122, 48, 0.12), transparent 68%);
-  filter: blur(20px);
+    radial-gradient(ellipse 55% 50% at 50% 28%, rgba(255, 255, 255, 0.85), transparent 58%),
+    radial-gradient(ellipse 45% 40% at 50% 40%, rgba(255, 77, 89, 0.12), transparent 62%),
+    radial-gradient(ellipse 35% 30% at 30% 22%, rgba(255, 170, 32, 0.08), transparent 55%);
+  animation: cs-light-breathe 12s ease-in-out infinite;
 }
 
 .cs-studio-floor {
   position: absolute;
   left: 50%;
-  bottom: 4%;
-  width: min(90vw, 640px);
-  height: 160px;
+  bottom: 6%;
+  width: min(85vw, 560px);
+  height: 140px;
   transform: translateX(-50%);
-  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.1), transparent 68%);
-  filter: blur(22px);
+  background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.09), transparent 70%);
+  filter: blur(20px);
 }
 
-.cs-phone-stage {
+.cs-photo-stage {
   position: relative;
-  perspective: 1800px;
-  perspective-origin: 50% 40%;
-}
-
-.cs-phone {
-  position: relative;
-  width: min(70vw, 290px);
+  max-width: 420px;
   margin: 0 auto;
-  transform-style: preserve-3d;
   animation: cs-phone-float 8s ease-in-out infinite;
 }
 
-.cs-phone-shadow {
+.cs-photo-phone {
+  position: relative;
+  width: 100%;
+}
+
+.cs-photo-shadow {
   position: absolute;
-  left: 12%;
-  right: 2%;
-  bottom: -4%;
-  height: 16%;
+  left: 18%;
+  right: 12%;
+  bottom: 4%;
+  height: 10%;
   border-radius: 50%;
   background: radial-gradient(
     ellipse at center,
-    rgba(15, 23, 42, 0.45) 0%,
-    rgba(15, 23, 42, 0.16) 40%,
-    transparent 70%
-  );
-  filter: blur(20px);
-  transform: translateZ(-40px) rotateX(80deg) scaleX(1.1);
-  animation: cs-shadow-breathe 8s ease-in-out infinite;
-}
-
-.cs-phone-3d {
-  position: relative;
-  transform: rotateY(-26deg) rotateX(10deg) rotateZ(1deg);
-  transform-style: preserve-3d;
-}
-
-.cs-phone-edge {
-  position: absolute;
-  top: 1.2%;
-  bottom: 1.2%;
-  right: -11px;
-  width: 14px;
-  border-radius: 2px;
-  background:
-    linear-gradient(
-      180deg,
-      #9a9aa2 0%,
-      #5c5c64 8%,
-      #2a2a30 22%,
-      #141418 45%,
-      #1c1c22 68%,
-      #4a4a52 88%,
-      #8a8a92 100%
-    );
-  box-shadow:
-    inset 1px 0 0 rgba(255, 255, 255, 0.25),
-    inset -1px 0 0 rgba(0, 0, 0, 0.5),
-    4px 0 12px rgba(0, 0, 0, 0.25);
-  transform: translateZ(-6px) rotateY(18deg);
-  transform-origin: left center;
-}
-
-.cs-phone-face {
-  position: relative;
-  transform: translateZ(8px);
-  transform-style: preserve-3d;
-}
-
-.cs-phone-buttons {
-  position: absolute;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-}
-
-.cs-phone-buttons span {
-  display: block;
-  width: 3px;
-  border-radius: 1px;
-  background: linear-gradient(90deg, #6a6a72, #2a2a30 40%, #1a1a1e);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    1px 0 2px rgba(0, 0, 0, 0.35);
-}
-
-.cs-phone-buttons--left {
-  left: -2px;
-  top: 16%;
-}
-
-.cs-phone-buttons--left span:nth-child(1) {
-  height: 1.35rem;
-  margin-bottom: 0.35rem;
-}
-
-.cs-phone-buttons--left span:nth-child(2),
-.cs-phone-buttons--left span:nth-child(3) {
-  height: 2.1rem;
-}
-
-.cs-phone-buttons--right {
-  right: -2px;
-  top: 26%;
-}
-
-.cs-phone-buttons--right span {
-  height: 3.2rem;
-}
-
-.cs-phone-titanium {
-  position: relative;
-  border-radius: 3.2rem;
-  padding: 0.78rem;
-  background:
-    linear-gradient(
-      145deg,
-      #c8c8ce 0%,
-      #8e8e96 8%,
-      #3a3a40 20%,
-      #16161a 38%,
-      #0a0a0c 52%,
-      #1e1e24 68%,
-      #5a5a62 84%,
-      #b0b0b8 100%
-    );
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.55),
-    inset 1.5px 0 0 rgba(255, 255, 255, 0.18),
-    inset -1px 0 0 rgba(0, 0, 0, 0.4),
-    0 24px 48px -12px rgba(15, 23, 42, 0.5),
-    0 40px 80px -28px rgba(255, 77, 89, 0.28),
-    0 8px 20px rgba(15, 23, 42, 0.25);
-}
-
-.cs-phone-titanium::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(
-    115deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0.05) 18%,
-    transparent 40%,
-    transparent 70%,
-    rgba(255, 255, 255, 0.08) 100%
-  );
-  mix-blend-mode: soft-light;
-}
-
-.cs-phone-bezel {
-  position: relative;
-  overflow: hidden;
-  border-radius: 2.55rem;
-  background: #050506;
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.95),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
-}
-
-.cs-phone-island {
-  position: absolute;
-  top: 0.95rem;
-  left: 50%;
-  z-index: 4;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.45rem;
-  width: 6.2rem;
-  height: 1.75rem;
-  padding: 0 0.65rem 0 0.85rem;
-  transform: translateX(-50%);
-  border-radius: 999px;
-  background: #050506;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
-    0 4px 10px rgba(0, 0, 0, 0.45);
-}
-
-.cs-phone-speaker {
-  flex: 1;
-  height: 0.28rem;
-  max-width: 2.4rem;
-  margin-right: auto;
-  border-radius: 999px;
-  background: #121216;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
-}
-
-.cs-phone-camera {
-  width: 0.68rem;
-  height: 0.68rem;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 30% 30%, #5a6a8a 0%, #1a2840 40%, #06080e 100%);
-  box-shadow:
-    0 0 0 1.5px rgba(255, 255, 255, 0.08),
-    inset 0 0 4px rgba(100, 140, 220, 0.35);
-}
-
-.cs-phone-screen {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  aspect-ratio: 9 / 19.5;
-  background:
-    radial-gradient(ellipse 90% 60% at 50% 45%, #fff9f8 0%, #ffffff 50%, #f3f1f0 100%);
-}
-
-.cs-phone-screen-glow {
-  position: absolute;
-  inset: 18% 10%;
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(255, 77, 89, 0.16),
+    rgba(15, 23, 42, 0.35),
     transparent 70%
   );
   filter: blur(16px);
-  animation: cs-screen-pulse 5.5s ease-in-out infinite;
+  z-index: 0;
+  animation: cs-shadow-breathe 8s ease-in-out infinite;
 }
 
-.cs-phone-logo {
+.cs-photo-device {
+  position: relative;
   z-index: 1;
-  filter: drop-shadow(0 12px 30px rgba(255, 77, 89, 0.25));
+  filter: drop-shadow(0 28px 50px rgba(15, 23, 42, 0.28));
+}
+
+.cs-photo-logo-slot {
+  position: absolute;
+  z-index: 2;
+  top: 34.5%;
+  left: 24.5%;
+  width: 46%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: perspective(900px) rotateY(-19deg) rotateX(5deg) skewY(-1.5deg);
+  transform-origin: center center;
+  pointer-events: none;
+}
+
+.cs-photo-logo {
+  filter: drop-shadow(0 8px 20px rgba(255, 77, 89, 0.22));
   animation: cs-logo-breathe 5.5s ease-in-out infinite;
 }
 
-.cs-phone-glass {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      122deg,
-      rgba(255, 255, 255, 0.7) 0%,
-      rgba(255, 255, 255, 0.18) 16%,
-      rgba(255, 255, 255, 0.02) 32%,
-      transparent 48%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.12) 0%,
-      transparent 18%,
-      transparent 82%,
-      rgba(0, 0, 0, 0.04) 100%
-    );
-}
-
-.cs-phone-reflection {
-  position: absolute;
-  left: 4%;
-  right: -4%;
-  top: 96%;
-  height: 28%;
-  overflow: hidden;
-  pointer-events: none;
-  transform: rotateY(-26deg) rotateX(10deg);
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent 75%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent 75%);
-  opacity: 0.45;
-}
-
-.cs-phone-reflection-inner {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  height: 360%;
-  padding-top: 28%;
-  border-radius: 3.2rem;
-  background:
-    linear-gradient(145deg, #2a2a30 0%, #121216 40%, #1a1a1e 100%);
-  transform: scaleY(-1);
-  opacity: 0.55;
-  filter: blur(0.5px);
-}
-
 @keyframes cs-light-breathe {
-  0%, 100% { opacity: 0.8; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.04); }
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
 }
 
 @keyframes cs-phone-float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-16px); }
+  50% { transform: translateY(-12px); }
 }
 
 @keyframes cs-shadow-breathe {
-  0%, 100% { opacity: 0.9; transform: translateZ(-40px) rotateX(80deg) scaleX(1.05); }
-  50% { opacity: 0.55; transform: translateZ(-40px) rotateX(80deg) scaleX(0.92); }
-}
-
-@keyframes cs-screen-pulse {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.85; transform: scaleX(1); }
+  50% { opacity: 0.55; transform: scaleX(0.92); }
 }
 
 @keyframes cs-logo-breathe {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.035); }
-}
-
-@media (min-width: 640px) {
-  .cs-phone {
-    width: min(48vw, 310px);
-  }
-}
-
-@media (max-width: 639px) {
-  .cs-phone-3d {
-    transform: rotateY(-18deg) rotateX(8deg);
-  }
-
-  .cs-phone-reflection {
-    transform: rotateY(-18deg) rotateX(8deg);
-    height: 22%;
-  }
+  50% { transform: scale(1.03); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .cs-studio-light,
-  .cs-phone,
-  .cs-phone-shadow,
-  .cs-phone-screen-glow,
-  .cs-phone-logo {
+  .cs-photo-stage,
+  .cs-photo-shadow,
+  .cs-photo-logo {
     animation: none !important;
-  }
-
-  .cs-phone {
-    transform: none;
   }
 }
