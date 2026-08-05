@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { DustAtmosphere } from "./DustAtmosphere";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -26,16 +25,12 @@ export function ComingSoonExperience() {
         <div className="cs-sky-cloud cs-sky-cloud--a" />
         <div className="cs-sky-cloud cs-sky-cloud--b" />
         <div className="cs-sky-cloud cs-sky-cloud--c" />
-        <div className="cs-sky-cloud cs-sky-cloud--d" />
-        <div className="cs-sky-glow" />
-        <div className="cs-sky-haze" />
+        <div className="cs-sky-brand-glow" />
+        <div className="cs-sky-brand-glow cs-sky-brand-glow--warm" />
+        <div className="cs-sky-flare cs-sky-flare--left" />
+        <div className="cs-sky-flare cs-sky-flare--right" />
+        <div className="cs-sky-depth" />
       </div>
-
-      {!reduced && (
-        <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <DustAtmosphere reduced={false} variant="sky" />
-        </div>
-      )}
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-8 pt-16 text-center">
         <motion.div
@@ -65,7 +60,7 @@ export function ComingSoonExperience() {
             variants={reduced ? undefined : payoffLine}
             initial={reduced ? false : "hidden"}
             animate={reduced ? false : "show"}
-            className="block text-fk-navy"
+            className="block text-white"
           >
             Ken iemand.
           </motion.span>

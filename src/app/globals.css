@@ -1822,116 +1822,141 @@ html.fk-deck-theme main button.rounded-xl:hover {
 
 
 
-/* ── Coming soon (referr.nl) — sky hero + brand payoff ── */
+/* ── Coming soon (referr.nl) — bunq-style sky + brand glow ── */
 .cs-apple {
-  background: #dceaf8;
-  color: var(--color-fk-navy);
+  background: #1e5a9e;
+  color: #fff;
 }
 
 .cs-sky-base {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 95% 60% at 50% 42%, rgba(255, 120, 70, 0.22), transparent 58%),
-    radial-gradient(ellipse 70% 50% at 50% 55%, rgba(255, 77, 89, 0.14), transparent 62%),
-    radial-gradient(ellipse 80% 45% at 20% 15%, rgba(255, 255, 255, 0.9), transparent 55%),
-    radial-gradient(ellipse 60% 40% at 85% 22%, rgba(255, 255, 255, 0.75), transparent 50%),
-    linear-gradient(180deg, #8eb8e8 0%, #c5daf2 28%, #f0e6df 72%, #f8ddd0 100%);
+    radial-gradient(ellipse 90% 55% at 50% 88%, rgba(255, 120, 60, 0.28), transparent 58%),
+    radial-gradient(ellipse 70% 45% at 50% 92%, rgba(255, 77, 89, 0.18), transparent 55%),
+    radial-gradient(ellipse 120% 80% at 50% 100%, rgba(255, 170, 80, 0.12), transparent 50%),
+    linear-gradient(
+      180deg,
+      #0f3d78 0%,
+      #1a5a9e 22%,
+      #2d74be 48%,
+      #4a96d4 72%,
+      #6eb0e0 100%
+    );
 }
 
 .cs-sky-cloud {
   position: absolute;
   border-radius: 50%;
-  filter: blur(48px);
+  filter: blur(56px);
   will-change: transform, opacity;
 }
 
 .cs-sky-cloud--a {
-  left: -18%;
-  top: 8%;
-  width: 72vw;
-  height: 34vw;
-  max-width: 36rem;
-  max-height: 14rem;
-  background: rgba(255, 255, 255, 0.82);
-  animation: cs-cloud-drift-a 34s ease-in-out infinite alternate;
+  left: -10%;
+  top: 14%;
+  width: 78vw;
+  height: 22vw;
+  max-width: 40rem;
+  max-height: 9rem;
+  background: rgba(255, 255, 255, 0.14);
+  animation: cs-cloud-drift-a 42s ease-in-out infinite alternate;
 }
 
 .cs-sky-cloud--b {
-  right: -22%;
-  top: 18%;
-  width: 68vw;
-  height: 30vw;
+  right: -14%;
+  top: 28%;
+  width: 64vw;
+  height: 18vw;
   max-width: 34rem;
-  max-height: 12rem;
-  background: rgba(255, 255, 255, 0.7);
-  animation: cs-cloud-drift-b 40s ease-in-out infinite alternate;
+  max-height: 7rem;
+  background: rgba(255, 255, 255, 0.1);
+  animation: cs-cloud-drift-b 48s ease-in-out infinite alternate;
 }
 
 .cs-sky-cloud--c {
-  left: 8%;
-  top: 38%;
-  width: 58vw;
-  height: 22vw;
-  max-width: 30rem;
-  max-height: 10rem;
-  background: rgba(255, 255, 255, 0.55);
-  animation: cs-cloud-drift-c 28s ease-in-out infinite alternate;
+  left: 18%;
+  top: 52%;
+  width: 52vw;
+  height: 14vw;
+  max-width: 28rem;
+  max-height: 6rem;
+  background: rgba(255, 255, 255, 0.08);
+  animation: cs-cloud-drift-c 36s ease-in-out infinite alternate;
 }
 
-.cs-sky-cloud--d {
-  right: -8%;
-  bottom: 18%;
-  width: 80vw;
-  height: 28vw;
-  max-width: 40rem;
-  max-height: 12rem;
-  background: rgba(255, 248, 242, 0.75);
-  animation: cs-cloud-drift-d 36s ease-in-out infinite alternate;
-}
-
-.cs-sky-glow {
+.cs-sky-brand-glow {
   position: absolute;
   left: 50%;
-  top: 46%;
-  width: min(100vw, 40rem);
-  height: min(70vw, 26rem);
-  transform: translate(-50%, -50%);
+  bottom: -8%;
+  width: min(130vw, 52rem);
+  height: min(55vw, 22rem);
+  transform: translateX(-50%);
   background: radial-gradient(
     ellipse at center,
-    rgba(255, 100, 70, 0.28) 0%,
-    rgba(255, 77, 89, 0.14) 38%,
+    rgba(255, 90, 70, 0.42) 0%,
+    rgba(255, 77, 89, 0.22) 35%,
     transparent 72%
   );
-  filter: blur(20px);
-  animation: cs-sky-glow-pulse 10s ease-in-out infinite alternate;
+  filter: blur(28px);
+  animation: cs-brand-glow-pulse 12s ease-in-out infinite alternate;
 }
 
-.cs-sky-haze {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    transparent 35%,
-    rgba(255, 240, 230, 0.2) 100%
+.cs-sky-brand-glow--warm {
+  bottom: 2%;
+  width: min(100vw, 36rem);
+  height: min(40vw, 14rem);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 154, 60, 0.35) 0%,
+    rgba(255, 122, 48, 0.15) 45%,
+    transparent 70%
   );
+  filter: blur(36px);
+  animation: cs-brand-glow-pulse 16s ease-in-out infinite alternate-reverse;
 }
 
-.cs-dust-canvas {
+.cs-sky-flare {
+  position: absolute;
+  bottom: -4%;
+  width: 42vw;
+  height: 28vw;
+  max-width: 20rem;
+  max-height: 12rem;
+  opacity: 0.22;
+  filter: blur(2px);
+  background: linear-gradient(
+    118deg,
+    transparent 0%,
+    rgba(255, 200, 120, 0.35) 35%,
+    rgba(255, 120, 80, 0.25) 55%,
+    transparent 78%
+  );
+  mix-blend-mode: screen;
+}
+
+.cs-sky-flare--left {
+  left: -6%;
+  transform: rotate(-8deg);
+  animation: cs-flare-shift-left 14s ease-in-out infinite alternate;
+}
+
+.cs-sky-flare--right {
+  right: -6%;
+  transform: rotate(8deg) scaleX(-1);
+  animation: cs-flare-shift-right 14s ease-in-out infinite alternate;
+}
+
+.cs-sky-depth {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.85;
-}
-
-.cs-dust-canvas--sky {
-  opacity: 0.55;
+  background:
+    radial-gradient(ellipse 85% 60% at 50% 0%, rgba(0, 0, 0, 0.18), transparent 55%),
+    linear-gradient(180deg, transparent 60%, rgba(15, 40, 80, 0.12) 100%);
 }
 
 .cs-apple-logo {
-  filter: drop-shadow(0 6px 18px rgba(255, 77, 89, 0.18));
+  filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.22));
 }
 
 .cs-apple-payoff {
@@ -1939,6 +1964,7 @@ html.fk-deck-theme main button.rounded-xl:hover {
   font-weight: 700;
   line-height: 1.02;
   letter-spacing: -0.04em;
+  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.18);
 }
 
 .cs-apple-kicker {
@@ -1946,37 +1972,43 @@ html.fk-deck-theme main button.rounded-xl:hover {
   font-weight: 600;
   letter-spacing: 0.28em;
   text-transform: lowercase;
-  color: rgba(15, 23, 42, 0.38);
+  color: rgba(255, 255, 255, 0.45);
 }
 
 @keyframes cs-cloud-drift-a {
-  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.72; }
-  to { transform: translate3d(5%, 3%, 0) scale(1.06); opacity: 0.9; }
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.55; }
+  to { transform: translate3d(4%, 2%, 0) scale(1.04); opacity: 0.75; }
 }
 
 @keyframes cs-cloud-drift-b {
-  from { transform: translate3d(0, 0, 0) scale(1.04); opacity: 0.62; }
-  to { transform: translate3d(-7%, 2%, 0) scale(0.96); opacity: 0.82; }
+  from { transform: translate3d(0, 0, 0) scale(1.02); opacity: 0.45; }
+  to { transform: translate3d(-5%, 1%, 0) scale(0.98); opacity: 0.62; }
 }
 
 @keyframes cs-cloud-drift-c {
-  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.5; }
-  to { transform: translate3d(4%, -3%, 0) scale(1.08); opacity: 0.68; }
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.35; }
+  to { transform: translate3d(3%, -2%, 0) scale(1.05); opacity: 0.5; }
 }
 
-@keyframes cs-cloud-drift-d {
-  from { transform: translate3d(0, 0, 0) scale(1.02); opacity: 0.65; }
-  to { transform: translate3d(-5%, -4%, 0) scale(1.1); opacity: 0.85; }
+@keyframes cs-brand-glow-pulse {
+  from { opacity: 0.75; transform: translateX(-50%) scale(1); }
+  to { opacity: 1; transform: translateX(-50%) scale(1.06); }
 }
 
-@keyframes cs-sky-glow-pulse {
-  from { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
-  to { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+@keyframes cs-flare-shift-left {
+  from { opacity: 0.16; transform: rotate(-8deg) translateX(0); }
+  to { opacity: 0.28; transform: rotate(-6deg) translateX(3%); }
+}
+
+@keyframes cs-flare-shift-right {
+  from { opacity: 0.16; transform: rotate(8deg) scaleX(-1) translateX(0); }
+  to { opacity: 0.28; transform: rotate(6deg) scaleX(-1) translateX(3%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .cs-sky-cloud,
-  .cs-sky-glow {
+  .cs-sky-brand-glow,
+  .cs-sky-flare {
     animation: none !important;
   }
 }
