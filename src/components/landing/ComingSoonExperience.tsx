@@ -6,16 +6,6 @@ import { SkyBackdrop } from "./SkyBackdrop";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-const payoffLine = {
-  hidden: { opacity: 0, y: 32, filter: "blur(12px)" },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 1.05, delay: 0.3 + i * 0.12, ease: EASE },
-  }),
-};
-
 export function ComingSoonExperience() {
   const reduced = useReducedMotion();
 
@@ -23,68 +13,68 @@ export function ComingSoonExperience() {
     <div className="cs-apple relative flex min-h-[100dvh] flex-col overflow-hidden">
       <SkyBackdrop reduced={!!reduced} />
 
-      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-8 pt-16 text-center">
-        <motion.div
-          initial={reduced ? false : { opacity: 0, y: -8, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.85, delay: 0.05, ease: EASE }}
-          whileHover={reduced ? undefined : { scale: 1.04 }}
-          className="cs-apple-logo"
-        >
-          <Image
-            src="/brand/referr-logo.png"
-            alt="referr"
-            width={837}
-            height={286}
-            quality={100}
-            priority
-            className="brand-logo-mark h-auto w-[4.25rem] object-contain sm:w-[4.75rem]"
-          />
-        </motion.div>
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-5 pb-4 pt-14 sm:px-8">
+        <div className="cs-editorial-hero w-full max-w-5xl">
+          <motion.p
+            initial={reduced ? false : { opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, delay: 0.1, ease: EASE }}
+            className="cs-editorial-word cs-editorial-word--left"
+          >
+            Coming
+          </motion.p>
 
-        <motion.h1
-          initial={reduced ? false : "hidden"}
-          animate={reduced ? false : "show"}
-          className="cs-apple-payoff mt-8 max-w-lg text-balance sm:mt-10 sm:max-w-2xl"
+          <motion.div
+            initial={reduced ? false : { opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.85, delay: 0.2, ease: EASE }}
+            className="cs-editorial-logo"
+          >
+            <Image
+              src="/brand/referr-logo.png"
+              alt="referr"
+              width={837}
+              height={286}
+              quality={100}
+              priority
+              className="brand-logo-mark h-auto w-[3.75rem] object-contain sm:w-[4.25rem]"
+            />
+          </motion.div>
+
+          <motion.p
+            initial={reduced ? false : { opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, delay: 0.1, ease: EASE }}
+            className="cs-editorial-word cs-editorial-word--right"
+          >
+            soon
+          </motion.p>
+        </div>
+
+        <motion.p
+          initial={reduced ? false : { opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.45, ease: EASE }}
+          className="cs-editorial-tagline mt-8 max-w-sm text-center sm:mt-10 sm:max-w-md"
         >
-          <motion.span
-            custom={0}
-            variants={reduced ? undefined : payoffLine}
-            initial={reduced ? false : "hidden"}
-            animate={reduced ? false : "show"}
-            className="block text-white"
-          >
-            Ken iemand.
-          </motion.span>
-          <motion.span
-            custom={1}
-            variants={reduced ? undefined : payoffLine}
-            initial={reduced ? false : "hidden"}
-            animate={reduced ? false : "show"}
-            className="brand-wordmark block"
-          >
-            Maak het verschil.
-          </motion.span>
-        </motion.h1>
+          Ken iemand.{" "}
+          <span className="brand-wordmark font-bold">Maak het verschil.</span>
+        </motion.p>
       </div>
 
-      <motion.p
-        initial={reduced ? false : { opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.85, ease: EASE }}
-        className="cs-apple-kicker relative z-10 pb-[max(1.75rem,env(safe-area-inset-bottom))] text-center"
+      <motion.footer
+        initial={reduced ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.7, ease: EASE }}
+        className="relative z-10 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-center"
       >
-        <motion.span
-          animate={reduced ? undefined : { opacity: [0.4, 0.7, 0.4] }}
-          transition={
-            reduced
-              ? undefined
-              : { duration: 3.5, repeat: Infinity, ease: "easeInOut" }
-          }
+        <a
+          href="mailto:info@referr.nl"
+          className="cs-editorial-email"
         >
-          coming soon
-        </motion.span>
-      </motion.p>
+          info@referr.nl
+        </a>
+      </motion.footer>
     </div>
   );
 }
