@@ -37,7 +37,7 @@ export function ComingSoonExperience() {
           transition={{ duration: 0.95, delay: 0.2, ease: EASE }}
           className="cs-editorial-hero max-w-3xl text-center text-balance"
         >
-          <span className="block text-white">Ken iemand.</span>
+          <span className="block text-fk-navy">Ken iemand.</span>
           <span className="brand-wordmark block">Maak het verschil.</span>
         </motion.h1>
 
@@ -45,7 +45,7 @@ export function ComingSoonExperience() {
           initial={reduced ? false : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, delay: 0.45, ease: EASE }}
-          className="cs-editorial-kicker mt-8 text-white sm:mt-10"
+          className="cs-editorial-kicker mt-8 sm:mt-10"
         >
           coming soon
         </motion.p>
