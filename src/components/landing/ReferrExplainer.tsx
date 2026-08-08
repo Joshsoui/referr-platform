@@ -38,8 +38,6 @@ export function ReferrExplainer() {
   const [paused, setPaused] = useState(false);
   const [isFinePointer, setIsFinePointer] = useState(false);
   const pausedRef = useRef(false);
-  const lastRef = useRef<number | null>(null);
-  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     pausedRef.current = paused;
@@ -56,23 +54,13 @@ export function ReferrExplainer() {
   useEffect(() => {
     if (reduced) return;
 
-    const tick = (now: number) => {
-      if (lastRef.current == null) lastRef.current = now;
-      const delta = now - lastRef.current;
-      lastRef.current = now;
+    const STEP = 50;
+    const id = window.setInterval(() => {
+      if (pausedRef.current) return;
+      setElapsed((prev) => (prev + STEP) % TOTAL);
+    }, STEP);
 
-      if (!pausedRef.current) {
-        setElapsed((prev) => (prev + delta) % TOTAL);
-      }
-
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      lastRef.current = null;
-    };
+    return () => window.clearInterval(id);
   }, [reduced]);
 
   const { id, index, progress } = reduced
@@ -129,10 +117,10 @@ export function ReferrExplainer() {
         <AnimatePresence mode="wait">
           <motion.div
             key={reduced ? "static" : id}
-            initial={reduced ? false : { opacity: 0, y: 12, filter: "blur(6px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={reduced ? undefined : { opacity: 0, y: -10, filter: "blur(6px)" }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            initial={reduced ? false : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduced ? undefined : { opacity: 0, y: -10 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="rx-stage-inner"
           >
             <Scene progress={progress} reduced={!!reduced} />
