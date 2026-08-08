@@ -7,6 +7,7 @@ const footerLinks = [
     links: [
       { href: "/vacatures", label: "Ontdek challenges" },
       { href: "/#hoe-het-werkt", label: "Hoe het werkt" },
+      { href: "/media", label: "Media" },
       { href: "/inloggen", label: "Inloggen" },
       { href: "/account-aanmaken", label: "Maak account aan" },
     ],
