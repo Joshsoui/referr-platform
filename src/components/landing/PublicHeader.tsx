@@ -9,6 +9,7 @@ import { BrandLogo } from "@/components/brand/BrandLogo";
 const navLinks = [
   { href: "/#hoe-het-werkt", label: "Hoe het werkt" },
   { href: "/vacatures", label: "Challenges" },
+  { href: "/media", label: "Media" },
   { href: "/vision", label: "Vision" },
 ];
 
