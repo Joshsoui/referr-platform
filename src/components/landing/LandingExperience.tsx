@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/landing/Reveal";
-import { HowItWorks } from "@/components/landing/HowItWorks";
+import { ReferrExplainer } from "@/components/landing/ReferrExplainer";
 import { HeroScrollStory } from "@/components/landing/HeroScrollStory";
 import { ChallengeCard } from "@/components/VacancyCard";
 import { INITIAL_VACANCIES } from "@/lib/mockVacancies";
@@ -34,7 +34,7 @@ export function LandingExperience() {
     <div className="landing-surface overflow-x-hidden">
       <HeroScrollStory />
 
-      <HowItWorks />
+      <ReferrExplainer />
 
       <section className="px-4 pb-20 pt-4 sm:px-6 sm:pb-28 lg:px-8">
         <div className="mx-auto max-w-6xl">
